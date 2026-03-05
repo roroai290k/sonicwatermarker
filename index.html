@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SonicWatermarker</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap');
+
+  :root {
+    --bg: #0a0a0a;
+    --surface: #111111;
+    --surface2: #1a1a1a;
+    --border: #2a2a2a;
+    --accent: #e8ff47;
+    --text: #f0f0f0;
+    --text-muted: #666;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 28px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 100;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 17px;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+  }
+  .logo span { color: var(--text-muted); font-weight: 400; }
+
+  .header-badges { display: flex; gap: 6px; flex-wrap: wrap; }
+  .badge {
+    font-size: 9px;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    padding: 3px 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .badge.green { border-color: #2a4a00; color: #7dc800; }
+
+  .app {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    min-height: calc(100vh - 105px);
+  }
+
+  .sidebar {
+    border-right: 1px solid var(--border);
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    overflow-y: auto;
+    max-height: calc(100vh - 105px);
+  }
+
+  .section-label {
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 9px;
+  }
+
+  .wm-tabs { display: flex; margin-bottom: 9px; }
+  .wm-tab {
+    flex: 1;
+    padding: 7px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.15s;
+  }
+  .wm-tab:first-child { border-right: none; }
+  .wm-tab.active { background: rgba(232,255,71,0.07); border-color: var(--accent); color: var(--accent); }
+
+  .drop-zone {
+    border: 1px dashed var(--border);
+    padding: 18px 14px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .drop-zone:hover, .drop-zone.drag-over { border-color: var(--accent); background: rgba(232,255,71,0.03); }
+  .drop-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+  .drop-icon { font-size: 22px; margin-bottom: 5px; display: block; }
+  .drop-title { font-family: 'Syne', sans-serif; font-weight: 600; font-size: 12px; margin-bottom: 3px; }
+  .drop-sub { font-size: 9px; color: var(--text-muted); }
+  .file-count { display: inline-block; background: var(--accent); color: #000; font-size: 9px; font-weight: 500; padding: 2px 8px; margin-top: 5px; font-family: 'Syne', sans-serif; }
+
+  .text-wm-panel { display: none; flex-direction: column; gap: 10px; }
+  .text-wm-panel.active { display: flex; }
+
+  .txt-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    padding: 8px 10px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .txt-input:focus { border-color: var(--accent); }
+
+  .color-row { display: flex; align-items: center; gap: 10px; }
+  .color-label { font-size: 10px; color: var(--text-muted); flex: 1; }
+  input[type="color"] { width: 32px; height: 22px; border: 1px solid var(--border); background: none; cursor: pointer; padding: 1px; }
+
+  .wm-thumb {
+    width: 100%; max-height: 65px; object-fit: contain;
+    background: repeating-conic-gradient(#333 0% 25%, #222 0% 50%) 0 0 / 12px 12px;
+    border: 1px solid var(--border); display: none; margin-top: 7px;
+  }
+
+  .control-group { display: flex; flex-direction: column; gap: 13px; }
+  .control-row { display: flex; flex-direction: column; gap: 5px; }
+  .control-header { display: flex; justify-content: space-between; align-items: center; }
+  .control-name { font-size: 10px; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; }
+  .control-val { font-size: 10px; color: var(--accent); font-weight: 500; }
+
+  input[type="range"] { -webkit-appearance: none; width: 100%; height: 2px; background: var(--border); outline: none; cursor: pointer; }
+  input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 13px; height: 13px; background: var(--accent); cursor: pointer; border-radius: 0; }
+  input[type="range"]::-webkit-slider-runnable-track { background: linear-gradient(to right, var(--accent) 0%, var(--accent) var(--val, 50%), var(--border) var(--val, 50%)); height: 2px; }
+
+  .position-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; }
+  .pos-btn { aspect-ratio: 1; background: var(--surface2); border: 1px solid var(--border); cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--text-muted); }
+  .pos-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .pos-btn.active { background: var(--accent); border-color: var(--accent); color: #000; }
+
+  .toggle-row { display: flex; align-items: center; justify-content: space-between; }
+  .toggle-label { font-size: 10px; color: var(--text-muted); letter-spacing: 0.07em; text-transform: uppercase; }
+  .toggle { position: relative; width: 36px; height: 18px; background: var(--border); cursor: pointer; transition: background 0.2s; border: none; flex-shrink: 0; }
+  .toggle.on { background: var(--accent); }
+  .toggle::after { content: ''; position: absolute; top: 3px; left: 3px; width: 12px; height: 12px; background: #fff; transition: left 0.2s; }
+  .toggle.on::after { left: 21px; background: #000; }
+
+  .format-row { display: flex; gap: 6px; }
+  .fmt-btn { flex: 1; padding: 7px; background: var(--surface2); border: 1px solid var(--border); color: var(--text-muted); font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em; cursor: pointer; transition: all 0.15s; text-transform: uppercase; }
+  .fmt-btn:hover { border-color: var(--text-muted); color: var(--text); }
+  .fmt-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(232,255,71,0.05); }
+
+  .res-row { display: flex; gap: 5px; }
+  .res-btn { flex: 1; padding: 6px 3px; background: var(--surface2); border: 1px solid var(--border); color: var(--text-muted); font-family: 'DM Mono', monospace; font-size: 9px; cursor: pointer; transition: all 0.15s; text-align: center; }
+  .res-btn:hover { border-color: var(--text-muted); color: var(--text); }
+  .res-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(232,255,71,0.05); }
+
+  .btn-process { width: 100%; padding: 13px 8px; background: var(--accent); color: #000; border: none; font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+  .btn-process:hover { background: #d4e83c; transform: translateY(-1px); }
+  .btn-process:active { transform: translateY(0); }
+  .btn-process:disabled { background: var(--border); color: var(--text-muted); cursor: not-allowed; transform: none; }
+  .btn-process .btn-inner { display: flex; align-items: center; justify-content: center; gap: 6px; }
+
+  .progress-bar { height: 2px; background: var(--border); margin-top: 4px; overflow: hidden; display: none; }
+  .progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width 0.15s; }
+  .progress-text { font-size: 9px; color: var(--text-muted); margin-top: 4px; text-align: center; display: none; }
+
+  .main { display: flex; flex-direction: column; padding: 26px; gap: 20px; overflow-y: auto; max-height: calc(100vh - 105px); }
+
+  .preview-header { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .preview-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 17px; }
+  .preview-sub { font-size: 10px; color: var(--text-muted); }
+
+  .canvas-wrap { position: relative; display: inline-block; max-width: 100%; }
+  #previewCanvas { max-width: 100%; max-height: 440px; display: block; border: 1px solid var(--border); }
+
+  .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 240px; gap: 10px; color: var(--text-muted); border: 1px dashed var(--border); }
+  .empty-state-icon { font-size: 36px; opacity: 0.25; }
+  .empty-state-text { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; }
+
+  .image-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 5px; }
+  .img-card { position: relative; aspect-ratio: 4/3; background: var(--surface2); border: 1px solid var(--border); overflow: hidden; cursor: pointer; transition: border-color 0.15s; }
+  .img-card:hover { border-color: var(--text-muted); }
+  .img-card.selected { border-color: var(--accent); }
+  .img-card img { width: 100%; height: 100%; object-fit: cover; }
+  .img-card .img-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.15s; font-size: 9px; letter-spacing: 0.1em; }
+  .img-card:hover .img-overlay { opacity: 1; }
+  .img-selected-badge { position: absolute; top: 4px; right: 4px; width: 15px; height: 15px; background: var(--accent); display: none; align-items: center; justify-content: center; }
+  .img-card.selected .img-selected-badge { display: flex; }
+
+  .divider { height: 1px; background: var(--border); }
+  .section-divider { height: 1px; background: var(--border); margin: 2px 0; }
+
+  .download-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: 5px; }
+  .dl-card { background: var(--surface2); border: 1px solid var(--border); padding: 9px 11px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .dl-name { font-size: 9px; color: var(--text-muted); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .dl-btn { background: none; border: 1px solid var(--border); color: var(--accent); font-family: 'DM Mono', monospace; font-size: 9px; padding: 3px 9px; cursor: pointer; letter-spacing: 0.1em; text-transform: uppercase; transition: all 0.15s; white-space: nowrap; }
+  .dl-btn:hover { border-color: var(--accent); background: rgba(232,255,71,0.05); }
+
+  .btn-dl-all { padding: 9px 20px; background: none; border: 1px solid var(--accent); color: var(--accent); font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; align-self: flex-start; }
+  .btn-dl-all:hover { background: rgba(232,255,71,0.07); }
+  .btn-dl-all:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  footer { border-top: 1px solid var(--border); padding: 13px 28px; display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 12px; background: var(--bg); }
+  .footer-left { display: flex; flex-direction: column; gap: 5px; }
+  .footer-credit { font-size: 11px; color: var(--text-muted); letter-spacing: 0.07em; }
+  .footer-credit span { color: var(--accent); font-weight: 500; }
+  .footer-license { font-size: 9px; color: #3a3a3a; letter-spacing: 0.04em; line-height: 1.75; max-width: 580px; }
+  .footer-right { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; }
+  .sys-req { font-size: 9px; color: #3a3a3a; letter-spacing: 0.04em; line-height: 1.8; }
+  .sys-req strong { color: var(--text-muted); display: block; margin-bottom: 2px; letter-spacing: 0.12em; text-transform: uppercase; font-size: 8px; }
+  .free-badge { font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; color: #000; background: var(--accent); padding: 4px 12px; text-transform: uppercase; align-self: center; }
+
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: var(--surface2); border-left: 1px solid var(--border); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); }
+  ::-webkit-scrollbar-thumb:hover { background: #d4e83c; }
+
+  /* NUMERIC INPUT */
+  .control-input-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .num-input {
+    width: 54px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--accent);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 3px 6px;
+    outline: none;
+    text-align: center;
+    transition: border-color 0.15s;
+    flex-shrink: 0;
+  }
+  .num-input:focus { border-color: var(--accent); }
+  .num-input::-webkit-inner-spin-button,
+  .num-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+  /* PRO BANNER */
+  .pro-banner {
+    border: 1px solid #3a3000;
+    background: rgba(232,255,71,0.03);
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .pro-banner-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .pro-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+  .pro-badge {
+    font-size: 8px;
+    color: #000;
+    background: var(--accent);
+    padding: 2px 8px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .pro-features {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .pro-feature-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+  }
+  .pro-feature-item::before {
+    content: '◆';
+    font-size: 6px;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  .pro-cta {
+    width: 100%;
+    padding: 9px;
+    background: none;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 2px;
+  }
+  .pro-cta:hover { background: rgba(232,255,71,0.08); }
+
+  /* EXPAND BUTTON */
+  .expand-btn {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(0,0,0,0.75);
+    border: 1px solid var(--border);
+    color: var(--accent);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 5px 10px;
+    cursor: pointer;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: all 0.15s;
+    backdrop-filter: blur(4px);
+  }
+  .expand-btn:hover { background: rgba(232,255,71,0.15); border-color: var(--accent); }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.92);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    cursor: zoom-out;
+  }
+  .modal-overlay.open { display: flex; animation: fadeIn 0.15s ease; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .modal-inner {
+    position: relative;
+    max-width: 95vw;
+    max-height: 92vh;
+    cursor: default;
+  }
+
+  #modalCanvas {
+    display: block;
+    max-width: 95vw;
+    max-height: 88vh;
+    border: 1px solid var(--border);
+    image-rendering: auto;
+  }
+
+  .modal-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+    gap: 12px;
+  }
+
+  .modal-info {
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.07em;
+  }
+
+  .modal-close {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 4px 14px;
+    cursor: pointer;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: all 0.15s;
+  }
+  .modal-close:hover { border-color: var(--text); color: var(--text); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">SONIC<span>/</span>WATERMARKER</div>
+  <div class="header-badges">
+    <div class="badge">完全無料</div>
+    <div class="badge">ブラウザ完結</div>
+    <div class="badge">枚数制限なし</div>
+    <div class="badge green">画像はサーバーに送信されません</div>
+    <div class="badge green">GPS・メタデータを自動削除</div>
+  </div>
+</header>
+
+<div class="app">
+  <aside class="sidebar">
+
+    <div>
+      <div class="section-label">01 — 対象画像</div>
+      <div class="drop-zone" id="imgDropZone">
+        <input type="file" id="imgInput" accept="image/*" multiple>
+        <span class="drop-icon">🖼</span>
+        <div class="drop-title">画像をドロップ</div>
+        <div class="drop-sub">複数選択可・枚数制限なし · PNG / JPEG / WebP</div>
+        <div id="imgCount" style="display:none" class="file-count"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-label">02 — ウォーターマーク</div>
+      <div class="wm-tabs">
+        <button class="wm-tab active" data-tab="image">画像WM</button>
+        <button class="wm-tab" data-tab="text">テキストWM</button>
+      </div>
+
+      <div id="imageWmPanel">
+        <div class="drop-zone" id="wmDropZone">
+          <input type="file" id="wmInput" accept="image/*">
+          <span class="drop-icon">💧</span>
+          <div class="drop-title">WM画像をドロップ</div>
+          <div class="drop-sub">PNG推奨（透過対応）</div>
+        </div>
+        <img id="wmThumb" class="wm-thumb" alt="watermark preview">
+      </div>
+
+      <div class="text-wm-panel" id="textWmPanel">
+        <input class="txt-input" type="text" id="wmText" placeholder="透かし文字を入力…" value="@roroai290K">
+        <div class="control-row">
+          <div class="control-header"><span class="control-name">フォントサイズ</span></div>
+          <div class="control-input-row">
+            <input type="range" id="fontSizeSlider" min="12" max="200" value="48">
+            <input type="number" class="num-input" id="fontSizeNum" min="12" max="200" value="48"><span style="font-size:9px;color:var(--text-muted)">px</span>
+          </div>
+        </div>
+        <div class="color-row">
+          <span class="color-label">文字色</span>
+          <input type="color" id="textColor" value="#ffffff">
+        </div>
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <div>
+      <div class="section-label">03 — 設定</div>
+      <div class="control-group">
+
+        <div class="control-row">
+          <div class="control-header"><span class="control-name">サイズ</span></div>
+          <div class="control-input-row">
+            <input type="range" id="sizeSlider" min="1" max="100" value="30">
+            <input type="number" class="num-input" id="sizeNum" min="1" max="100" value="30"><span style="font-size:9px;color:var(--text-muted)">%</span>
+          </div>
+        </div>
+
+        <div class="control-row">
+          <div class="control-header"><span class="control-name">透明度</span></div>
+          <div class="control-input-row">
+            <input type="range" id="opacitySlider" min="1" max="100" value="70">
+            <input type="number" class="num-input" id="opacityNum" min="1" max="100" value="70"><span style="font-size:9px;color:var(--text-muted)">%</span>
+          </div>
+        </div>
+
+        <div class="control-row">
+          <div class="control-header"><span class="control-name">回転</span></div>
+          <div class="control-input-row">
+            <input type="range" id="rotateSlider" min="-180" max="180" value="0">
+            <input type="number" class="num-input" id="rotateNum" min="-180" max="180" value="0"><span style="font-size:9px;color:var(--text-muted)">°</span>
+          </div>
+        </div>
+
+        <div class="control-row">
+          <div class="control-header"><span class="control-name">余白</span></div>
+          <div class="control-input-row">
+            <input type="range" id="marginSlider" min="0" max="200" value="20">
+            <input type="number" class="num-input" id="marginNum" min="0" max="200" value="20"><span style="font-size:9px;color:var(--text-muted)">px</span>
+          </div>
+        </div>
+
+        <div class="toggle-row">
+          <span class="toggle-label">タイル配置（全面繰り返し）</span>
+          <button class="toggle" id="tileToggle"></button>
+        </div>
+
+        <div id="positionSection">
+          <div class="control-row">
+            <div class="control-header"><span class="control-name">位置</span></div>
+            <div class="position-grid" id="posGrid">
+              <button class="pos-btn" data-pos="top-left">↖</button>
+              <button class="pos-btn" data-pos="top-center">↑</button>
+              <button class="pos-btn" data-pos="top-right">↗</button>
+              <button class="pos-btn" data-pos="middle-left">←</button>
+              <button class="pos-btn" data-pos="center">＋</button>
+              <button class="pos-btn" data-pos="middle-right">→</button>
+              <button class="pos-btn" data-pos="bottom-left">↙</button>
+              <button class="pos-btn" data-pos="bottom-center">↓</button>
+              <button class="pos-btn active" data-pos="bottom-right">↘</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="tileSection" style="display:none">
+          <div class="control-row">
+            <div class="control-header"><span class="control-name">タイル間隔</span></div>
+            <div class="control-input-row">
+              <input type="range" id="tileGapSlider" min="0" max="200" value="20">
+              <input type="number" class="num-input" id="tileGapNum" min="0" max="200" value="20"><span style="font-size:9px;color:var(--text-muted)">px</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <div>
+      <div class="section-label">04 — 出力形式</div>
+      <div class="format-row" style="margin-bottom:9px">
+        <button class="fmt-btn active" data-fmt="png">PNG</button>
+        <button class="fmt-btn" data-fmt="jpeg">JPEG</button>
+        <button class="fmt-btn" data-fmt="webp">WebP</button>
+      </div>
+      <div class="section-label" style="margin-bottom:6px">出力解像度</div>
+      <div class="res-row">
+        <button class="res-btn active" data-scale="1">元のまま</button>
+        <button class="res-btn" data-scale="0.75">75%</button>
+        <button class="res-btn" data-scale="0.5">50%</button>
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- PRO BANNER -->
+    <div class="pro-banner">
+      <div class="pro-banner-header">
+        <span class="pro-label">⚡ PRO版 — 近日公開</span>
+        <span class="pro-badge">Coming Soon</span>
+      </div>
+      <div class="pro-features">
+        <div class="pro-feature-item">プリセット保存・呼び出し（設定を登録）</div>
+        <div class="pro-feature-item">WM複数同時配置（例：左上＋右下）</div>
+        <div class="pro-feature-item">一括ZIPにフォルダ分けで保存</div>
+        <div class="pro-feature-item">商用利用ライセンス付き</div>
+        <div class="pro-feature-item">新機能の先行利用</div>
+        <div class="pro-feature-item">優先サポート</div>
+      </div>
+      <button class="pro-cta" onclick="alert('PRO版は近日公開予定です！\n@roroai290K をフォローして最新情報をチェック！')">▶ 事前登録・詳細を見る</button>
+    </div>
+
+    <button class="btn-process" id="processBtn" disabled>
+      <div class="btn-inner"><span>▶</span><span>処理を実行</span></div>
+    </button>
+    <div class="progress-bar" id="progressBar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="progress-text" id="progressText"></div>
+
+  </aside>
+
+  <main class="main">
+
+    <div>
+      <div class="preview-header">
+        <div class="preview-title">プレビュー</div>
+        <div class="preview-sub" id="previewSub">画像を選択してください</div>
+      </div>
+      <div style="margin-top:13px">
+        <div class="empty-state" id="emptyState">
+          <span class="empty-state-icon">⬡</span>
+          <span class="empty-state-text">画像をロードするとプレビューが表示されます</span>
+        </div>
+        <div class="canvas-wrap" id="canvasWrap" style="display:none">
+          <canvas id="previewCanvas"></canvas>
+          <button class="expand-btn" id="expandBtn">⤢ 拡大</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div id="imageStripSection" style="display:none">
+      <div class="preview-header">
+        <div class="preview-title">画像一覧</div>
+        <div class="preview-sub" id="stripSub"></div>
+      </div>
+      <div class="image-grid" id="imageGrid" style="margin-top:13px"></div>
+    </div>
+
+    <div id="resultsSection" style="display:none">
+      <div class="divider"></div>
+      <div style="margin-top:18px">
+        <div class="preview-header">
+          <div class="preview-title">出力結果</div>
+          <button class="btn-dl-all" id="dlAllBtn">▼ 全てダウンロード (ZIP)</button>
+        </div>
+        <div class="download-grid" id="downloadGrid" style="margin-top:13px"></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-inner" id="modalInner">
+    <canvas id="modalCanvas"></canvas>
+    <div class="modal-bar">
+      <span class="modal-info" id="modalInfo"></span>
+      <button class="modal-close" id="modalClose">✕ 閉じる</button>
+    </div>
+  </div>
+</div>
+
+<canvas id="offscreen" style="display:none"></canvas>
+
+<footer>
+  <div class="footer-left">
+    <div class="footer-credit">Created by <span>@roroai290K</span> &middot; SonicWatermarker v2.0</div>
+    <div class="footer-license">
+      &copy; 2025&ndash;2026 @roroai290K &middot; All Rights Reserved &middot; 再配布・販売・改変・二次利用・商用利用を禁止 &middot; 個人利用のみ許可<br>
+      SNS等への投稿時は作者名 @roroai290K の明記必須 &middot; 本アプリ使用により生じた損害について作者は一切責任を負いません
+    </div>
+  </div>
+  <div class="footer-right">
+    <div class="sys-req">
+      <strong>動作環境（最小要件）</strong>
+      Chrome 90+ &nbsp;/&nbsp; Firefox 88+ &nbsp;/&nbsp; Safari 14+ &nbsp;/&nbsp; Edge 90+<br>
+      JavaScript 有効必須 &middot; Canvas API 対応ブラウザ必須<br>
+      処理枚数制限なし（端末メモリに依存） &middot; インターネット接続不要
+    </div>
+    <div class="free-badge">完全無料</div>
+  </div>
+</footer>
+
+<script>
+// JSZip for ZIP download
+const zipScript = document.createElement('script');
+zipScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+document.head.appendChild(zipScript);
+
+const state = {
+  images: [], watermark: null, wmMode: 'image',
+  selectedIdx: 0, position: 'bottom-right',
+  size: 30, opacity: 70, rotate: 0, margin: 20,
+  tile: false, tileGap: 20,
+  format: 'png', scale: 1,
+  wmText: '@roroai290K', fontSize: 48, textColor: '#ffffff',
+  results: []
+};
+
+// ── キャッシュ ──────────────────────────────────
+// アップロード済み画像をImageオブジェクトとして保持（毎回読み込まない）
+const imgCache = new Map();   // url → HTMLImageElement
+let   wmCache  = null;        // テキストWM用オフスクリーンCanvas
+
+const $ = id => document.getElementById(id);
+
+// ── デバウンス ──────────────────────────────────
+// スライダー操作が止まってから描画（もっさり防止）
+let previewTimer = null;
+function schedulePreview() {
+  clearTimeout(previewTimer);
+  previewTimer = setTimeout(renderPreview, 40); // 40ms待ってから描画
+}
+
+// ── ドラッグオーバー ────────────────────────────
+[$('imgDropZone'), $('wmDropZone')].forEach(z => {
+  z.addEventListener('dragover', e => { e.preventDefault(); z.classList.add('drag-over'); });
+  z.addEventListener('dragleave', () => z.classList.remove('drag-over'));
+  z.addEventListener('drop', e => { e.preventDefault(); z.classList.remove('drag-over'); });
+});
+
+// ── WMタブ ──────────────────────────────────────
+document.querySelectorAll('.wm-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.wm-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    state.wmMode = tab.dataset.tab;
+    $('imageWmPanel').style.display = state.wmMode === 'image' ? 'block' : 'none';
+    $('textWmPanel').classList.toggle('active', state.wmMode === 'text');
+    wmCache = null;
+    updateProcess(); schedulePreview();
+  });
+});
+
+// ── 画像読み込み（キャッシュ付き）─────────────────
+$('imgInput').addEventListener('change', () => loadImages($('imgInput').files));
+$('imgDropZone').addEventListener('drop', e => loadImages(e.dataTransfer.files));
+
+function loadImages(files) {
+  const imgs = Array.from(files).filter(f => f.type.startsWith('image/'));
+  if (!imgs.length) return;
+
+  // 古いURLを解放してキャッシュクリア
+  state.images.forEach(({ url }) => { URL.revokeObjectURL(url); imgCache.delete(url); });
+  state.images = imgs.map(f => ({ file: f, url: URL.createObjectURL(f), name: f.name }));
+
+  $('imgCount').textContent = `${state.images.length} 枚選択中`;
+  $('imgCount').style.display = 'inline-block';
+  state.selectedIdx = 0;
+
+  // 全画像を先行してキャッシュ（サムネイル表示も高速化）
+  state.images.forEach(({ url }) => preloadImage(url));
+
+  renderImageGrid(); updateProcess(); schedulePreview();
+}
+
+function preloadImage(url) {
+  if (imgCache.has(url)) return imgCache.get(url);
+  const img = new Image();
+  img.onload = () => imgCache.set(url, img);
+  img.src = url;
+  return img;
+}
+
+function getImage(url) {
+  return new Promise(resolve => {
+    if (imgCache.has(url)) { resolve(imgCache.get(url)); return; }
+    const img = new Image();
+    img.onload = () => { imgCache.set(url, img); resolve(img); };
+    img.src = url;
+  });
+}
+
+// ── ウォーターマーク画像 ──────────────────────────
+$('wmInput').addEventListener('change', () => loadWatermark($('wmInput').files[0]));
+$('wmDropZone').addEventListener('drop', e => { if(e.dataTransfer.files[0]) loadWatermark(e.dataTransfer.files[0]); });
+
+function loadWatermark(file) {
+  if (!file || !file.type.startsWith('image/')) return;
+  const url = URL.createObjectURL(file);
+  const img = new Image();
+  img.onload = () => {
+    state.watermark = { img, url };
+    $('wmThumb').src = url; $('wmThumb').style.display = 'block';
+    updateProcess(); schedulePreview();
+  };
+  img.src = url;
+}
+
+// ── テキストWM ───────────────────────────────────
+$('wmText').addEventListener('input', () => { state.wmText = $('wmText').value; wmCache = null; schedulePreview(); });
+$('textColor').addEventListener('input', () => { state.textColor = $('textColor').value; wmCache = null; schedulePreview(); });
+
+// ── スライダー＋数値入力（連動）─────────────────
+function setupControl(sliderId, numId, key) {
+  const sl = $(sliderId), num = $(numId);
+  if (!sl || !num) return;
+  const sync = (val) => {
+    val = Math.min(parseFloat(sl.max), Math.max(parseFloat(sl.min), parseFloat(val)));
+    if (isNaN(val)) return;
+    state[key] = val;
+    sl.value = val; num.value = val;
+    const pct = ((val - sl.min) / (sl.max - sl.min)) * 100;
+    sl.style.setProperty('--val', pct + '%');
+    if (key === 'fontSize') wmCache = null;
+    schedulePreview();
+  };
+  sl.addEventListener('input', () => sync(sl.value));
+  num.addEventListener('input', () => sync(num.value));
+  num.addEventListener('blur',  () => sync(num.value));
+  sync(sl.value);
+}
+
+setupControl('sizeSlider',     'sizeNum',     'size');
+setupControl('opacitySlider',  'opacityNum',  'opacity');
+setupControl('rotateSlider',   'rotateNum',   'rotate');
+setupControl('marginSlider',   'marginNum',   'margin');
+setupControl('tileGapSlider',  'tileGapNum',  'tileGap');
+setupControl('fontSizeSlider', 'fontSizeNum', 'fontSize');
+
+// ── 位置グリッド ─────────────────────────────────
+$('posGrid').addEventListener('click', e => {
+  const btn = e.target.closest('.pos-btn');
+  if (!btn) return;
+  document.querySelectorAll('.pos-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  state.position = btn.dataset.pos;
+  schedulePreview();
+});
+
+// ── タイルトグル ─────────────────────────────────
+$('tileToggle').addEventListener('click', () => {
+  state.tile = !state.tile;
+  $('tileToggle').classList.toggle('on', state.tile);
+  $('positionSection').style.display = state.tile ? 'none' : 'block';
+  $('tileSection').style.display = state.tile ? 'block' : 'none';
+  schedulePreview();
+});
+
+// ── フォーマット ─────────────────────────────────
+document.querySelectorAll('.fmt-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.fmt-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active'); state.format = btn.dataset.fmt;
+  });
+});
+
+// ── 解像度 ───────────────────────────────────────
+document.querySelectorAll('.res-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.res-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active'); state.scale = parseFloat(btn.dataset.scale);
+  });
+});
+
+function updateProcess() {
+  const hasWm = state.wmMode === 'text' ? state.wmText.trim().length > 0 : !!state.watermark;
+  $('processBtn').disabled = !(state.images.length > 0 && hasWm);
+}
+
+$('processBtn').addEventListener('click', processAll);
+
+// ── 画像グリッド ─────────────────────────────────
+function renderImageGrid() {
+  const grid = $('imageGrid');
+  grid.innerHTML = '';
+  $('imageStripSection').style.display = 'block';
+  $('stripSub').textContent = `${state.images.length} 枚 · クリックでプレビュー`;
+  state.images.forEach((img, i) => {
+    const card = document.createElement('div');
+    card.className = 'img-card' + (i === state.selectedIdx ? ' selected' : '');
+    card.innerHTML = `<img src="${img.url}" alt="${img.name}" loading="lazy"><div class="img-overlay">PREVIEW</div><div class="img-selected-badge"><svg width="10" height="8" viewBox="0 0 10 8"><path d="M1 4l3 3 5-6" stroke="#000" stroke-width="1.5" fill="none"/></svg></div>`;
+    card.addEventListener('click', () => {
+      state.selectedIdx = i;
+      document.querySelectorAll('.img-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected'); schedulePreview();
+    });
+    grid.appendChild(card);
+  });
+}
+
+// ── プレビュー（低解像度で高速描画）──────────────
+// プレビュー用は最大800pxに縮小して描画（出力時はフル解像度）
+const PREVIEW_MAX = 800;
+
+async function renderPreview() {
+  if (!state.images.length) return;
+  const { url, name } = state.images[state.selectedIdx];
+  const img = await getImage(url);
+
+  // プレビュー用縮小スケールを計算
+  const previewScale = Math.min(1, PREVIEW_MAX / Math.max(img.naturalWidth, img.naturalHeight));
+  compositeOnCanvas(img, $('previewCanvas'), previewScale);
+
+  $('emptyState').style.display = 'none';
+  $('canvasWrap').style.display = 'block';
+  $('previewSub').textContent = `${name} (${img.naturalWidth} × ${img.naturalHeight})`;
+}
+
+// ── テキストWMキャンバス（キャッシュ）──────────────
+function buildTextWmCanvas() {
+  if (wmCache) return wmCache;
+  const c = document.createElement('canvas');
+  const fs = state.fontSize;
+  const ctx = c.getContext('2d');
+  ctx.font = `bold ${fs}px 'DM Mono', monospace`;
+  const w = Math.ceil(ctx.measureText(state.wmText).width) + 4;
+  const h = Math.ceil(fs * 1.3);
+  c.width = w; c.height = h;
+  const ctx2 = c.getContext('2d');
+  ctx2.font = `bold ${fs}px 'DM Mono', monospace`;
+  ctx2.fillStyle = state.textColor;
+  ctx2.fillText(state.wmText, 2, fs);
+  wmCache = c;
+  return c;
+}
+
+// ── 合成コア（previewScale引数でプレビュー/出力を切り替え）──
+function compositeOnCanvas(baseImg, canvas, previewScale = null) {
+  const outputScale = previewScale !== null ? previewScale : state.scale;
+  const W = Math.round((baseImg.naturalWidth || baseImg.width) * outputScale);
+  const H = Math.round((baseImg.naturalHeight || baseImg.height) * outputScale);
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, W, H);
+  ctx.drawImage(baseImg, 0, 0, W, H);
+
+  let wmSrc, wmW, wmH;
+  if (state.wmMode === 'text') {
+    if (!state.wmText.trim()) return;
+    wmSrc = buildTextWmCanvas();
+  } else {
+    if (!state.watermark) return;
+    wmSrc = state.watermark.img;
+  }
+  wmW = Math.round(W * state.size / 100);
+  wmH = Math.round((wmSrc.height / wmSrc.width) * wmW);
+
+  ctx.globalAlpha = state.opacity / 100;
+  const rad = (state.rotate * Math.PI) / 180;
+  const m = Math.round(state.margin * outputScale);
+
+  if (state.tile) {
+    const stepX = wmW + Math.round(state.tileGap * outputScale);
+    const stepY = wmH + Math.round(state.tileGap * outputScale);
+    for (let ty = -wmH; ty < H + wmH; ty += stepY) {
+      for (let tx = -wmW; tx < W + wmW; tx += stepX) {
+        ctx.save();
+        ctx.translate(tx + wmW / 2, ty + wmH / 2);
+        ctx.rotate(rad);
+        ctx.drawImage(wmSrc, -wmW / 2, -wmH / 2, wmW, wmH);
+        ctx.restore();
+      }
+    }
+  } else {
+    const pos = state.position;
+    const x = pos.includes('left') ? m : pos.includes('right') ? W - wmW - m : (W - wmW) / 2;
+    const y = pos.includes('top')  ? m : pos.includes('bottom') ? H - wmH - m : (H - wmH) / 2;
+    ctx.save();
+    ctx.translate(x + wmW / 2, y + wmH / 2);
+    ctx.rotate(rad);
+    ctx.drawImage(wmSrc, -wmW / 2, -wmH / 2, wmW, wmH);
+    ctx.restore();
+  }
+  ctx.globalAlpha = 1;
+}
+
+// ── 一括処理（フル解像度）───────────────────────
+async function processAll() {
+  state.results = [];
+  $('downloadGrid').innerHTML = '';
+  $('resultsSection').style.display = 'none';
+  $('progressBar').style.display = 'block';
+  $('progressText').style.display = 'block';
+  $('progressFill').style.width = '0%';
+  $('processBtn').disabled = true;
+
+  const mimeMap = { png: 'image/png', jpeg: 'image/jpeg', webp: 'image/webp' };
+  const mime = mimeMap[state.format];
+  const ext = state.format === 'jpeg' ? 'jpg' : state.format;
+  const off = $('offscreen');
+
+  for (let i = 0; i < state.images.length; i++) {
+    $('progressText').textContent = `処理中… ${i + 1} / ${state.images.length} 枚`;
+    const { url, name } = state.images[i];
+    const img = await getImage(url); // キャッシュから取得（再読み込みなし）
+    compositeOnCanvas(img, off, null); // フル解像度で合成
+    const dataUrl = off.toDataURL(mime, 0.92);
+    state.results.push({ dataUrl, name: name.replace(/\.[^.]+$/, '') + `_wm.${ext}` });
+    $('progressFill').style.width = ((i + 1) / state.images.length * 100) + '%';
+    await new Promise(r => setTimeout(r, 0)); // ブラウザに処理を返す
+  }
+
+  $('progressText').textContent = `完了！ ${state.results.length} 枚処理しました · GPS・メタデータを削除済み`;
+  renderResults();
+  $('processBtn').disabled = false;
+  setTimeout(() => {
+    $('progressBar').style.display = 'none';
+    $('progressFill').style.width = '0%';
+    $('progressText').style.display = 'none';
+  }, 2500);
+}
+
+// ── 結果表示 ─────────────────────────────────────
+function renderResults() {
+  const grid = $('downloadGrid');
+  grid.innerHTML = '';
+  state.results.forEach(({ dataUrl, name }) => {
+    const card = document.createElement('div');
+    card.className = 'dl-card';
+    card.innerHTML = `<span class="dl-name">${name}</span><button class="dl-btn">DL</button>`;
+    card.querySelector('.dl-btn').addEventListener('click', () => {
+      const a = document.createElement('a'); a.href = dataUrl; a.download = name; a.click();
+    });
+    grid.appendChild(card);
+  });
+  $('resultsSection').style.display = 'block';
+}
+
+// ── ZIP一括DL ────────────────────────────────────
+$('dlAllBtn').addEventListener('click', async () => {
+  const btn = $('dlAllBtn');
+  if (typeof JSZip !== 'undefined') {
+    btn.textContent = '⏳ ZIP作成中…'; btn.disabled = true;
+    const zip = new JSZip();
+    state.results.forEach(({ dataUrl, name }) => {
+      zip.file(name, dataUrl.split(',')[1], { base64: true });
+    });
+    const blob = await zip.generateAsync({ type: 'blob' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `watermarked_${state.results.length}files.zip`;
+    a.click();
+    btn.textContent = '▼ 全てダウンロード (ZIP)'; btn.disabled = false;
+  } else {
+    state.results.forEach(({ dataUrl, name }, i) => {
+      setTimeout(() => { const a = document.createElement('a'); a.href = dataUrl; a.download = name; a.click(); }, i * 120);
+    });
+  }
+});
+
+// ── モーダル拡大表示 ─────────────────────────────
+async function openModal() {
+  if (!state.images.length) return;
+  const { url, name } = state.images[state.selectedIdx];
+  const img = await getImage(url);
+  const mc = $('modalCanvas');
+  compositeOnCanvas(img, mc, null); // モーダルはフル解像度
+  $('modalInfo').textContent = `${name}  ·  ${mc.width} × ${mc.height} px`;
+  $('modalOverlay').classList.add('open');
+}
+
+function closeModal() { $('modalOverlay').classList.remove('open'); }
+
+$('expandBtn').addEventListener('click', openModal);
+$('modalClose').addEventListener('click', closeModal);
+$('modalOverlay').addEventListener('click', e => { if (e.target === $('modalOverlay')) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+</script>
+</body>
+</html>
