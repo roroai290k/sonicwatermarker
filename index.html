@@ -1,11 +1,26 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" id="htmlRoot">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SonicWatermarker</title>
+<title>SonicWatermarker — 無料ウォーターマークツール</title>
+<meta name="description" content="ブラウザだけで完結。GPS情報も自動削除。枚数制限なし・完全無料のウォーターマークツール。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://sonicwatermarker.com/">
+<meta property="og:title" content="SonicWatermarker — 無料ウォーターマークツール">
+<meta property="og:description" content="ブラウザだけで完結。GPS情報も自動削除。枚数制限なし・完全無料。">
+<meta property="og:image" content="https://sonicwatermarker.com/ogp.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@roroai290K">
+<meta name="twitter:title" content="SonicWatermarker — 無料ウォーターマークツール">
+<meta name="twitter:description" content="ブラウザだけで完結。GPS情報も自動削除。枚数制限なし・完全無料。">
+<meta name="twitter:image" content="https://sonicwatermarker.com/ogp.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap"></noscript>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap');
+  /* フォントはpreloadで非同期読み込み済み */
 
   :root {
     --bg: #0a0a0a;
@@ -14,17 +29,19 @@
     --border: #2a2a2a;
     --accent: #e8ff47;
     --text: #f0f0f0;
-    --text-muted: #666;
+    --text-muted: #999;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
+  html { height: 100%; }
   body {
     background: var(--bg);
     color: var(--text);
     font-family: 'DM Mono', monospace;
-    min-height: 100vh;
-    overflow-x: hidden;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
   }
 
   header {
@@ -53,8 +70,8 @@
   .header-badges { display: flex; gap: 6px; flex-wrap: wrap; }
   .badge {
     font-size: 9px;
-    color: var(--text-muted);
-    border: 1px solid var(--border);
+    color: #bbb;
+    border: 1px solid #444;
     padding: 3px 9px;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -64,7 +81,8 @@
   .app {
     display: grid;
     grid-template-columns: 320px 1fr;
-    min-height: calc(100vh - 105px);
+    height: calc(100vh - 115px);
+    overflow: hidden;
   }
 
   .sidebar {
@@ -74,14 +92,15 @@
     flex-direction: column;
     gap: 18px;
     overflow-y: auto;
-    max-height: calc(100vh - 105px);
+    height: 100%;
+    max-height: 100%;
   }
 
   .section-label {
     font-size: 9px;
     letter-spacing: 0.22em;
     text-transform: uppercase;
-    color: var(--text-muted);
+    color: #bbb;
     margin-bottom: 9px;
   }
 
@@ -91,7 +110,7 @@
     padding: 7px;
     background: var(--surface2);
     border: 1px solid var(--border);
-    color: var(--text-muted);
+    color: #aaa;
     font-family: 'DM Mono', monospace;
     font-size: 10px;
     letter-spacing: 0.1em;
@@ -115,7 +134,7 @@
   .drop-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
   .drop-icon { font-size: 22px; margin-bottom: 5px; display: block; }
   .drop-title { font-family: 'Syne', sans-serif; font-weight: 600; font-size: 12px; margin-bottom: 3px; }
-  .drop-sub { font-size: 9px; color: var(--text-muted); }
+  .drop-sub { font-size: 9px; color: #aaa; }
   .file-count { display: inline-block; background: var(--accent); color: #000; font-size: 9px; font-weight: 500; padding: 2px 8px; margin-top: 5px; font-family: 'Syne', sans-serif; }
 
   .text-wm-panel { display: none; flex-direction: column; gap: 10px; }
@@ -135,7 +154,7 @@
   .txt-input:focus { border-color: var(--accent); }
 
   .color-row { display: flex; align-items: center; gap: 10px; }
-  .color-label { font-size: 10px; color: var(--text-muted); flex: 1; }
+  .color-label { font-size: 10px; color: #bbb; flex: 1; }
   input[type="color"] { width: 32px; height: 22px; border: 1px solid var(--border); background: none; cursor: pointer; padding: 1px; }
 
   .wm-thumb {
@@ -147,7 +166,7 @@
   .control-group { display: flex; flex-direction: column; gap: 13px; }
   .control-row { display: flex; flex-direction: column; gap: 5px; }
   .control-header { display: flex; justify-content: space-between; align-items: center; }
-  .control-name { font-size: 10px; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; }
+  .control-name { font-size: 10px; color: #bbb; letter-spacing: 0.1em; text-transform: uppercase; }
   .control-val { font-size: 10px; color: var(--accent); font-weight: 500; }
 
   input[type="range"] { -webkit-appearance: none; width: 100%; height: 2px; background: var(--border); outline: none; cursor: pointer; }
@@ -155,24 +174,24 @@
   input[type="range"]::-webkit-slider-runnable-track { background: linear-gradient(to right, var(--accent) 0%, var(--accent) var(--val, 50%), var(--border) var(--val, 50%)); height: 2px; }
 
   .position-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; }
-  .pos-btn { aspect-ratio: 1; background: var(--surface2); border: 1px solid var(--border); cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--text-muted); }
+  .pos-btn { aspect-ratio: 1; background: var(--surface2); border: 1px solid var(--border); cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #aaa; }
   .pos-btn:hover { border-color: var(--accent); color: var(--accent); }
   .pos-btn.active { background: var(--accent); border-color: var(--accent); color: #000; }
 
   .toggle-row { display: flex; align-items: center; justify-content: space-between; }
-  .toggle-label { font-size: 10px; color: var(--text-muted); letter-spacing: 0.07em; text-transform: uppercase; }
+  .toggle-label { font-size: 10px; color: #bbb; letter-spacing: 0.07em; text-transform: uppercase; }
   .toggle { position: relative; width: 36px; height: 18px; background: var(--border); cursor: pointer; transition: background 0.2s; border: none; flex-shrink: 0; }
   .toggle.on { background: var(--accent); }
   .toggle::after { content: ''; position: absolute; top: 3px; left: 3px; width: 12px; height: 12px; background: #fff; transition: left 0.2s; }
   .toggle.on::after { left: 21px; background: #000; }
 
   .format-row { display: flex; gap: 6px; }
-  .fmt-btn { flex: 1; padding: 7px; background: var(--surface2); border: 1px solid var(--border); color: var(--text-muted); font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em; cursor: pointer; transition: all 0.15s; text-transform: uppercase; }
+  .fmt-btn { flex: 1; padding: 7px; background: var(--surface2); border: 1px solid var(--border); color: #aaa; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em; cursor: pointer; transition: all 0.15s; text-transform: uppercase; }
   .fmt-btn:hover { border-color: var(--text-muted); color: var(--text); }
   .fmt-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(232,255,71,0.05); }
 
   .res-row { display: flex; gap: 5px; }
-  .res-btn { flex: 1; padding: 6px 3px; background: var(--surface2); border: 1px solid var(--border); color: var(--text-muted); font-family: 'DM Mono', monospace; font-size: 9px; cursor: pointer; transition: all 0.15s; text-align: center; }
+  .res-btn { flex: 1; padding: 6px 3px; background: var(--surface2); border: 1px solid var(--border); color: #aaa; font-family: 'DM Mono', monospace; font-size: 9px; cursor: pointer; transition: all 0.15s; text-align: center; }
   .res-btn:hover { border-color: var(--text-muted); color: var(--text); }
   .res-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(232,255,71,0.05); }
 
@@ -184,23 +203,23 @@
 
   .progress-bar { height: 2px; background: var(--border); margin-top: 4px; overflow: hidden; display: none; }
   .progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width 0.15s; }
-  .progress-text { font-size: 9px; color: var(--text-muted); margin-top: 4px; text-align: center; display: none; }
+  .progress-text { font-size: 9px; color: #bbb; margin-top: 4px; text-align: center; display: none; }
 
-  .main { display: flex; flex-direction: column; padding: 26px; gap: 20px; overflow-y: auto; max-height: calc(100vh - 105px); }
+  .main { display: flex; flex-direction: column; padding: 26px; gap: 20px; overflow-y: auto; height: 100%; max-height: 100%; contain: strict; }
 
   .preview-header { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
   .preview-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 17px; }
-  .preview-sub { font-size: 10px; color: var(--text-muted); }
+  .preview-sub { font-size: 10px; color: #aaa; }
 
   .canvas-wrap { position: relative; display: inline-block; max-width: 100%; }
   #previewCanvas { max-width: 100%; max-height: 440px; display: block; border: 1px solid var(--border); }
 
-  .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 240px; gap: 10px; color: var(--text-muted); border: 1px dashed var(--border); }
+  .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 240px; gap: 10px; color: #aaa; border: 1px dashed var(--border); }
   .empty-state-icon { font-size: 36px; opacity: 0.25; }
   .empty-state-text { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; }
 
   .image-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 5px; }
-  .img-card { position: relative; aspect-ratio: 4/3; background: var(--surface2); border: 1px solid var(--border); overflow: hidden; cursor: pointer; transition: border-color 0.15s; }
+  .img-card { position: relative; aspect-ratio: 4/3; background: var(--surface2); border: 1px solid var(--border); overflow: hidden; cursor: pointer; transition: border-color 0.15s; will-change: transform; }
   .img-card:hover { border-color: var(--text-muted); }
   .img-card.selected { border-color: var(--accent); }
   .img-card img { width: 100%; height: 100%; object-fit: cover; }
@@ -214,7 +233,7 @@
 
   .download-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: 5px; }
   .dl-card { background: var(--surface2); border: 1px solid var(--border); padding: 9px 11px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-  .dl-name { font-size: 9px; color: var(--text-muted); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .dl-name { font-size: 9px; color: #bbb; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .dl-btn { background: none; border: 1px solid var(--border); color: var(--accent); font-family: 'DM Mono', monospace; font-size: 9px; padding: 3px 9px; cursor: pointer; letter-spacing: 0.1em; text-transform: uppercase; transition: all 0.15s; white-space: nowrap; }
   .dl-btn:hover { border-color: var(--accent); background: rgba(232,255,71,0.05); }
 
@@ -222,19 +241,21 @@
   .btn-dl-all:hover { background: rgba(232,255,71,0.07); }
   .btn-dl-all:disabled { opacity: 0.5; cursor: not-allowed; }
 
-  footer { border-top: 1px solid var(--border); padding: 13px 28px; display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 12px; background: var(--bg); }
+  footer { border-top: 1px solid var(--border); padding: 10px 28px; display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 12px; background: var(--bg); }
   .footer-left { display: flex; flex-direction: column; gap: 5px; }
-  .footer-credit { font-size: 11px; color: var(--text-muted); letter-spacing: 0.07em; }
+  .footer-credit { font-size: 11px; color: #bbb; letter-spacing: 0.07em; }
   .footer-credit span { color: var(--accent); font-weight: 500; }
-  .footer-license { font-size: 9px; color: #3a3a3a; letter-spacing: 0.04em; line-height: 1.75; max-width: 580px; }
+  .footer-license { font-size: 9px; color: #999; letter-spacing: 0.04em; line-height: 1.75; max-width: 580px; }
   .footer-right { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; }
-  .sys-req { font-size: 9px; color: #3a3a3a; letter-spacing: 0.04em; line-height: 1.8; }
-  .sys-req strong { color: var(--text-muted); display: block; margin-bottom: 2px; letter-spacing: 0.12em; text-transform: uppercase; font-size: 8px; }
+  .sys-req { font-size: 9px; color: #999; letter-spacing: 0.04em; line-height: 1.8; }
+  .sys-req strong { color: #ccc; display: block; margin-bottom: 2px; letter-spacing: 0.12em; text-transform: uppercase; font-size: 8px; }
   .free-badge { font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; color: #000; background: var(--accent); padding: 4px 12px; text-transform: uppercase; align-self: center; }
 
-  ::-webkit-scrollbar { width: 8px; }
-  ::-webkit-scrollbar-track { background: var(--surface2); border-left: 1px solid var(--border); }
-  ::-webkit-scrollbar-thumb { background: var(--accent); }
+  /* scrollbar */
+  .sidebar, .main { scrollbar-width: thin; scrollbar-color: var(--accent) transparent; will-change: scroll-position; }
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
   ::-webkit-scrollbar-thumb:hover { background: #d4e83c; }
 
   /* NUMERIC INPUT */
@@ -303,7 +324,7 @@
     align-items: center;
     gap: 7px;
     font-size: 10px;
-    color: var(--text-muted);
+    color: #bbb;
     letter-spacing: 0.04em;
   }
   .pro-feature-item::before {
@@ -388,14 +409,14 @@
 
   .modal-info {
     font-size: 10px;
-    color: var(--text-muted);
+    color: #aaa;
     letter-spacing: 0.07em;
   }
 
   .modal-close {
     background: none;
-    border: 1px solid var(--border);
-    color: var(--text-muted);
+    border: 1px solid #444;
+    color: #bbb;
     font-family: 'DM Mono', monospace;
     font-size: 10px;
     padding: 4px 14px;
@@ -405,48 +426,755 @@
     transition: all 0.15s;
   }
   .modal-close:hover { border-color: var(--text); color: var(--text); }
+
+  /* LANG SWITCH */
+  .lang-switch {
+    display: flex;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .lang-btn {
+    padding: 4px 12px;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .lang-btn:first-child { border-right: 1px solid var(--border); }
+  .lang-btn.active { background: var(--accent); color: #000; font-weight: 500; }
+  .lang-btn:not(.active):hover { color: var(--text); background: var(--surface2); }
+
+  /* HEIC notice */
+  .heic-notice {
+    font-size: 9px;
+    color: #aaa;
+    border: 1px solid var(--border);
+    padding: 5px 8px;
+    margin-top: 6px;
+    display: none;
+  }
+  .heic-notice.show { display: block; }
+
+  /* ── ローディングスピナー ── */
+  .preview-spinner {
+    display: none;
+    position: absolute;
+    top: 10px; left: 10px;
+    width: 18px; height: 18px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    z-index: 10;
+  }
+  .preview-spinner.show { display: block; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── 比較スライダー ── */
+  .compare-wrap {
+    position: relative;
+    display: none;
+    width: 100%;
+    user-select: none;
+    cursor: ew-resize;
+  }
+  .compare-wrap.show { display: block; }
+  .compare-canvas-before {
+    display: block;
+    max-width: 100%;
+    max-height: 440px;
+    border: 1px solid var(--border);
+  }
+  .compare-after-clip {
+    position: absolute;
+    top: 0; left: 0;
+    width: 50%;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .compare-canvas-after {
+    display: block;
+    max-width: 100%;
+    max-height: 440px;
+    border: 1px solid var(--border);
+  }
+  .compare-divider {
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 50%;
+    width: 2px;
+    background: var(--accent);
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+  .compare-handle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 32px; height: 32px;
+    background: var(--accent);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; color: #000;
+    pointer-events: none;
+    box-shadow: 0 0 8px rgba(0,0,0,0.5);
+    font-weight: 700;
+  }
+  .compare-label {
+    position: absolute;
+    top: 8px;
+    font-size: 9px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.1em;
+    background: rgba(0,0,0,0.7);
+    padding: 2px 7px;
+    text-transform: uppercase;
+    pointer-events: none;
+  }
+  .compare-label-before { left: 8px; color: #aaa; }
+  .compare-label-after  { right: 8px; color: var(--accent); }
+
+  /* ── 比較モード切替ボタン ── */
+  .compare-toggle-btn {
+    position: absolute;
+    bottom: 10px; left: 10px;
+    background: rgba(0,0,0,0.75);
+    border: 1px solid var(--border);
+    color: #aaa;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 5px 10px;
+    cursor: pointer;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: all 0.15s;
+    backdrop-filter: blur(4px);
+    z-index: 5;
+  }
+  .compare-toggle-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .compare-toggle-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(232,255,71,0.1); }
+
+  /* ═══════════════════════════════════════
+     利用規約モーダル
+  ═══════════════════════════════════════ */
+  .terms-btn {
+    background: none;
+    border: none;
+    color: #555;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.15s;
+  }
+  .terms-btn:hover { color: var(--accent); }
+
+  .terms-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.9);
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .terms-overlay.open { display: flex; }
+
+  .terms-modal {
+    background: #111;
+    border: 1px solid #2a2a2a;
+    max-width: 600px;
+    width: 100%;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    animation: fadeIn 0.15s ease;
+  }
+  .terms-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 22px;
+    border-bottom: 1px solid #1e1e1e;
+    flex-shrink: 0;
+  }
+  .terms-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .terms-close-btn {
+    background: none;
+    border: 1px solid #333;
+    color: #777;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 4px 14px;
+    cursor: pointer;
+    letter-spacing: 0.1em;
+    transition: all 0.15s;
+  }
+  .terms-close-btn:hover { border-color: #888; color: #ccc; }
+  .terms-body {
+    padding: 22px;
+    overflow-y: auto;
+    flex: 1;
+  }
+  .terms-item {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #1a1a1a;
+  }
+  .terms-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .terms-item-label {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .terms-item-label::before {
+    content: '';
+    display: inline-block;
+    width: 16px; height: 1px;
+    background: var(--accent);
+  }
+  .terms-item-text {
+    font-size: 11px;
+    color: #aaa;
+    line-height: 1.9;
+    letter-spacing: 0.04em;
+  }
+  .terms-foot {
+    padding: 10px 22px;
+    border-top: 1px solid #1a1a1a;
+    font-size: 9px;
+    color: #3a3a3a;
+    letter-spacing: 0.06em;
+    flex-shrink: 0;
+  }
+
+  /* ── 解像度スライダー ── */
+  .res-scale-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .res-scale-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .res-scale-label {
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #bbb;
+  }
+  .res-scale-val {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    min-width: 42px;
+    text-align: right;
+  }
+  .res-scale-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .res-num-input {
+    width: 52px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--accent);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    text-align: center;
+    padding: 3px 4px;
+    -moz-appearance: textfield;
+  }
+  .res-num-input::-webkit-inner-spin-button,
+  .res-num-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+  .res-num-input:focus { outline: none; border-color: var(--accent); }
+
+  /* ── NOW LOADING ── */
+  .now-loading-wrap {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 0 4px;
+  }
+  .now-loading-wrap.show { display: flex; }
+  .now-loading-label {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    animation: loadingPulse 1.2s ease-in-out infinite;
+  }
+  @keyframes loadingPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .now-loading-pct {
+    font-family: 'DM Mono', monospace;
+    font-size: 28px;
+    font-weight: 500;
+    color: #fff;
+    letter-spacing: 0.05em;
+    line-height: 1;
+  }
+  .now-loading-pct span {
+    font-size: 14px;
+    color: var(--accent);
+    margin-left: 2px;
+  }
+  .now-loading-sub {
+    font-size: 9px;
+    color: #555;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .progress-bar-thick {
+    height: 3px;
+    background: var(--border);
+    overflow: hidden;
+    width: 100%;
+  }
+  .progress-bar-thick-fill {
+    height: 100%;
+    background: var(--accent);
+    width: 0%;
+    transition: width 0.1s linear;
+    box-shadow: 0 0 8px rgba(232,255,71,0.5);
+  }
+
+
+  /* ── 一括削除ボタン ── */
+  .btn-clear-all {
+    background: rgba(180,40,40,0.12);
+    border: 1px solid #6a2a2a;
+    color: #e55;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    padding: 7px 18px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-transform: uppercase;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .btn-clear-all:hover { border-color: #e55; color: #f77; background: rgba(200,60,60,0.2); }
+
+
+
+  /* ── NOW LOADING 中央オーバーレイ ── */
+  .loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.82);
+    z-index: 7000;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    backdrop-filter: blur(3px);
+    will-change: opacity;
+  }
+  .loading-overlay.show { display: flex; }
+  .loading-ring {
+    width: 64px; height: 64px;
+    border: 3px solid #1e2200;
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    will-change: transform;
+  }
+  .loading-now {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 11px;
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    color: #444;
+    animation: loadingPulse 1.4s ease-in-out infinite;
+  }
+  .loading-pct-big {
+    font-family: 'DM Mono', monospace;
+    font-size: 72px;
+    font-weight: 500;
+    color: #fff;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .loading-pct-big sup {
+    font-size: 22px;
+    color: var(--accent);
+    vertical-align: super;
+    margin-left: 2px;
+  }
+  .loading-bar-wrap {
+    width: 280px;
+    height: 2px;
+    background: #1e1e1e;
+    overflow: hidden;
+  }
+  .loading-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    width: 0%;
+    transition: width 0.12s linear;
+    box-shadow: 0 0 10px rgba(232,255,71,0.6);
+  }
+  .loading-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: #555;
+    letter-spacing: 0.1em;
+  }
+
+  /* ── 左右比較表示 ── */
+  .side-compare-wrap {
+    display: none;
+    gap: 6px;
+    width: 100%;
+  }
+  .side-compare-wrap.show { display: flex; }
+  .side-compare-panel {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .side-compare-label {
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 3px 0;
+  }
+  .side-compare-label.before { color: #666; background: #0f0f0f; border: 1px solid #1a1a1a; }
+  .side-compare-label.after  { color: var(--accent); background: rgba(232,255,71,0.04); border: 1px solid #2a2a00; }
+  .side-compare-canvas {
+    width: 100%;
+    display: block;
+    border: 1px solid var(--border);
+  }
+
+
+  /* ── プリセット カード型UI ── */
+  .preset-section { margin-top: 4px; }
+  .preset-slots { display: flex; flex-direction: column; gap: 7px; margin-top: 8px; }
+
+  /* 空きスロット */
+  .preset-card-empty {
+    border: 1px dashed #333;
+    padding: 10px 12px;
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  }
+  .preset-empty-label {
+    font-size: 9px; font-family: 'DM Mono', monospace;
+    color: #666; letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .preset-save-new-btn {
+    background: none; border: 1px solid #444; color: #aaa;
+    font-family: 'DM Mono', monospace; font-size: 9px;
+    letter-spacing: 0.1em; padding: 4px 10px;
+    cursor: pointer; transition: all 0.15s; text-transform: uppercase;
+    white-space: nowrap; flex-shrink: 0;
+  }
+  .preset-save-new-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* 名前入力モード */
+  .preset-name-input-wrap {
+    display: none; align-items: center; gap: 5px; margin-top: 4px;
+  }
+  .preset-name-input-wrap.show { display: flex; }
+  .preset-name-input {
+    flex: 1; background: #0a0a0a; border: 1px solid var(--accent);
+    color: var(--accent); font-family: 'DM Mono', monospace; font-size: 11px;
+    padding: 4px 8px; outline: none; min-width: 0;
+  }
+  .preset-name-confirm {
+    background: var(--accent); border: none; color: #000;
+    font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 700;
+    letter-spacing: 0.1em; padding: 5px 10px; cursor: pointer;
+    text-transform: uppercase; white-space: nowrap; flex-shrink: 0;
+  }
+  .preset-name-cancel {
+    background: none; border: 1px solid #555; color: #999;
+    font-family: 'DM Mono', monospace; font-size: 9px;
+    padding: 4px 8px; cursor: pointer; flex-shrink: 0;
+  }
+
+  /* 保存済みカード */
+  .preset-card-saved {
+    border: 1px solid #2a3800;
+    background: rgba(232,255,71,0.04);
+    padding: 9px 12px;
+    display: flex; flex-direction: column; gap: 6px;
+    transition: border-color 0.15s;
+  }
+  .preset-card-saved:hover { border-color: #4a6000; }
+  .preset-card-header {
+    display: flex; align-items: center; justify-content: space-between; gap: 6px;
+  }
+  .preset-card-name {
+    font-size: 11px; font-family: 'DM Mono', monospace;
+    color: var(--accent); letter-spacing: 0.06em;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    min-width: 0; flex: 1;
+  }
+  .preset-card-date {
+    font-size: 9px; color: #777; letter-spacing: 0.06em; flex-shrink: 0;
+  }
+  /* 設定サマリーチップ */
+  .preset-card-summary {
+    display: flex; flex-wrap: wrap; gap: 4px;
+  }
+  .preset-chip {
+    font-size: 8px; font-family: 'DM Mono', monospace;
+    color: #999; background: #161616; border: 1px solid #2a2a2a;
+    padding: 2px 6px; letter-spacing: 0.06em; white-space: nowrap;
+  }
+  /* アクションボタン行 */
+  .preset-card-actions {
+    display: flex; gap: 5px;
+  }
+  .preset-apply-btn {
+    flex: 1; background: none; border: 1px solid #3a5000;
+    color: var(--accent); font-family: 'DM Mono', monospace;
+    font-size: 9px; letter-spacing: 0.12em; padding: 5px 8px;
+    cursor: pointer; transition: all 0.15s; text-transform: uppercase;
+  }
+  .preset-apply-btn:hover { background: rgba(232,255,71,0.08); border-color: var(--accent); }
+  .preset-apply-btn.applied { background: var(--accent); color: #000; }
+  .preset-overwrite-btn {
+    background: none; border: 1px solid #3a3a3a; color: #888;
+    font-family: 'DM Mono', monospace; font-size: 9px;
+    letter-spacing: 0.08em; padding: 5px 8px;
+    cursor: pointer; transition: all 0.15s; text-transform: uppercase; white-space: nowrap;
+  }
+  .preset-overwrite-btn:hover { border-color: #888; color: #ccc; }
+  .preset-del-btn {
+    background: none; border: 1px solid #3a2020; color: #a55;
+    font-family: 'DM Mono', monospace; font-size: 9px;
+    padding: 5px 8px; cursor: pointer; transition: all 0.15s;
+    text-transform: uppercase; white-space: nowrap;
+  }
+  .preset-del-btn:hover { border-color: #c44; color: #f77; }
+  .preset-limit { font-size: 9px; color: #666; margin-top: 4px; letter-spacing: 0.08em; }
+
+
+  /* ════════════════════════════════════════════
+     モバイル対応
+  ════════════════════════════════════════════ */
+
+  /* ── モバイルサイドバートグルボタン ── */
+  .mobile-sidebar-toggle {
+    display: none;
+    align-items: center; justify-content: space-between;
+    width: 100%; padding: 12px 16px;
+    background: #0d0d0d; border: none; border-bottom: 1px solid var(--border);
+    color: var(--text); font-family: 'Syne', sans-serif;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.2em;
+    text-transform: uppercase; cursor: pointer;
+  }
+  .mobile-sidebar-toggle-icon {
+    font-size: 14px; transition: transform 0.25s;
+    color: var(--accent);
+  }
+  .mobile-sidebar-toggle.open .mobile-sidebar-toggle-icon {
+    transform: rotate(180deg);
+  }
+
+  /* ── タブレット: 768px以下 ── */
+  @media (max-width: 768px) {
+    body { height: auto; overflow: auto; }
+
+    header { padding: 12px 16px; }
+    .header-logo { font-size: 15px; }
+    .header-right { gap: 8px; }
+
+    .app {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto 1fr;
+      height: auto;
+      overflow: visible;
+    }
+
+    .mobile-sidebar-toggle { display: flex; }
+
+    aside.sidebar {
+      height: auto;
+      max-height: 0;
+      overflow: hidden;
+      padding: 0 18px;
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+      transition: max-height 0.3s ease, padding 0.3s ease;
+      contain: none;
+    }
+    aside.sidebar.mobile-open {
+      max-height: 2000px;
+      padding: 18px;
+      overflow-y: auto;
+    }
+
+    .main {
+      padding: 16px;
+      height: auto;
+      max-height: none;
+      overflow-y: visible;
+      contain: none;
+    }
+
+    .canvas-wrap { display: block; width: 100%; }
+    .canvas-wrap canvas { width: 100% !important; height: auto !important; }
+
+    .side-compare-wrap { flex-direction: column; }
+    .side-compare-panel { width: 100%; }
+
+    .image-grid { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); }
+    .download-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+
+    .pos-grid { gap: 4px; }
+    .pos-cell { padding: 7px 4px; font-size: 12px; }
+
+    .loading-pct-big { font-size: 52px; }
+    .loading-bar-wrap { width: 220px; }
+  }
+
+  /* ── スマホ: 480px以下 ── */
+  @media (max-width: 480px) {
+    header { padding: 10px 12px; }
+    .header-logo { font-size: 13px; letter-spacing: 0.15em; }
+    .lang-btn { font-size: 9px; padding: 4px 8px; }
+
+    .main { padding: 12px; gap: 16px; }
+
+    .drop-zone { padding: 16px 10px; }
+    .drop-icon { font-size: 22px; }
+    .drop-title { font-size: 11px; }
+    .drop-sub { font-size: 9px; }
+
+    .btn-process { padding: 15px 8px; font-size: 12px; }
+    .btn-dl-all { padding: 11px 12px; font-size: 10px; }
+
+    .res-row { flex-wrap: wrap; }
+    .res-btn { flex: 1; min-width: 60px; padding: 6px 4px; font-size: 9px; }
+
+    .image-grid { grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 4px; }
+    .img-card { aspect-ratio: 1; }
+
+    .download-grid { grid-template-columns: 1fr 1fr; }
+
+    .section-label { font-size: 8px; }
+    .preview-title { font-size: 14px; }
+
+    .loading-pct-big { font-size: 42px; }
+    .loading-bar-wrap { width: 180px; }
+    .loading-now { font-size: 9px; }
+
+    .preset-card-name { font-size: 10px; }
+    .preset-chip { font-size: 7px; padding: 2px 5px; }
+    .preset-apply-btn, .preset-overwrite-btn, .preset-del-btn { padding: 7px 6px; font-size: 8px; }
+
+    /* タップターゲット最小44px確保 */
+    .btn-clear-all, .compare-toggle-btn, .expand-btn { min-height: 36px; }
+    .dl-btn { min-width: 44px; min-height: 36px; }
+  }
+
 </style>
+  <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjogIlNvbmljV2F0ZXJtYXJrZXIiLCAic2hvcnRfbmFtZSI6ICJTb25pY1dNIiwgImRlc2NyaXB0aW9uIjogIumfs+mAn+OBrumAj+OBi+OBl+WHpueQhiDigJQg5a6M5YWo44OW44Op44Km44K25a6M57WQ44O76auY5ZOB6LOq44O754Sh5Yi26ZmQIiwgInN0YXJ0X3VybCI6ICIuLyIsICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLCAiYmFja2dyb3VuZF9jb2xvciI6ICIjQjlFNjMyIiwgInRoZW1lX2NvbG9yIjogIiMwODA4MDgiLCAib3JpZW50YXRpb24iOiAiYW55IiwgImljb25zIjogW3sic3JjIjogImRhdGE6aW1hZ2UvcG5nO2Jhc2U2NCwvOWovNEFBUVNrWkpSZ0FCQVFBQUFRQUJBQUQvNGdIWVNVTkRYMUJTVDBaSlRFVUFBUUVBQUFISUFBQUFBQVF3QUFCdGJuUnlVa2RDSUZoWldpQUg0QUFCQUFFQUFBQUFBQUJoWTNOd0FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFRQUE5dFlBQVFBQUFBRFRMUUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBbGtaWE5qQUFBQThBQUFBQ1J5V0ZsYUFBQUJGQUFBQUJSbldGbGFBQUFCS0FBQUFCUmlXRmxhQUFBQlBBQUFBQlIzZEhCMEFBQUJVQUFBQUJSeVZGSkRBQUFCWkFBQUFDaG5WRkpEQUFBQlpBQUFBQ2hpVkZKREFBQUJaQUFBQUNoamNISjBBQUFCakFBQUFEeHRiSFZqQUFBQUFBQUFBQUVBQUFBTVpXNVZVd0FBQUFnQUFBQWNBSE1BVWdCSEFFSllXVm9nQUFBQUFBQUFiNklBQURqMUFBQURrRmhaV2lBQUFBQUFBQUJpbVFBQXQ0VUFBQmphV0ZsYUlBQUFBQUFBQUNTZ0FBQVBoQUFBdHM5WVdWb2dBQUFBQUFBQTl0WUFBUUFBQUFEVExYQmhjbUVBQUFBQUFBUUFBQUFDWm1ZQUFQS25BQUFOV1FBQUU5QUFBQXBiQUFBQUFBQUFBQUJ0YkhWakFBQUFBQUFBQUFFQUFBQU1aVzVWVXdBQUFDQUFBQUFjQUVjQWJ3QnZBR2NBYkFCbEFDQUFTUUJ1QUdNQUxnQWdBRElBTUFBeEFEYi8yd0JEQUFVREJBUUVBd1VFQkFRRkJRVUdCd3dJQndjSEJ3OExDd2tNRVE4U0VoRVBFUkVURmh3WEV4UWFGUkVSR0NFWUdoMGRIeDhmRXhjaUpDSWVKQndlSHg3LzJ3QkRBUVVGQlFjR0J3NElDQTRlRkJFVUhoNGVIaDRlSGg0ZUhoNGVIaDRlSGg0ZUhoNGVIaDRlSGg0ZUhoNGVIaDRlSGg0ZUhoNGVIaDRlSGg0ZUhoNGVIaDcvd0FBUkNBREFBTUFEQVNJQUFoRUJBeEVCLzhRQUhRQUJBUUFCQlFFQkFBQUFBQUFBQUFBQUFBRUNBd1FGQmdjSUNmL0VBRG9RQUFFREF3SUVBd1VHQlFRREFBQUFBQUVBQWdNRUJSRVNJUVl4UVZFSEUzRVVJakpoZ1FnVkk1R2hzUlpDd2RId00xS0NvaVJVWXYvRUFCc0JBUUFDQXdFQkFBQUFBQUFBQUFBQUFBQUJBd0lGQmdRSC84UUFOQkVBQWdFQ0JRRUdCQVVFQXdBQUFBQUFBQUVSQWdNRUJSSWhNVUVpVVdGeGtiRVRnYUhCQmhReVV0RVZJMktDNGZEeC85b0FEQU1CQUFJUkF4RUFQd0Q0eVhKY04ySzhjU1hpQzBXSzN6MTlkTzdESW9tNVBQR1NlVFdqTzdpUUJ6SkNuRE5sdUhFVi9vYkhhb0RQVzFzellZV2RNbnFUMEFHU1QwQUpYM3o0UCtITm44T3VHSTdiUXNqbnI1QnFyYTR4Z1NWRC9YbUdEa0c1MjlTU2RMbk9jMjh0dHJhYTN3dnUvRDNNSzY5SjQvNGJmWmRvNG80cTdqdTVQcVpTTS9kOUU0dGpiOG55YzNlamRPL1VyM25oTGd6aGJoTmhIRHRob0xjOHNNYnBZWWdKWE5KQkxYUFB2RVpBT0NlWUM1NEFvdm5PTXpiRjR4emRyY2R5MlhvVU9wdmtLNFJQUmErVEVpcWJLN0lDRUlRcmxEeVVTREVLcXFLWkJNS29oU1FRcTdJblJSSUloNXE4a3dwQk9pdk1LamtvZWFBNEhpdmcvaGZpbG1uaUd4VUZ5Y0dlVzJTZUVPa1kzYzRhL3dDSm95U2Rqeks4TDhSdnN1MnlwWk5XOEVYT1NobXhsdERXT01rSlBac254Tit1cmZxRjlKNFVPRnNNSm11THdiVHRWdU83bGVoa3FtdUQ4MGVLT0hyMXd2ZVpiUGY3ZFBiNjZMZDBVb0c0Nk9hUnM1cHdjRUVnOTF4YS9RN3hiOFBMSjRoOE5TMjI1UXNqckdOTHFLdGEwZVpUU1kySVBWcE9OVGVSSFlnRWZBdkZsaHVmQy9FZGRZTHhCNU5kUlMrWEswY2p0a09CNnRJSUlQVUVMNk5rMmMyOHlvYWlLMXl2dXZEMkw2SzlSOUlmWWs0TWk5bnVYSE5aRUhTRjVvcUhVTjJnQUdSNHlPdVd0QkI2UEMrbmwwdndQc3NkZzhKK0c3ZEd3c1BzTWMwZ0l3UStVZVk3STc1Y1YzVGRmT3M1eGJ4V051VnZpWVhraWl0eXlGT1FRaE1iTFdHSk1LNFRDcUFJaUpJQ0tJa2dxaDJWUkFFVVdyUzA4dFU1NGhibnkyRjczSFlOYU9aSldWRkZWZFNwcFVzR21pZzNHVlZpQW1WRlVBVVZVUUZCUlJWQUY4MC9iWjRLWk5hcURqbWloSG5VenhSMTVhT2NicytXOCtqc3QvNXQ3TDZXWFV2RjZ6Ry8rR1hFVnBiRStXU2FnbE1UR0RMblNOYnFZQU8rcG9XeXlqRjFZWEdVWEZ4TVB5ZXpNcVhETzJseGM5emoxSktaMlVHUUZWcnFuTGxtSVJPaWdXSUNxaXFBaFFCVkVCT3FxRkVJQ0lvU0FwSk1vbzVKWld4Uk1MM3ZPR3RITWxkcnVOSEZaZUZaSVFSNTlScGJJOGZ6RTh4Nll5RnFjR1dqeUloY2FodjRyeCtFRC9LMDlmVS90NnJhK0lFK3FhbHBBZG1neU9IcnNQMlA1cnI4TmwvOVB5eTVqTHE3ZFNoZUNlM3ErZkl0Vk9tbVdkWTZLcUlNNVhJRlJVQ0lnQ0lpZ0JUa3FzZHlwQUxsR2toelhkaUNtRmNJbkQySk1oeVJRRlZHUUNpblZPcWlBVlRLRkVCVVdLcUFxaUpsQUZ6WENsbys4YW8xRlF3bWxpUDBlN3Q2ZDF4MXFvWnJqV3Nwb1FRQ2N2ZGpaamVwWHBGRlRRMGxKSFRRTjB4c0dBUDYrcTZqOE41UCtidS9IdXJzVS9WL3d1dm9XVzZaY3MxdVM4NDRrcURVMzJxZm5MV1A4dHZvM2I5OHIwQzRWQXBhS2VvUEtOaGQrUVhsNUpjU1Nja25KVzIvR09KaTNic0xxNWZ5Mlh1WjNYMEw4MU1xWlJjQ1VHV0VLZ0tFNVFBYzBVVkNBcUtFcU9TUVpZVUtnS3VVQkZWT3VWZGtiQlNvaEtCUkpBUW9VS0VrVnpoVEtGVElLZ0RuT0RHTkxuRTRBSE1sVEs3WHdWYWM0dWRRMDlSQzAvcTcreTkyVzRDNWo4UXJOSHpmY3U4bW1uVTRPWTRhdFRiWlJZY0FhaVRCbEk3OXZRTGxVUmZYc05oN2VHdFUycmFoSTlTVUk0cmltQ3JxclMrbXBJOWI1SE5EaGtEM1Fjbm42QmRSL2g2OC93RHAvd0RkdjkxNkdpMVdZNURoOHd1L0Z1MU9ZamFQNE1hcUZVNVBQUDRldkhXai93QzdmN3JhM0MzMWxCbzlyaDh2WG5UN3dPY2VpOUdycXFHanBYMU03OU1iQmtuK2k4M3VkZE5jYTE5Vk5zWGJOYm5acmVnWEpaN2xPQnk2MmxSVlU2M3dwWEhlOXZUL0FJS3E2RlNiWkVUZkM1VXJBUlJWUVNGU2dVUWdGTWJJaUF2b29xM21tTjBZSWdWS0tBRkVUb2dDSWlrSEo4T1dwMTByZEw4aW5qM2tkMzdOSHF2UTJoa2JReG9hMXJSZ0FiQUJlVnNra1lEb2tlM1BQUzRoREpJZWNqei9BTWl1bXlqUGJPVzJYVFRhbXA4dWZUb1dVMTZWd2VxYW0vN2dzZ1FlUkJYa3hjOGo0M2ZtdlF1RUtZMDFocDlXZFVtWkhaK1oyL1RDNnZKOC9lWlhuYlZ2U2twbVoreFpSWHFaeTZIQUdTaTZ4eHBlUEpqTnVwbmZpUEg0cmdmaGFlbnFmMjlWdDhmamJlQ3NWWHJuQytyN2pOdUZKeFBGdDMrOEtyMmFCMmFhRjJ4QjJlN3Y2ZGx3aWpkZ3F2a0dOeGx6R1hxcjF4N3Yvc0hsYmJjazN5c3M3S0puSzhza0JFQ0lBbk5FNktaQVJNb1VUQWJzRmNxQXFvQ1pPVXlyeVFxQVRyaEVWUUVSRVFCRVE4a0JsREU2ZXBpZ2I4VWoyc0hxVGhlcVFzYkZFeU52d3NBYVBvdWdjSFUvdEY5aUpHUkNESWYySDZsZDhxcDRxYUI4OHp3eU5neTRsZlF2d2hZVnZEWEw5VzB2NkwvMHZ0TGFUWmNRM1Jscm9USnM2WjIwVEQxUGYwQzg2bGUrV1Iwc2ppNTczRnppZXBLM1Y0dUV0enJuVk1nTFc4bzJaenBhdG9WemVmWnU4d3Z4VCtpbmorZm43RmRkV3BnSWdUcXRDWURDSW1RZ0FSRUJRREdVVlVKUUFCRmZrb1VBSGRCdWdUa2dCUWJwelJBUFJFVElRQkFpSUNGQnlWV0x0Z2dPNGVIMU5wZ3FxdHcrTndZMzBHNS9mOUZzT01MdjdaVUdpcDMvQVBqeE85NGorZHcvb1A4QU9pMXEydjhBdXJoNmx0c0RzVlUwV3VVam5HSGJuNjc0L3dBQzYwQUFNTHFjeXgvNVhCVzh2dFBlSnE4M3ZIMTM5TzhzcXFoYVFPU0lFWExGWUNoVHFxZ0NJaUFKamZLZFVRQTgwUW9nS1ZFSlV5cEJjSjBVRzZIWUtBQWNJVnZMYmFxNjR4dmxnWXhzVFRneVNPMHR6MldGeXQ5WmJaR01xbUFheGxybW5MWEQ1RmVwNFBFSzE4WjBQVDN4c1REaVRiaFRHRkE0SHFtb0x5a0dXVkJ6V3N5bGxrdDgxY0pJaEhDOE5jMHU5OGs0NUQ2L3YyVzMxYkt5dTNYUWs2bHlwWGtHak5RclhyYUtvcEtXQ3BsRFBLcUc2bzNOZG5JMlA5Vm5YMjZzb2FpR25xV05Fa3dCWUFjOWNZVmp3bCttWnBlMFQ4K1BYb1RETnZJK1NXVjBzcjNQZTQ1YzV4M0tpMXJoU3pVRlVhYW8wQ1FBRWhyc2daV0ZKQlBWUytWVFF2bWZqVnBhTjhkLzFXTmRxNzhWMjZrOVU4ZFpJNm1tTmxWZ0pBZDg3SzZnZXFwQlNNbFZZNmgzUXVIZEFYS29XSWNPYWFnZ01pZ1d2UVVkVFhlZDdPR0h5V2EzNm5ZMlcxMUt5cTFYVFNxMnRueDR3REk4MEIyVTFBNzVUSVZZTWxEelFjMVR6UUFMRjNKWkVZYzV2KzF4Q2p0d3NxbERnSEwyK3VvbldGdHV1MVBVdHB2Tkw0cDRoek9UK2VOKy93Q2k1R2t0RUZSTmJ4SGNKS3kyUExpeGo5aUNBZHY4eHlYRFcrOFQwbEdhS1NtcDZ1bTFhaEhNelVHbjVKVTN5dWtxS2FXRnNWTTJtT1lvb200YU9oMjlObDA5ak1NR3JWSHgrMUNwVVJEMmEyYm1IVEhDWllxbDFPVW81S1c4aTQwajdkVFUza1J1ZkJKRXpTNXVEajNqMTZmcXRlcmxvNks0V3lCdHJwSlBhWW94STU3T1dUalljczc4MXhGVmZxaWFDZUtHa3BLVTFIK3ZKRXpEcE8rVDlUK2EwYXU1ejFWVlMxRWtjVFhVb2FHQVp3ZEp5TTdxeXJOTVBSUjJYTmUzYTBwU3RVeHgwVzMwSjFJNTZvdE5HS1M2UVJ4TWFmYlltTWZnYW1CeGp5QWVnM0syOWZWVU5MZFpMUWJQREpUTWFHNm1Nek1UcHprRmJDcHZOVlVRVlVSRVRQYVpHeU9jd0hMUzNUakcvd0Q4aGF6cjlVLzZuazB2dE9qVDdSNWZ2NDlWYmR6REJOLzJ1ejQ2VTVVMVBUSGsxN0IxTG9ieTFVLzNuWTZPbkFMdlk2NEIycm41WkpPLzUvb3Q1RTRYMnFvNnNBRVVsZEl4eEgrd0RVMC9YQUM2M2JMcFZXNXRRSUhOSm5IdkYyY2c3N2o1N3FXbTZWRnNobmlwd3d0bUdEcUIyMkl5Ti9tc0xHYllaVTI2YmkyanRmNnhvOXR3cTFzY3pISytaMVhjalNXL1ROVUVNcUs1L3VsbzJBYTMwSE5jbmI0b0tYaWZ5cWVuaFkyb3BQTmM1bzVFRUREZmtjL291clUxMWxpb0JSU1UxTFVSc2Rxajg1bXJRZTQvTmFyci9YZmVVVmVHUStaSEY1V0FEaHcrZS83SzJ4bStGdHFpdXB6VktiMjRlK3JwNCtiOHdxMGIyMU5nZlkzM2gwRnJocUo1dERSVURFTVlHMkFPNXdTdDdiNlcwVDNOa2tUYUtaNzZWeG5paElmR3g0TGR4MnprL2t1Qmd1OGpCUEVhR2lmU3p1RHpUbVA4TnJzRGNEcHlXckhmYXVPckZReUdtYTFzUmhqaWEwaGpHbkhJQS9JTEd6bWVDb1ZDcWh4RTluck85WHorOFFGVlNieTNWRkhWMld2cm4ydWxiN08xZ2pZRzdFRGxrODg5KzZ6ckttamhvN2JjMjJtak10U2REMmx2dUFBN2tEdjgxd2RKV1MwMXVxS0ZqWXpIVVkxazV5TWRsWjYyV2FpcGFSN1dCbE1TV0VBNVBxdktzMm8rQ2x0cTAvdFg2dFU5MzdTTmV4MkNxb0lxYTlWc3RQYjZWOGJZbU9EcWgrbUdGeHpuSTY1MjIvdXRlR2lvcDZpMVZiNEtGejVuU01rOW5HWVg0YTdrUGxoY003aUNwa2xuZE5UMHMwVTdHdGtpZTBscHh5UE5ZdDRocTJlekJsUFNORk01em8ydFlRQmtFWXdEeUFQNkwzVTVsbDFOVGZTWmpUL21uM2QzOGNFNnFUbDdKTkhWVnR5bzRLV0NsWkRISkcxemVidmV4bHgraTBuVzJtWmM2Q3plenQ4Z3M4MlNjZ2FwOERPQWVnei9BSjM0R2l1ZFJTVDFrMGNjVG5WWWNIaDJjRFVTVGpmNXJVaXZWYkhSMDFPR3h1ZFN2MVF5a0hXejVjK1dOc2RsNTZNM3dsZHVsWGx1bStuVFVucGp4WHREMmJHdGRUbDY3N3NscGEyR29rczBBWXh4cHpUdnhJSERrSGQxcDhWU1UxSUlxU0NncGc2ZW1hNTh1bkJidWVYWTg4bGNmVlh5V2FHZGtWRlIwejZnYVpwWTQ4T2NEei9OYmU2MTh0eW5pbG1aR3d4eGlNQm1jWUJQZjFWT056VEQxV2E2YlRXcHdwMDlKY3Jmd2YyUkRxVWJHMkN1Nll3RkJrdURlcElDNWhLV1ZuVC9BQVZ2TGI5NFY4T1hKc25tT2RRUnh5T0p5VEpHTkQ4bnZxYVYzQWxmTS8yS09OSW5XKzRjRDFrb2JORklheWgxSDRtT0FFakI2RUIzL0ozWmZTNjJXYzRTckM0MjViZkV5dko3b3lxVU11eUJGUjNXc01TWVRDcUlDSXFvcGtrS1lWQ3FTUVJGVVNSQkVWUkpCRkZraVNJTVV3c2tTUkJNWlRHNnFLQVFoQU5sZXFBN0lBdXErTFY5L2h2dzN2OEFlV3p2Z21wNkdUeUpHTzB1Yks0YVl5RDMxRnE3U1N2bXo3YkhHVFlMUmJ1Q2FPY2VkVlBGWFhOQjNFVFQrRzAvSXV5N3Y3ZzdyWlpSaEhpOFpidHJpWmZrdDJaVXFYQjh6Y0szMjU4TWNRMFYrczgva1YxSEo1a1QrWTVZTFNPclNDUVIxQksrK2ZDWHhEc3ZpRnd6SGRMYksyT3FqYTF0ZFJsMzRsTklSeVBkcHdkTHVvSFFnZ2ZubXVXNFQ0a3ZYQ3Q2aHU5aHVFMUZWeEg0bUhaNHpuUzRjbk5QVUhaZlNNNnlXak1yYWh4V3VIOW40ZXhmWFJxUDBweW1WODUrSEgybnJSV3h4MGZHMUE2MjFPdzlzcFdtU0IzemMzZHpQcHEraTl3NFc0dTRhNHBoZEx3OWVxSzVCclE5N1lKUTU3QjNjM20zNmdMNXRpOHB4ZURiVjJoeDM4cjFLSFMxeWM0VmVpdzFCVU9XdWd4SzVGQ1JsQ1FnQ3lXQUlWeWdNa1dPVTFJREpGamxNb0RKTXJIS29LQXFGWTUzUWxBWEtxMDlXVmxxMjVvREk0V0pLNFBpamk3aG5obHJUeEJmYUMydWN6VzFsUk9HdmMzSkdRMzRpTWdqSUhSZUplSTMybkxIUXh5MG5CVkRKZEtyR0cxZFN3eDA3VDNEZG52OVBkOVN0amhNcXhlTWFWcWh4MzhMMU1sUzJlc2VLM2lEWlBEemh1UzYzV1FTVkVnYzJpb212eEpWU0QrVWM4TkdScWRnaG9QVWtBL0EvRnQrdVBFL0VsZGY3dE41dGJXeW1TUjNRZEd0SFlOQURRT2dBV1hGdkV0ODRydk10M3Y5eG1ycXVRbjNudTkxZ3puUzF2SnJSbmtObHhDK2taSmt0R1cyMjI1cmZMK3k4UGN2b28wbi85az0iLCAic2l6ZXMiOiAiMTkyeDE5MiIsICJ0eXBlIjogImltYWdlL3BuZyIsICJwdXJwb3NlIjogImFueSBtYXNrYWJsZSJ9LCB7InNyYyI6ICJkYXRhOmltYWdlL3BuZztiYXNlNjQsLzlqLzRBQVFTa1pKUmdBQkFRQUFBUUFCQUFELzRnSFlTVU5EWDFCU1QwWkpURVVBQVFFQUFBSElBQUFBQUFRd0FBQnRiblJ5VWtkQ0lGaFpXaUFINEFBQkFBRUFBQUFBQUFCaFkzTndBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUUFBOXRZQUFRQUFBQURUTFFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQWxrWlhOakFBQUE4QUFBQUNSeVdGbGFBQUFCRkFBQUFCUm5XRmxhQUFBQktBQUFBQlJpV0ZsYUFBQUJQQUFBQUJSM2RIQjBBQUFCVUFBQUFCUnlWRkpEQUFBQlpBQUFBQ2huVkZKREFBQUJaQUFBQUNoaVZGSkRBQUFCWkFBQUFDaGpjSEowQUFBQmpBQUFBRHh0YkhWakFBQUFBQUFBQUFFQUFBQU1aVzVWVXdBQUFBZ0FBQUFjQUhNQVVnQkhBRUpZV1ZvZ0FBQUFBQUFBYjZJQUFEajFBQUFEa0ZoWldpQUFBQUFBQUFCaW1RQUF0NFVBQUJqYVdGbGFJQUFBQUFBQUFDU2dBQUFQaEFBQXRzOVlXVm9nQUFBQUFBQUE5dFlBQVFBQUFBRFRMWEJoY21FQUFBQUFBQVFBQUFBQ1ptWUFBUEtuQUFBTldRQUFFOUFBQUFwYkFBQUFBQUFBQUFCdGJIVmpBQUFBQUFBQUFBRUFBQUFNWlc1VlV3QUFBQ0FBQUFBY0FFY0Fid0J2QUdjQWJBQmxBQ0FBU1FCdUFHTUFMZ0FnQURJQU1BQXhBRGIvMndCREFBVURCQVFFQXdVRUJBUUZCUVVHQnd3SUJ3Y0hCdzhMQ3drTUVROFNFaEVQRVJFVEZod1hFeFFhRlJFUkdDRVlHaDBkSHg4ZkV4Y2lKQ0llSkJ3ZUh4Ny8yd0JEQVFVRkJRY0dCdzRJQ0E0ZUZCRVVIaDRlSGg0ZUhoNGVIaDRlSGg0ZUhoNGVIaDRlSGg0ZUhoNGVIaDRlSGg0ZUhoNGVIaDRlSGg0ZUhoNGVIaDRlSGg3L3dBQVJDQUlBQWdBREFTSUFBaEVCQXhFQi84UUFIUUFCQVFBQ0F3RUJBUUFBQUFBQUFBQUFBQUVDQmdNRUJRY0lDZi9FQUVnUUFBSUJBd0lEQkFZR0J3UUtBZ01BQUFBQkFnTUVFUVVoQmhJeEJ4TkJVUlFpWVhHaHNRZ3lVb0dSMFJVV0kwSmljOEUxY3BLeUpUTTBObE5qZElMaDhDVHhrNkxDLzhRQUd3RUJBUUFEQVFFQkFBQUFBQUFBQUFBQUFBRUNBd1FGQndiL3hBQTFFUUFDQVFNQ0JBSUtBQVlEQVFBQUFBQUFBUUlEQkJFRklSSXhRVkVHRXhRaU1tRnhnWkdoc2RFVkZrSnl3ZUZTOFBFay85b0FEQU1CQUFJUkF4RUFQd0Q4WkFBQUFBQUFHNzlsL1paeGYyaVZLazlBczZVTEdqVTdxdGYzVlR1NkZPZks1S09VbktUMlN4Q01zYzBlYkNhWnJxMXFkR0RuVWVFdXJEZURTRGJ1RHV6VGp6aStsR3Z3L3dBTVg5MWJUcHlxVTdtY1ZSb1ZGR1hJK1dyVWNZU2FsbFlUYjJlMnp4K3J1emI2TzNCSEN6aGRheFQvQUZtMUZaL2FYdEpLM2o5WmVyUXk0dk1aTFBPNTd4VGp5bjJUeFB5Vi93Q0xhY0h3MjBlTDN2bDlPZjROVHE5ajh3Y0svUlFXTGF0eFZ4Wjl2MG0xMDIzOTZqeVZxbi9hM21uNXIrSSt6ZG52Wk53SndMcWR0cS9EK2p5cGF0UXQrNGpmVmJpcFVxdk1lV1UxbDhzSnlXVTNDTWRwU1N3bTBiMWd1RDhyYzY1ZlhIdDFHbDJXMzROYm5KOVMxSjFLanpVbk9iL2lrMllsQjViazVQTE1HVEJjQUFEQk1GQkFBQ2VJQWFLQUVBQVZGQkFBUUV3UEVyM0FCTURBWkFDc0lvd1VBTURCQVlsd01GQ0JNQW9Bd0VnVkVZQUlWazhRd0NoRkNCQ1lLd0JnRXdVQUV3TUJqcU1rS0NMWW95VUFtU2dFTW9UcVUzbW5PY0gvQUF2QVpNaFNjWGxBMGpqM3NzNEc0MzFHdHFuRVdod3VkU3JVbFRsZXdxenAxbmlQTEdUY1dsS1VWaEp5VDJTWFJKSHgvakw2S3VuVmFVNjNDUEVWeGJWVkZjdHZxTVZVaEtXZC93QnBCSnhXUDRaYnIyN2ZwY2g2dHRyZDliNDRhamE3UGY4QUprcHlSL1BqajdzbDQ4NExsWHFhdG9kYXRZMGQzZjJpZGEzNWVibFVuSkxNRTNqYVNpOTF0dWFLZjFCUGx2YUQyRWRuL0ZsR3ZXcDZZdEYxS3A2MGJ2VC9BRkVwS0xTNXFmMUhIT0c4SlNlUHJMTFAwOWo0dWhMMWJxT1BldVgwNS9rMktyM1B3Z0Q2UDJyOWpuRjNBRmV2Y1Y3V2VwYUpDVDd2VTdhbm1ITGxKT3BGTnVrMjVKZXR0blpPUjg0UDE5R3ZUcndVNmNzcDlqYW5rQUEybEFBQUFBQUJ6V1ZyYzMxNVFzckszclhOMWNWSTBxTkdqQnpuVW5KNGpHTVZ1MjIwa2x1MmNKK3lmb3JkazM2cTZQOEFyWHhMcGZjOFIzZWZSWTFubWRsYnlpbGpreCt6cXp6TG0zYlVXbytxM1VpL1AxTFVhV24wWFVxZkpkMll5a29ySnFQWWo5SENGMWFXbkVIYUZHcW9Wb1NsRFJQV3B6U2FYSkt0T01sS0wrcys3V0d2VjVubm1nZnFDenRyZXp0S05wYVVLVnZiMEtjYWRLbFNnb3dwd2lzUmpGTFpKSkpKTG9jdU1JSHk3VWRUdUwrcHhWWHQwWFJITzVPUlNrR1R6akV2Z1ZFQlFIMUFBeVVBQUVLZytnWXlVRUJjQUZJQzRDQUlVTUVZRENBR1FBQXdDTW1ESkFBZzNLQmtoQWdBVXJJWEpBQzRJWEpHVUFBQUJzbUNnaklBVWpRQkdVQm9GQmZBZ3lVaENnRXdNQUJGS2tESEJTa1lHUUFDTW9aTUZLa0FZcEZLQVE0THFoUXVyZXBiWE5LbldvMVlPRlNuVWlwUm5GckRUVDJhYTJ3Zm5EdDQranZhWE50ZGNTY0FXN29YcW5LdGNhVEJKVXFrY0xQY0pMMUpKNWZKdW5uRWVYQ1QvU3BHZWhwK3BYRmhVNDZUMjZyb3l4Ymp5UDVpWDFwZFdON1dzcjIycld0MVFxU3AxcU5hRGhPbk5QRGpLTDNUVDJhWnduN2Era1QyTVczSDFuUFhkQnAwcmJpaWhUd3N0UWhmd2l0cWMyOWxOSllqTit5TXZWdzRmaXUrdExxd3ZhOWpmVzFhMnVyZXBLbFdvMW9PRTZjNHZFb3lpOTAwMDAwK2g5UDB6VTZXb1VmTWh6NnJzZE1aS1NPRUFIcEdRQU56N0dlQmJ2dEQ0N3ROQ29lcGFReGM2alZWV01KVTdXTTRxYmpsUE0zektNVmg3eVRmcXB0YTZ0V05LRG5ONFMzQjlwK2lCMlcyOTFSajJoOFFXVkt2RlZNYUpDVlZTVVpRbEtOU3ZLR1ByS1VVb1plelVwY3VlU1IrcEVzSFcwZlQ3VFNkSnM5S3NLUGMyZGxRaGIyOVBtY3VTbkNLakdPVzIzaEpMTGVUdDRQa2VxYWhPL3VIVmx5Nkxzdis4emxrK0o1SXhnb1BOSVJJb0RZSVFwQ2dBRVpNbEJrTW1JSmtHYjZFSUNqQmttQ0ZSUUFSbHlDZ1pIZ1FFTGtnQkFWQmtBS0M1SmdJRUtCa21RQTBVallLVUQ3d0VRZ1FaY0VHUUFDK0JHQ0lNRnlBRUFSZ0ZESWk1QUlBVkZLRVFvQ0JDZ0ZJQ0JnQUZSQ2dBcEdBQjRrYkFJQXpFeUF5TW1MV3grYXZwWTlrZEM0c2Jqai9BSWJzcWl2YVQ1OVd0Nk1NeHFVOE51NHgxVW80OWJDZVUrWjQ1Wk9YNlhPSzVvVWJtM3FXOXhScDFxTldEaFVwMUlxVVp4YXcwMDltbXZCbmZwdW9WTEM0VldITHF1NkxHVGk4bjh3Z2IvMjljQXk3UE8wQzQwbWpLcFUwMjRncm13cXp4bVZLV2ZWZUgxakpTajRad25oWlJvQjllbzFvVnFhcVFlVTkwZGFlUWZzNzZIZkJNTkM3UC8xbXY5T3BVdFUxbXBLZEd0S01sVlZtdVZRaTFKTGxVcFJsVTlYYVVaUWJid2t2eVZ3TncvY2NWY1k2VHc1YXVyR2VvWGRPZzZsT2k2cnBRYjllcHlwcktoSG1rOTF0RjVhVzUvU095dHJlenRLVnBhVUtWdmIwSVJwMHFOS0NoQ25DS3dveGl0a2tra2t1aCtWOFczcnAwSTI4WHZMZC9CZnQvZzFWWGhZT1laR0FmT3pRQUI0QW9NV1ZoQUFGSStnSVFBeUF5WXBGR0NrQUFCY2dCTUZmUXBTTUFFSUVHR1R4TGtJcENnZ0FBQUdTallnSUFVTUZJVEpTTUFvSWpJQWdZQkFBQUFBQUFBQUNBRnlSNEdTNUFBS1VveVFJdVNCaGRTc2hNZ3VTRFlFSUNaS1ltUlRKRnlZbElDa0FJQUFDbEJNRkFCOGwrbEx3VlE0czdNYnk5cDI4NnVxYUxDVjNaeWpVVWNSV0hXaTA5bW5DTGVPdVl4eDVQOExuOVFjNGFhMmFQNTJkc2ZDbjZsZHBXdGNPd21wMEtGZm50cEtXZjJOU0tuVFRlRjZ5akpKN1l5bmpZK2dlRUwxenBTdHBQMmQxOEh6Ky93Q1RkU2UyRDZUOUNyaC85STlwVjdydGEwNzJocEZpKzdyZDVqdXE5VjhrZlZUekxOTlYxMGFYc2ZLZnNwSHhINkdXZy9venNrZXIxS2RvNnVzWDFXdkNwVGorMDdxbmlsR0UzaFBhY0tyU3kwbFBQVnRIMjVINTd4SmMrZmZ6N1IyK25QNzVOZFI1a1pESkFrZUFZREliREJFQ01oa1FESVJRQ2dqR1F4Z0FaS2lJcEFDTW9MeUtBQUFBZ0FSZ21OeWdoQVFvQmNoQUY4QU1tS1pRQ2tBeVh3SUNnQUVBQ0FLQUFUS0FZd0V6a29VcWxlb3FkR0VxazMwakZaWmpXcHpvMXAwcWk1WndlSkx5Wm41Y3VEanhzTUVKNEZCZ0FBR2dBQ01vd0FGZ0FoQUFDb3FLeUFyQUlBVEF3UXBNRkFMa0FBRUl5Z0VLQUVDbElHeW1NdW9JVEorVS9wMGFNNGE1dzN4RXFqbDM5clVzWlE1ZG9kM1B2SXZPZDg5N1BiSDd2dDIvVmJQanYwdjlLbnFYWXhkWE1ISC9BRWJlMEx0cHQ1YXk2VzN0L2E1OXlaN2ZoNjQ4alVLZlo3ZlgvWm5UMmtiNTJUY0hYUEFIQUdtY0lYdDVSdkxyVDQxSTE2MUdMVk4xSjFaMUpLT2QzRk9iU2JTYlN6aFp3dHBSeTNzK2UvdUovYXF5ZnhaeFpQT3ZLanExNXpmVnQvY3hsdXpKQWlLamtJR1FySUNCN0FBQUFBRkJHeXNBZ0FBS0FBR01naktSZ0FaSUNneUFRSVFBaUtBQUFnVUFGd0NFQWV3S3lnQUJBQUVBRFpJUW5VbkduVGk1VGs4SkxxMkdiZndkby9kUVdvWEVQWGt2MlVYKzZ2UDd6ME5NMDJwZjExVGp5NnZzaXhqeE03bWc2WFMwYlQ2bHpYdzY3ZzVWSmZaUzN3alI2dFNWYXZPdFA2MVNUay9lM2szM2k2dDNPZzE4UERuaUMrOTcvREo4L1I3ZmlkVTdkMHJTa3NSaXMvVTJWTnNJeUFKZy9LR3BsS3lBQUFFSU1GQkVVcUFLUlp5VmdCa0FRS0FBTWtBQmNFSVFGWkNnQW5pVUFBRXlNbEtZc3VUR1QzSFVCOUR4ZU51RnJmamJoVy80VXVidWRuVDFPbjNDdUlRVTNTbGxPTStWdGN5VWttMWxaV1ZsZFQyV2NscStXNXBUOHBwL0U2TFdvNmRlRTEwYWYzTWxzekdUNXFrcCtiYktpSXlScGJ6dVlnWkRCaUMrQkFBTUFCRmFJUWdCQ29xS1JqQVFJVWVBQUtBVkRCQ0VJeXNnQVJRQUFHQUNtSmtnQVFNQUFBWkFLWEFZQUJRQUFpQXhLMmRuUzdLcnFGNUMybzlYdktYaEZlTE5sS2xLdE5RZ3N0am04SGY0WDBsNmpkZDdWaS9ScWI5YitKK1g1bStwSkxDNkhEWTJ0S3p0WVc5Q1BMQ0N4Ny9hYzU5WTBmVElhZlE0RjdUNXM2b1I0VWFueDljckZ0YUo3NzFKTDRMK3BxcVBTNHJ1ZlNOZHJ0UE1hZUthKzdyOGNubXhQbk91WEhwRjlVbDJlUHBzYUp2TWlnRHdQSk1RQ0ZJeUFGSVVBQUFNcURJTUFBQXVBUXhLTUFnR1FBVXFBS2lBQUFtVUNESkNiQVlLSk1nMk1zQXBpMFZOcDVMZ2pDYnlRcFVFWlkyS3lFQ0lWRUtHQVJFeVFxREtSZ3BHVWhSa0FBQUFnNmxCQUFFQzRBQUF3VWdBQUtUSUdRVmtBS1FNQWlaR0NnQVpLQUFVQWpIUXh5RVF5aXBUbW9RaTVTazhKTHhaOUE0YTBxT20yZnJKTzRxYjFKZVhzUEo0TDBuWmFsWGp1LzhBVXByL0FQYjhqYlQ2RjRaMGZ5WWVsVlY2ejVlNWQvbWRGT0dOMkRodTYwYmUycVY1L1Zwd2NuOXlPVm5pY2FYTG9hSk9FWGlWYVNndmQxZndSK212YTZ0N2VkVjlFelkzaFpORXFUbFZxeXFUZVpUazVQM3NZd1NQVXlQaThwT1RiWnlBQWdLUjlTb0ZBQUFHU0FBRUlFWEpBaWxCU0Fnd1hKR3dDZ0FCQUJCam9DQkdPY2t3WEdBVXBNRndYcVFFSmhGQlVRREJESWpLQ3hLeUlvWkNGUUJpQ0RBS3dVRUJDaGxBTDdpQWdHQWdBQVRKU0ZCTWhNRktBQUFBQUdBQUNEQUttUjlRVWpDS0FBQUFVQjdCRWt3UWpQVTRaMG1XcDNpbFVpL1JxVHpVZjJuOWs2TmhhMWI2OHAydEZldE45ZkplTFBwR20yZEd4dElXMUZZakZkZkZ2elorbThPNlI2WlY4Mm92VWo5MzJObE9HZDJkaUVWQ0tqRkpSU3drdkF5QVBwaVdOa2RBTk00K3VlYTZ0N1ZQYUVYT1h2ZXkrWHhOeXlmTk5mdUhjNjFkVmM1WGVPSzl5Mi9vZm12RmR4NVZsd0wrcDQveWE2andqcHhNakZHUzZuekk1d0N2b1FBQVozSmtCaGg5UjFLQ0FBdUFDQUFGQUl4RUJsWUFCQUVSQjlDZ29JaWtLQUdDbElHVUVCRWloRllSRVFqS1JvcUJRaVpLVWhja0NCaUFBQVVFWXlVaEFWTXhaQzRLWk5naUtCZ0VZeUFDRndVakprZzhCa2dHUVpBeE1qSUFqS3lNZ0NaU0lwTWxBQUJDWkJXa1lzRkt5Ynlra2syMjhKTHhJMmJSd1pvL2V6anFWeEgxWXY4QVl4ZmkvdGZrZCtuV0ZTK3JxbEQ1dnNpeGk1TTliaGZTSTZmYXFyVml2U2FpOWQvWlgyVDIrZ0RQcnRyYlU3V2txVk5ZU09wTEN3RUgwREIwRk9ycWx3clhUNjl3L3dCeURhOS9nZk1lcnkrck4yNDd1TzcwcUZDTDNyVkVuN2x2ODhHa28rZGVMcm5qdVkwbC9TdnV6UlZlK0RJbVNBL0ltb3pUTVdNa0JRQzVJREV5WFF1VEVJRk1nUXFZSVJnTm1JTWdYb1FFeVJseVFHU0dTQkFBcGNBQW1RRVVtUnY1a2V4TWxMa3FNVUNnekRNY2hzRURLWW1TQU1Tb2dNZ1pJRVJTQUFBaENNSW9CU01Jb0tFQVR4REF5QUFBT29ZWkRFQXBDbEFLUmxCQUFUeEFDR3hBUXBkZ0VneWpCR1FweTJsdlZ1cm1GdlJqelZKdkNYOVRLbkNVNUtNVmxzZTQ3bkQrbFQxTzlVV21xRUduVmw3UEplMW4wU2xDTk9tcWNJcU1ZckNTOEVkWFNMR2xwOWxDM3ArRzhwZmFmaXp1bjFmUk5LanA5REQ5dDgvMGRNSThLQUFQYU13eUZaRzhJUFlHajhjM0txNnBDM1Qyb3czOTczK1dEd0RuMU92NlZxVnhjWnlwMUcxN3ZENEhEZytPYW5jK2szZFNwM2YyT1NUeklnSzBPcDU1Q0F1QmdBaFNrWUFDRElBWEpDNElBQUNzRklDWUtRQW93TWJGd1FvQkdDQmtRQUtqSWpLWWtJUmRTZ0FvQ0FLVXJKbkFiTVNFTWk0Q0dUSWhDNUtSbU9TanFVaUtNa0JNbEpncUFHU2s2c0ZLUmxCTWtKa1pCUmxnaERJakFJQytBd1VxQ0tSZFNnTVpCaUFRdlVKRkJBSHNqRXJNV0NsYk40NFMwbjBPMjlLcnh4Y1ZWMGEzakh5UEY0UDByMHU1OU1yUXpRcFAxVS8zcGZramVVajk1NFcwakM5THFyKzM5L28zVTRkV1VBSDdnM0FBQUJubjhRWEhvMmpYVlZQRWxUYWkvYTlsOHowRHFhblkwZFF0WGJWM0pRYlRmSzhQWTU3cU01VVpScCswMDhmRWpQbUVkakxKdkg2cDZaOXF2L2pYNUZYQ21sK2RkLzhBZWZPLzVUdi9BSGZVMGVWSTBac2ladlg2cDZXLytOL2pINnA2WC96L0FQR1A1VHZ2ZDlSNVROSHlRM2o5Vk5NWDcxZi9BQnI4aS9xcHBublgvd0FhL0lmeW5mZTc2anlwR2o1SmszbVBDbWw1eSsvZnZtYXZ4RloybGpxSGNXbFNVNHFPWkp2UEsvSTQ3L1FibXhwZWJWYXg4VEdVSEZaUE9CU004UXhBQlVRRUJTRktBRUFRdVEyUUVBQUFZd0dBQVV1UXcyUUVLaU1wQ0ZHU0ZCVVFFYUtBQXdnRXNGSVZGSWltSlNZS0FVZ0o0aGtLQ3NCRk1RQUFaRklFR3dpQXBDazZBZ1FZeVFaS1ZCaEJnaEFBVUZURENhUk1rQVoyOUlzS21wWDBiZUcwZXM1ZlpqNW5WaEdWU3BHbkNMbEtUeEZMcTJmUXVIZExocHRrb3RKMTU3MUpmMDl5UGQwTFNuZjEvVzlpUFA4QVJzcHh5enYybHZUdGJlRkNqRlJwd1dFam1DQjlWakZSU1M1SFNBQVpBakt3QUFBQUFBQUFBQUFNZzYxL2RVcksxbmNWcFloQmZqN0RHYzR3aTVTZUVnZERpalZGcDFpMVRrdlNLbTFOZVhtelFKU2xLVGxLVGxKdkxiNnRuUHFWOVcxQzhuYzFudTlvcndpdkJIWFBsT3Q2cTlRcjVqN0M1ZnY1bk5PWEV3WEJDNVBETUNBRHhLQ3BrQVpHQU1rVDNBS1VBQUFCYmpPQVRJWUtNQUVBS1VvSVhxeUVJQUFNaEF2Z0dRcEM0S0NaQURJVmtNU2dxSVhJQVpDc2dHQUFBQ29wQWlrSVhBQkM1SVZrS2dDTkJBclJRUUFwQVJrUlFBUms2R1I2bkRtbFMxTzhYT21yZW04MUg1L3duVmEyMVM2cXhwVTF1eXBaZUQxK0N0STZhblhqdTFpaW4vbU5zSlRncWNGQ0NTaWxoSmVCa2ZYTk9zYWRqUVZHSHo5N09xS3dzQkFBN3lnRThTZ0FBQUFBQUFBQUFBQUVrMGxsbWdjVjZxOVF1KzVwVHpiVW5pT09rbjVuczhaYXYzTko2ZmJ5L2FUWDdTUy9kWGw3MmFhdkkvQitLTlk0di9rcFArNzlmczAxSjlFRVVBL0VaTkpXUUVJZ1VxSmtxS01sTVRJaklRZ0FLVUZZUkNESUFBQlVNa0JRVmtLMlFnS1FBQUZSQUFWZ2hVVWd5RVJGUUtpa1pTTWdJVWhlaEFRQXVDZ2hVTUFBcEdQRU5nQUVBSUFBQ2dBRkFCU0VaQUFDQTVySzFxM3QxQzJvTE01dkh1WG16Nk5wTmxTMCt5aGJVdWtkNVM4WlB4Wm9lZzZwK2lybXBWN2p2dWVITGpteGpmM0hzUGpLZmhwNi93RHpmK0Q5bDRkdk5Pc3FUcVZaK3UvYzlrYnFjb3hXNXVBeWFXK01McjkyenBML0FMbXpCOFhYM2hiMjYrNS9tZm9wZUtOT1g5VCtqTS9NaWJ0a3VUUnBjVzZsNFViWC9ETDh6SDlidFMvNFZyL2hsK1poL05XbjkzOUI1c1Rlc2pKb3I0dTFQd3AyMytCL21jYjR0MVg3TnN2K3gvbVIrSzlQN3Y2RHpZbS9vSG42QmRWNzNTNk4xY1JoQ3BVVGVJOU1aYVI2QitnbzFZMXFhcVI1TlpOZ0FCdEFBQUFQTTRoMVNHbVdMcWJTcXkycHg4MytTTzVlM05LMHRwM0ZlU2pDQ3kyZk45V3Y2dXBYczdpbzJsMGhIN0s4ajgvcjJycXdvOE1QYmx5OTN2TUp5NFVjRldyVXJWWlZhc25PYzNtVGZpekhCRVUrV1NrNVBMNW5NQVZCbU9RUWpSUitJQmpneVFLZ0NBdUNBQUFneU1GeUFPb0FDQ0tBQ01BQVpCTUZLeGdxQkNvZ0lFR1ZJdVNCa0t5RktDb2hVQVZrWlFRR0tNZ0NBaklWa0FCY2hFQUFCV1VNZ0FJQUNzZ0FCRVVEQUFBQUFBSVVoV1k0S0NoZ0RJRE1XakprQmNHTFJhVktWV3RDbEJldE9TaXZleW5xOEoyM3BPdVVjck1hZWFqKzdwOGNIVlowSGNWNFVsMWFFVmw0TitzNk1iZTJwVUlmVnB4VVY5eU9ZQSswUWlveFVWME93QUF5QURlTncyYXp4anEvYzBucDl2TDlyTmZ0R3YzWStYdlp4MzE3VHNxTHJWT1MrNUpOSlpaNUhGbXIrblhIbzFDWC93QWVrK3EvZmw1KzQ4SXVNQStSWHQ1VXZLenJWSHV6bWJ6dVZBSUhHWWdBRUtBQXlnRk1RQ0dXU0RJQUl5b0FGQUt5QWdBQUtBTWt5Q0dXQXlBQU1JakdTQXJLaU1GUUt6RmxZd1VFVE1rWXBHUzZsSVVHTEJNbVJrWWdNWklDcG1KVVFoa1RvUVpMa3BXeUFNZ0FKdVZBQXVDQUZBQUFBQUtnQUFRZ0FKa1pCUUFBQ0ZJd0RGdmMyM3MrdC9WdWJwcnExVGo4My9RMUpuMFhoTzJWcm9sQk5ZbFVYZVMrL3A4TUg2ZndyYmViZmNmU0t6L2cyVWw2eDZ3QVBweDBBTUhGYzFxZHZRbldxeVVZUVdXMll5a29yTDVBNld2NmxUMHl4ZFY0ZFdXMU9QbS95UG5WV3JPdFZuVnF5Y3B6Zk5KdnhaMjliMUdwcWQ5S3ZMYUMycHgreXZ6T2tmTGRlMVozOWJoaDdFZVh2OTV6emx4TUJBWlB6NXJLQUJnWkJVUUVBSStwUUNrR0NvckpnaGpnb0JRQUFBWHdJWEpDQXVDRlJDZ21BWmZlTUFZSUFYQUJHVEJrUVlLRUNwRUFLeUFwU0VLaUpnRUxnTXFKa2hrUUZEUUlUQUtnQVFqUmxnTUVJaVBKUUFFQVZJRndRTUFGQ0F3QUF3QUNZQUFBQWFMa01nTVNnRkJBd3dBWlc5R1ZlNXBVSS9XcVRVVjk3d2ZWS01JMDZjWVJXRkZKSkdoY0gyM3BHdDA1WTlXaW5OL0pmTStnSDBUd2ZiY052T3MvNm5qNkcra3RnQVRKK3hOcFhzYU54aHE3dXJoMk5DWDdDbS9YYS9lbCtTUFg0dzFkMmR2NkpieXhjVlZ1MTFoSHo5NW84VDhSNG8xakM5RXBQKzc5ZnMwMUpkRU1HU0FQd1ROT1NZQUNJQWloRkFJQUFBQUFVQUFFTGdqTWtSZ0V3QUFBQW1BQ29OQk1ObElUeE1pSmJsSVVqUUJBQ2hFS21DbEkrcFRFQUFNaktRQkVNa1VGM0NDQkJrRk1TNUlCZ1pLWStJQmtSaklZQkJrREFBS0VNZ29ZUXdNZ2hBQ29BZ0JBQ2dBRElCZGpGc01GREo0bEFJUnNyUml3a0RjT3o2M3hiM0YwMTlhU2hIM0xkL1A0RzFubmNOMnl0ZEd0cVdNTnc1cGU5N3Y1bm85RDdIcEZ0Nk5aMDZmdSs3M09xS3dzQm5RMXJVS1dtMk1yaXB2THBDUDJwZUNPNVZxUXBVNVZLa2xHRVZsdHZvajUxeERxa3RUdlhOWlZDR1kwNCt6ejk3T2JYTlZqWVVNcjIzeS9aSnk0VWRHNHIxYm00blhyU2NxazNsc3dDS2ZLWnpjNU9VbmxzNXkrQkdBYXlBaFEwQVJGQ0w0QXBDWktUQUlVcGlpbFFEQ0FJQ3Q0SW5rakxGWUFLMFFySUFNRXp1Vm9qMklDZ2kzS1pJaFNBQUFBWUlVSkZBNmdJRUFLQXlNcEdCa0lwSWxBQUQ2RVJDRktPcFFaRWVURkdUSStnSUNveFJRQzRJWElBWlBFRndQQUFJZ0RCQVVpS0FSNUFBS0FBQ0RKQ2tZS0NvaUtDa1p6NmZidTZ2NkZ1bG52S2lUOTNqOERydDdtd2NDMjdxNnRLdTE2dEdIWDJ2WmZESjM2WmIrazNkT2wzZjI2bGlzeU41aWtsaEZZUEQ0cTFmOEFSMXIzVkZyMG1xc1IvaFgyajY3ZFhOTzBvdXJVZUVqcGJ3c25qOFk2dTZ0V1duVzh2VWcvMnJYN3o4dnVOYXdOMjh0dHQ5V3lueUxVYitwZlYzVm44dmNqbWNuSmtSa1RBT0F4QUFBQXlBQUFNZ0FFWlNBQXBFVUFBakNBS0FBQUFDNUJXeUF1QUNGWlNaSU1tTEtpTkRvQVVFWFVvQUtnaWdNeGJBQlNFWlF3Z0RGR1JNRklVQm9BQmhGSmtaQXdWRVlSUUNBQUVBQUFMa2dBS1ZJREl6a0FnQUtBQU1rQUFBQUFBQUl5a2JBTVdiendKYmQxcE1xOGx2V20ydmN0bDhjbWpwTnZDV1c5a2o2ZFlVb1dPbVVhVW1veHBVMXpQTzJ5M1ordThJMjZsY3lyUGxGZmsyMGx2a2F0ZlV0UHNwM05iZEw2c2ZHVDhFZk9MMjZyWHQxTzVyeXpPYno3RXZKSGU0azFSNm5ldnUyL1I2ZTFOZWZtenpEbThSYXg2WlY4cW0vVWo5MzMvUktrOGdyUVJUODBhekVGNkRBQkNMcVpZQUJDTW9BSVZFd1ZiQXBjRUJjZ2hBQUNrS0FDQUFxQUlFR1FBcGNrQUdDdGtBQXdBd3dnVWhVQUFWRlpBd1FnQUFEQkdNbEJRRU1FQXlDRlFCR2dVZ0JVWHFSSXVRRVFtU2hsQVRCQ3A1UkFnR0F3Q0psUk1GeVFGNmtMa2hRQ0xxVW5WbEJRQXlFQUNBS0NGSmdBNzNEMXQ2VnJOdFN4NnFuenk5eTNQWjR5MXBWRzlPdFo1Z3Y5ZEplTCt6K1pybHRjVjdhVTVXOVJ3bEtMZzJ1dUg4dWh4WVBYbzZtN2V5bGIwdG5KN3YzZGtaY1dJNFFpWkVLZVFZZ0FkUUNjeGt1aGdaTG9DbHlNa0FBQUFJQ0lTM0lnRElBQW9BQUlBUkZ5QUVBZ0FBQXdBQ0Y2QW9BQUlHd1I5UmtBb0laSUFnSzhFQlF4MUFCQ01Ca0RCa2lvZ1lCUVlvb0dRUmpJWUF5TWtEWUJsa2pJaW9BaGtnQUFBQUFBeWVJS1VtUXdDTXJJQWdBaXNBQUlFR1FRcEFDR1FBQlNGUVpFR3dDZ0lvS1k0S0FBRUFBQUNObHlDRVNLeGtJRElBQUFKNGhnRElCY0FBSUFBQW5pVUFBQWpBS1h3SmtaQURJQUJrRlJqNG1TSUFDQXFCbG5ZZ1FCU01JclFTQkRGRndDbElBQVFFNkViTEpuSEpnQnlJNUkyYmhqaHVGNVJqZTN6bDNVdnFVMDhjeTgzN0RZcDA5Q3NNVXFrYkNnOGRKOHFiL0hjL1MyZmhxdFhwS3RWa29SZkxKdGpUYldXZk9VeTVQb2xmU2RHMUtoelFvMFduMHFVY0ovaWpSOWIwMnBwZDg3ZWI1NE5jMU9lT3EvTTU5UzBLdFl3VlRLbER1aVNnNDduVVJUQW5NZUdZSElpc3dUTHpEQXlaSU13NWhrWUJXekY1NVhKSjhxMno0RWs5amZyQyswV09oVTQ5N2JxaXFXSjAyMW5PTjAxMWJQVjB2VFlYMHBxVlJSd3M3bWNJWk5DVE1remp5dVo4dXl6c1pKbmx1T0hnd01za3lUSjZ2Q25vMDlZcDBMcWpUcXdxeGNVcHh5aytxK1h4TjFyUTlJclJwWnhsNEtsbDRQTHlSdjJtNThYNlZaMGRIbFh0YldsU2xDYWJjSTRiWFRIeE5MYWVkdDhuWHFXbVZMQ3NxTTNucVdVSEY0SE1YSjlHc3REMDZuYVVZVmJLM25VakJLVW5CTnQ0M1pvR3EwSGFhbGNXK01LRlJwZTd3K0IwNmxvbFhUNlVhazJtbjlpeWc0ckp3NTlwVXpZdUJiQzN1MWRWYnFoQ3JHUExHS25GTlozYi9vWThiMGJTMXIyOXZhMjlLaStWem55UVNiOEY4bVl2UnB4c2ZUWlNXTzNYbmduQjZ1VFgweW1Da1pjMng0MkRBdVJsR0RaczFQaEd2T2xHcDZiVFNsRlA2ai9NN0xQVHJpOHo1TWM0NW1VWXQ4alcyeGs0MUxKY25HMWg0SWNtUjFPUG1DbVRBeWNtQVk4d2NrVkVLaW1QTVJ5RFJUTUdITU9aRUJrVTQrWXFZd1F6VERaZzVFNWtVcHlaQng1THpCa01teWMyUEVqWnNuQXRwYTNkUzhWemIwNnlpb2N2UEZQR2VZN05Qc3BYdGVOR0x3MlpSV1hnMXRTeXpMSjcvSEZwYTJseGF4dHFGT2lwUmszeVJTenVqWHNpL3MzWjE1VUpQTFFrc1BCbGtxTUd5YzJQRTQ4RU9ScEF4VXNqSXdReUJpbU1rd1V5QkV5Z0JGSWlnb2JDWkdBUWVCVUVESWdIVURCaXlra2NVamtrY2NpeDVnK3BhUTRQUzdaMDhjbmN4eCtCODgxelQ5UnRyMnRVdXFWU1VaVGN1OVN6RjcrWjN1RytKSjZkU1Z0Y3dsVnQ4K3ExOWFINW8ycTE0aTBlNVNTdW8wMi9Db25INHZZK2hWS2xsclZ0Q0VxdkJKZFBmL0FKTitZelJwT2hhelgwdXBOMG9xcEdhdzRTZUZuek9YWE5ZbnF2ZE9yUWhUZExPSEY1em5INUc3M0dtYVhmMCthZHRRcUtYNzhVcy9palV0UzBGV1dzMmxGU2xPMnVLcWltK3EzM1QrNDg2KzByVUxhMlZHRlRpcE5yN3Y5bU1vU1N3dVJ5YUR3MUsrcFJ1YnljcVZHVzhZeCt0SmVmc1I3bjZyNkx5OG5jeTV2UHZYbjVuZTFxNWRobzllNHBwS1ZPSHFMd1Q2SStadTR1SGMra3V0VTc3UE56ODIrZmVkVjR0TzBXTUtNcVhISjgyeko4TWRzR3lhOXd4S3pveXViS2M2bE9Lek9FdnJSWG12TTYvQ1drMm1xTzU5SmRUOW55OHZMTEhYUDVHNGFGZFN2OUh0N21vazVUaGlYdGEyZnlQSTRSb0syMWJXS0VWaU1La1ZGZVN6TEJ2bG8xcDZaUXJVNCtwUE8zVGxsRGdXVXpyMXVGS010VGpUcFNxVTdXTlBtbkp2TGJ5OWwrQjZMNFYwaDArVlU2aWYydThlZnlQTzQrdjdtaEtoYVVLc3FjWnhjcHVMdzM1TDNkVHFjRDM5MStrMWFUcXpuU3FSYjVaUE9HdDhvbkZwZEMvZHA1T1czejdOOUVNeFVzWVBONGwwaXBwRnpGS2JxVUttWFRrK3Z0VDlwc3Rwd3RwbFd6bzE1T3VwVHBxVFNudGxyUGtaZG9NWXkwaWkzMVZkWS93eVBjc050Tm9ML2xSK1J0dGRIdFlYMWFtNEp4d21zOU01S29yTFBtZW0yVmZVTHlOdGJyZDd0dnBGZWJOeHMrRTlPcFFYcE1xbGVmaTNMbFgzSkhEMmUyMFkyTnpkWTllcFY1VS80VXZ6YlBPNDZ2Njg5UzlEaFVsR2pTaW00cDQ1bTk4djdzSG4ybG5hYWZZZW1YRU9PVXVTL0JFbEdPV2V4ZThKNmRWcFAwWnpvVDhHcGN5KzlNMCtyVHVOSjFhTWEwY1ZLRlNNdHVra25uSzlqTzl3MXJrdE1xemhYVlNwUW12cXg2cVhudVRpblZMWFZaMGF0Q2hVcHpnbkdUbGpkZUhUNy94T1M5cTZmY1c2dUtDVUtpZkl4YmkxbEc4YXJUVjNvOWVFUFc3eWszSDJ2R1VhQm9GdjZWck5yUmF5dThVcGU1YnY1RzdjSjNIcE9nMjdiektDN3QvZHN2aGc4YmhLd2RMaUxVSlNYcTI3Y0kvZTluK0MrSjdXbzJ5djY5cFdqeWx6K0hQOW1jbGxwbTFUcjBvWEZPM2xMRTZrWEtLODBzWitab3ZIbER1ZFpWWkxhdFRUKzliZjBSM05iMU4wK01yWnFYN08zY2FjdkwxdnJQOEFCL0E3ZmFGYk9yWVc5eEZaZE9weXYzUC9BT2tYVjYwZFFzNjhJODZjdngvMWttOHhaMitCNkNvNkJUbmpEcXlsTi9MNUkxL1ZLTmJYT0tLOUMzNlUzeU9UNlJqSFp2OEFISnQxUGwwM1JJdVdNVzlEZjI0Um9PaTZyZldGelZkcFJwMXF0dzF6S1VISnQ3OU1QMm1uVkhSbzBMYXpyWjRlYnh6MlgrV0pZU1NadGx2d3BwZEdtdlNKVkswdkZ1Zkt2d1JMdmhQVDZ0SitqVHFVWitENXVaZkU4aStzZUpOWG5DcmMyMGFjVXNSanpLS1h0dzIzazkzaE94djdDM3JVcjF4NVhKT21sTE9QUCtoMFcxQzF1S3ZrK2lZaC93QW1zZjcrNVVrOXNHdTZIb2NLMnIzTmpxQ25GMFk1OVNXTTc3UDhEZTRRVUthcHJvbGhHa2RvRW5UMWVsS0VuRnlvTExUeG5kbTVXWDluMGY1VWZrYmRFaFJ0cXRhMmhIZUw1OTArWDBMREN5a2FYeFpvbGxwZGpTcldycU9VNnFnK2FXVmpEZjhBUTV0QTRXOUpvUnViK2M2Y0pMTWFjZG0xNXRuZ2FMVGQ3cTlyYTFaU2xUblZXVTMxUzNmd1BwT3J3dTU2ZFVwMkRqR3ZKWWkyOFk4MytCNVdtMlZyZjFLbDI2V0l4MlVWMWZVeGpGUGZCNWo0WjBPZWFVWU5UWFhGVjh5K0pyZkVmRHRUVEkra1c4NVZyWnZEejlhSHY5aG5EaGpXNmRaVnFjNmNhaWx6S1NxNzU4emRuUmxjYWIzRjJvdWM2WExVUzZaYTN3ZGNkT3BhalJuR2R2NVVseVk0ZUpjc0dxOExhRFphaHBuZjNQZWQ1enVQcXl4c2p0V25DbHBMVUxpVloxSGJ3a28wb2MySEwxVTIyL2V6dWNEYmFQT0w2eHJ6aitHRHcrTjlVdTFxanM2TmVwU3BVNHJLaEpybWJXZDhHTHQ3QzAwK2xjVnFTYjIrYjk0d2xGTm83dFBoL1RxbXUzTnB5VklVcWRHRTRxTTMxYmVldnVGenduUWxxTktuUm5WcDI2ZzVWWk41YmVka3ZpWWNBVnF0ZTZ1NVZxczZrbENDNXB5eThaWnk4Zlh0eFFqYjI5R3JLbkdwek9mSzhONHhoZTdjdmw2ZlBUM2VUcGJaemhjK2ZJZXJ3NXdkeXB3bnBVcVBKQ05XRXNiVFU4djQ3SGk2ZndyVnFhaFdwWFZTVWJlazFpY1ZoMU03ckhrZHJnSzh1S3RXNHRxdFdVNFJpcFI1bm5EeVh0Q3ZibWdyVzNvMVpVNFZPYVUrVjR6akdQdTNaS3RIVEsxbkcvOEFLd285RjE2WVl4RnJpd2VoUGhQU0pVdVdNS2taZmFWUjUrT3hwK3ZhYlUwcTk3aWN1ZUVselFuNXI4ejNlQUwyNXExNjlyVnF5cVUxRG5qelBQSzg0Mk0rMGFNZVN5bTBtMUtTMys0NTcrMnNyelRQVEtOUGdhN2ZIQmpKUmNjbzROQjRWOUpvUXViK3BPbkdhekduSFo0ODJ6Mkh3eG9yanlLbEpTWGlxcno4eng2R3M4UjZsYnlwMmxqRGtsSGw3eUVISEh1YmVEcldmRDJ1VXJ1bmNSZ3FjMUpTNXU4V1RPMzlFaENFYmUxZFJQbkpyOWxXTWJJY1I4T1MwNms3cTFxU3EwRS9XVXZyUi9OSGI0WjBDeDFEUzQzRngzbmVPYlhxeXd0alo5YmlwYU5keGF6K3duOG1lYndNODZESCtaSTZsbzFwVDFOUlVQVmxGdkQ2UEtNdUJLUjA3SGhTMWxlM0U2N3FPM2pQbHBRNXNaV0ZsdCs4N21nMmxDeDF6VWJlMmk0MDFDazBzdC9hOHp3ZU10VnZIcTlTenBWcWxLalNTV0lTeHpOcFBML0U3M1ovVnExcTk3T3RVblVueTAxelNlWCs4YTdhdlpRMUNOdFFwNGFrOS9rOG9pYXpoSEIyaXY4QStaYWYzSmZNY044TlF1N1gwbS81NFJuL0FLdUNlSGp6WjcrcDZSRFVOVnQ3bXUwNk5DRDlUN1R6dG4ySFQ0eDFlcHA5dkMydDFLTldzbmllTm9yeHg3VE82MHlqVHVxMS9kck1GeVhmWklPS1RjbWE3cjlwcDFDK2pZYWJDclZyYzJKdm15cy9aWHRQWTB6aEMzVkpWTlFxemxVZTdoQ1dFdnY4VHp1QkxlTmJXSjE1K3M2TUhKWjgzdG41bXg4VTJ1bzN0dFR0ckZ4akNUYnF0eXcydkJlNDVkT3NhRmVsTy9uUzR2OEFqRkVpazF4WU92UGhiUnEwR3FIUEJyeGhWNXNmamsxVFg5S3I2VGNLblVmUFRudlRxSmRmWjd6MnRIMEhXZFAxR2xjVTUwb3dVa3FpVS9yUjhWK0I3SEdsdkN2dy9XbEpMbXBZbkYrVHpqNU5tVnpwbEs5czUxWFE4cWNmdVZ4eXM0d2RQVCtHZE51TlB0Njh1KzU2bEtNM2llMldzalNPRnJMMFpWYjJNNmxTYXp5T1Rpb3J5MjhUMjlFL3Nhei9BT25oL2xSb0dzNnRmWFdvVlpxNHEwNmNadFFoQ2JTU1hUcDQrMDNYME5PMCtqU3JUcEp0cmw4bHV5dmhpczRPdGZVNDBiKzVwVTFpRUtzb3hYc1RhUnhJT1VweWNweWNwU2VXMjh0c3A4K3F5VXB0eFdFMmM1VUNJR0FES1FxS1FtZGk1Sk5jdFNVWDFUd09wbEpZS1VFU3dVd0JqSTQ1KzA1V2NiUll2REJ0ejRPdG5RZFNqZVZadHh6RE9NUGJZMU82dDY5cldsUnVLVXFjMTFVa2JGdzl4TXJLaEcxdllTblNnc1FuSGR4WGt6WUZyMmgxb3B5dTZUOWs0dGZOSDdaMldsNmpTaktqTlU1ZFYvNnpkaU11UnIvQUVMMzA2cFVpcHEwNUh6WitxNWVHUGFldnhuY3d0bHBrNVN3NDNzSnYrNnM1K1p5WGZFK2tXOU45MVZkZVNXMGFjWDgzc2FWcldwVjlVdSsvcllpa3NRZ3VrVWI3aTl0OU1zZlJxVlRqbCtOeXVTaXNJK2g2N2JTdmRJdUxlbXN6bkQxVjV0Ym8rWU9uTlZPN2NKYzZmTHk0M3o1RzE4T2NVUW9XOExYVWVibGdzUXFwWjI4bWoyWHJXZ2MvZnU0b2Q1ajYzSStiNUdWN1NzdGJVS3lyS0RTM1RENFo3NU8xdzlheXN0R3Q3ZW9zVGpETWw1TnZPUGllVndqV2pjNnhyTmFEekdWV1BLL05aa2t6b2NROFZRcjBKV3VtcWFVOXBWbXNiZXhmMU92d1hxZGpwdnBUdTYzZDk1eWN2cXQ1eG5QUmUwM1MxVzFWNVF0NmNsd1F6bDlPVFNIRXNwSEoyaWI2amJmeW44enA4RTdjUTBWL0JMNUdmR09vMm1vM2xHcGFWZThqR25odmxhM3o3VHE4TVhkdlphelN1Ym1weVU0eGttOE45VjdEd0xpdlRscmFxS1M0ZUpiOU9oaHR4NU5vN1FkdEZwdi9BSjhma3oydFAvc3kzL2xSK1JxZkdPczZkcU9tUW9XZHc2bFJWVkpya2t0c1B6UjZ0bnhIbzlLeG8wcDNUVTQwNHhhN3VYWEh1UDFOTy90dlQ2c3ZNV0hHUFZlODJxU3p6T1BnQ3ZHV2xWYUdmV3AxVzJ2WTEvOEFaNC9ITnBVcDZyNlZ5dDA2MFY2M2dtbGpId1BKMGZVYmpUTHhWNlBySjdUZzN0Skc2VzNFbWozZExGZVRwTjlZVllaLzhIazI5eGE2bFlLMHF6NEpSNVo5M0l3eXBSd3pWZUh0R25xdGVhYzVVcVVJN3pTenY1R2ZFdWtVOUlsUmpDNWRXVlRMYWNjWVN3Yk5kY1M2UlowTVc4dTlmN3NLY2NMOGVocGVxMzlmVWJ5VnpYMmIyakZkSXJ5UFAxR2hwOWxhZVZDU25WZlZkUDhBQmpKUlN3YkoyZTNXMXpadCtLcVJYd2Y5RFpxVnZSdHFsemNMWjFwYzgyL1pGTCtoODg0WXY2ZW42eFRyMXB1RkZ4Y2FqdzNzMXRzdmFrYkxydkVtbTFOSnVhVnBjdWRhcEJ4aXU3a3V1ejNhOGoydEUxU2hEVDE1c2x4UXpoTjcvTDhHY0pMaDNOT3ZiaDNONVd1WDFxVGN2ZGxuMGEwN3ZWZEV0NVZYbFRqQ1V2ZW1tL2lqNWpFMjdoUFhiR3gwdDIxN1hkT1VhamNQVWxMMVh2NEx6eWVONGN2b1F1YWthN1NqTmI1NVpNYWN0OXowK09ibnVORGxUVHhLdE5RWHU2djVmRTZ2QUZwU1ZsVnZIRk9yS2JnbjVKSmZtZVR4ZnExdHFWYTNoYVZIT2xUaTIzeXRlcy9mN2ljTWEzSFM1VG8xNHlsYjFIbDh2V0w4ejBLbXAyMHRhVlNiVGhGWVQ2WjdsNGx4bm9jVWNRNmhaNnBVczdaUXBSZ2w2N2pseXlzNTM4UEQ3ajB1RUx6VWI2MXJWNzJUbEZ5U3B0eFN6NTlDWFd0OFBWcWFxMXBVcTdpdlZVcUxjdmlqcmFieFRaeXIxL1NXcmFnbEZVSUtEYnh2bHZDOXg2VUs5T25lK1pVdWs0dk9JNTJYeDZGejYyV3p6ZTBOWjFTaC9KL3F6Y2JEZlRxSDhxUHlORjR2MUMwMUhVS1ZXMHFPcENOTGxiNVd0OHZ6UFgwSGllMHBXVksydm5PbktuRlJVMG0wMHVuVGZKeDJPbzIxUFU3ampta3BZdytuMUVaSlNackdpVkZaY1FXczZxNU9Tc295VDI1YzdQUDRuMFBpQ2Q1VDBxdFYwOXRWNExtV0lwdHJ4Mjl4ckhHV3FhWnFHbndwV2RWVHE5NnBTL1p0YllmaTE3VWMvRC9GTktuYnd0OVNjazRMQ3FwWnl2YWE5UHIyMWpLcFpPcnRMZFNYUnYzaUxTMnllSEhpZlhITEN2Tjg5TzZqK1I3YmZHTHQxWGRlbkNISnpQbVVFMHNaMzJQVS9TdkRjWitrZDdiZDUxNWxTOWI1WlBFNGs0bmplVzhyT3dVbzA1N1RxUzJiWGtrU1VZV2RLVTY5MjV2b2xMLzBiUjVzOWZnRnVXaXprK3JyeWIrQnJIR2YrOGx6N29mNVVldndsck9tNmZwVG9YVnc0Vk84Y3Nja250OXlQRTRsdXJlODFtdGMyMCtlbkpSdzhOZEVsNG5QcWQxUnFhUlNoR2FjdHNyTy9KbU0ybkZIc2RuUCswM245eUh6WTdSdjlwcy83ay9tanFjRzZsWjZkV3VaM2xidTFPTVZIMVc4NGI4a1RqUFVyTFVhMXZLenE5NG9Sa3BlcTFqTFhtaU81by93SHl1SmNYYk8vdERLNE1IYTdQUDl2dWY1UytaZTBoWnViTCs3UDVvNlBCMm8ybW5YbGVwZDFYVGpLbnlwOHJlK2ZZWmNhYWxaNmxXdFpXZFh2RkNNbEwxV3NaeDVveGpjMGY0QzZYRXVMUExPL3RkaGxjR0RuN08zL3BTdXYrVC9BRlI2M0dOQ0Z6ZmFUYnorcFVydU12ZHNhOXdkZjJ1bmFoVnJYZFh1NFNwY3FmSzN2bGVSM2VMZFp0YnVWbFYwNjRjcWxDbzU1NUdzUGJIVmV3MzJOM2IwOUg0S2tsblBMTytNcm9WTmNCczJ0M1V0TDBhcmNXMUdNblNpbEdPTmtzcGVIZ2pUN1hpTFhyMjdwMEtOV1BOVWtrb3hwclkySFQrS05OdWJkUnU1ZHhVYXhLTW90eGZ1WjFOUTEvU3JLRW82VFJwT3RMWnpoUzVZeDl2VGM5Syt1YVZmaHJVN25oZ2x1bHpNcE5QZko3K3N2R2pYai81RS93REt6emVBL3dDd1YvTmtjZXBjUjZQWDA2NW9RdW5LcFVwU2pGZDFKWmJYdU9sd3JyZW1hZnBTdDdxNGNLblBKNDVKUForNUcrcGYycjFHRS9NV09GNzVYZERpWEZ6UEY0di9BTjViejN3L3lSUFk3T0grMXZ2N3RQOEEvbzhIaU81bzN1dDNOMWJ6NTZVM0hsZUdzNGlsNCs0OUxnclU3TFRaM2J2SzNkcW9vY3ZxdDV4elo2TDJuNWF4dUtjZGFkUnlYRHhTMzZkVFhGcmpObDRnMXVPbFhGclRsUzVvVlpOemw5bUs4dmJ2OERuMW13bzZ4cGpwODBXMnVlbFVXK0hqWis0MUhqUFU3TFVxOXZLenF1b29Sa3BlcTFqOFVkcmhQaUNqWjI4ck8vcU9OS085S2ZLM2orSFk5NytOVWF0N1Z0YThrNmN1VDZjdS93RDNjejQxbkRNT0NKTzAxNjRzcmlQSlZsQnh3L09MNmZoazluaks2MU95b1ViaXhxT0ZOTnFyaUNmbGg3cjNuaDhUMzJuVjd1aHFlbVhXTHVuSmN5N3VTNWw0UGRmZDdVZXhwdkZPbjNORlF2ZjJGVEdKSnJNWC93QyswMTJsZTNwVVo2ZjV5ajFqSlBvOStmZnVFMGx3NU5mdHRmMSs1dVlVS0Z5NTFKdkVZOTNIOGpzYTcrdE5QVGEwcit0UzlHZUZOTGt5OHYyTEo3LzZYNGRzMDZsR3BRakovd0RDcDd2OEVheHhQcnN0V2FvMFlTcDIwWGxKOVpQelp5WGJwMmx0SlZicHptK1NVdHZuekRhUzNadStpZjJKWmY4QVR3L3lvK1ozUCswMWY3NytadStsOFE2UlEwMjJvVkxweG5UcFJqSmQzTFpwTFBnYVJXYW5jVkpKNVRrMm45NXA4UzNOR3RiMEZUbW0xenc4OUVZMUdta1JHU0lrWkpINDAxRXdVRXlBVUV5T3VGNW1TNWd6dkU0MzFlTDhLc2w4V1lwR3I5bVhGbGZqbmdiUytMTHEybzIxenFOTjFLOU9pMzNjYWluS00rWE9Xb3VVVzBtMjBuakw2bTBJNmIyRHAzRTRQbzJ2dVY4d0FEbE1SZ3dhTTJRWktjYmlUbE9UQlJrbURpNVM4cG5ndURMSU9MQkhFNVdpWUdRY2FpWEhzT1RCR2laQmhnWU13ME1nd1M5aGVnWjNOSDAydnFkZVVLVW93aEJacVZKZElvM1VLTTYwMVRwckxaVXM3SFRJZTh0QnRyaFNocDJyVWJtdkJaZE54NWViM1BKNHRLaFdxM1ViV0ZPVHJTbHlLSGprNmExaFhvdEtTNThzYi9ncml6akI3MVRRTE9oSlVidldxRks1ZjduTGxMM3ZQNUhsNnRwOXhwbHozTmRKNVdZVGowa3ZOR2R4cGx4UWp4empzdWU2ZVBqamtWd2FPb3luclhXaVZLT2hVdFVqVzU0elVXNGNtT1ZQMjUzM3dkUFJyR3BxV29RdEtjdVRtVGNwWXp5cGVPRFhLeHJ3cXhwT1ByU3hqMzVJNHZPRHFtSjNOU3NYWjZ5OU5kWG5hbEdQUHk0K3NrK21mYWVyWDRlczdlNTlHcmE1UWhXMjlTVlBIWHA0bTJHbVhOUnlTajdMdzkwdHlxRE5mV3d5ZG5Wckd0cDE1SzJycGN5V1UxMGt2TkhOcnVtUFNiMk5zNi9mYzFOVDV1WGw2dHJHTXZ5Tk1yU3RCVGNvNDRYaCs1c2NMT2lOam1zYUhwVjdSdGxQa2RXYWh6WXpqSjdGZlF0UG9WWlVhMnZVSVZJdkVvdWx1dmlaMjloWHVJOGNFc0xiZHBmbGhRenlQQk1Udld0cmExZFJxMjFYVWFkS2pEUExYY2NxV0h0aFo4VDFKY1BXS3RGZWZweWwzRGx5cWZkYk4rWDFqWlIweTRycHVDVzN2WFQ1bFVHelhlaE1uZGxZMHA2eFRzTGU4aldwMUpSaXEwWWJiK3pQaDd6MGEyZzZkUXJTbzF1SUtNS2tIaVVYUjNUL0FNUktlbTNGUk54U3duam11ZjFJb004TEJVanUyTmhHNzFpT24wN2hPTXB5akdyeTdOSk41eG54d2RlK28raTN0YTI1dWZ1cHVITmpHY001NVc5U0ZQekd0czQrWkhFNHlNOUdscGpyYUxQVWFOWlZKVTVZcTB1WERpdlBPZHlhZnB2cE9uM045V3I5eFFvYlo1T2JtbDVMZGV6OFROV0ZlVWtsSG1zcjRkeXFEUFBNWkl5aWVycEdrVTcreXIzVmEramEwNkxTazVReXZtalhiMjFTNW41ZEpaWkVzdlk4ZEdSNldwYWJZVzFyS3RiNnhSdXBwckZPTU1ONys4NTlQMFMzcjZURFVMblVvMnNKemNNU3BaM3o1NU9oYVpjU3FPbWtzcFo1cmw4YzRMd004WkdXMkQxTlIwVjI5ajZkYVhkTzh0azhTbEZZY1g3VU5HMGluZjJGYThyMzBiU25SbHl5Y29aWGh2MVhtUDRaY3VyNVhEdmpQTll4M3p5SEE4bmxlSVo2V282ZnA5dmJPcmI2elJ1cHByRk9NTU4vRTV0TTBhaGM2WjZmY2FqQzFwODdoNjFQTy92eVZhYmNPcDVTU3pqUE5jdmpuQTRHZU5ndkx1ZWpxbGpZMnRDTlMxMVdsZHpja25DTU1OTEQzNi8rNU9qRmJISGNVSjBKY0UrZnhUL0JpMWduTDdDT0p5WUdEbkdEaVVTNDlobXhncVlNTURsd2NtQ05ESkREQmtrWEhzQkd3VEJra1JHUVJTcEdSZ2pKQUVaaXpOazZBR0xNN1pjMTFSajF6Tkw0bURQTzRnNGowemhIUjduaWJXWFc5QTAyUHBGYU5HSE5VbWsxaU1WbEp5YndsbHBaZTdTM045ckIxSzBJTHExK1NyZG55VDZHMnNTMUhzai9BRWZVcnduTFRMK3JRaFRUWE5DbkxGUk5wYjRjcHp3MzVOZUI5dFQyUHlKOUNUaU9GbHhmcS9EVmFVSXgxTzJqWG81VHk2bEZ2MVZqWlpqT1RlZnNMNy8xMGoxL0V0dTZPb1Q3UzMrdlA3NU1wckVqSU1tY0JzOEV3QlVRZUJDZ0FyQkNGUkNvb0JHVWpBQk44bFJRTUV3U1JrUmtRT05udmFabUhCV3BTcGY2eDFrcFk2OHZxL216dzJqdTZOcWRUVGFzMTNjYTFDcXVXclNsMGtqMU5McndvMW41andtbXM5c3JHU3dlSHVkS3pxWE5PNWhLejUxWFQ5VGtXWlo5aDdYQjdxVDRwY3J0U1ZmbG0zenh3K2I4K29ocStsV1VuWDAzUzNDNWFhaktwTnRRejVJOGVoZDNGRy9WOUdvKy9VM055ZmkzMU91bE9qWlZLY3ZNNDhTeTB1U1h6Nm1lVkhCanFjNmt0UXVaVmM5NTNzdWJQbms5dmlLVGx3em84NnYrczVXbG5yeTRYL2d4cmF0b3QxVTlLdk5IbEs1Nnk1S21JeWZ0UjVtdDZsWDFTNVZTcEZVNmNGeTA2Y2VrVWJKMUtGdlRyT05SUzh6a2xudm5MeU1wWjNOcHRyaUQwM1NOUHJ2Rkc5dHAwMzdKZXJ5djMvbWRIU3FOVFJMV3BXcXJsdWJpNGpiVS9aRlAxbi83NUk4aS93QlI5SnNkT29Vb1NwenM0dGMrZXIyM1g0SE5yT3RWZFN2TGF2T2x5Um9ZeEJTemw1eTM4RWQwdFV0c3FlZldna28vTkpQNmIvVXJtalBpVC9mU2Y4MmwvbGllbnhMcFZHNjF5cFhyYXJaVzBYR09ZVHFMblNTOGp3TlR2bGVhNUxVVlRjRTVSbHlONTZKTHI5eE5ldlZxZXB6dkkwM1RVb3BjcmVjWVJ6VkwrMlVhMlZ4Y1U4cGJyYmZjbkV0enM4VTM5Qy8xU0hvcmNxTktFYWFtL3dCN0hqOFR1ZG9MeHJWTC9wNC81cEd2UlhSNE5rMURYTkh2cTZyWGVrVktzMUZSVDczR3k5M3ZOZE82aGQwcXlxelVaU2NYdm5HMmUyU0tTZWNuamFDLzlPV1A4K0h6UGMxOWNQZnBlNGQxVXYxWDV2WFZOUjVjNDhNbzhXTjNhMHRicFh0cmF5cFVLYzR5VkxteTl1dTU2ZDFxdWlYVnhPdlgwV2M2azNtVGRackpsYVZLRUxhVkdVNDU0cyt0bkdNYzFzWkpwTEJyMVh1M1dxZHp6T2x6UGs1dXZMbmJQdE5ncnJIQVZ2anh1bi9VOE80N3VWeFVuUXB1blNsSnVFTTU1VjVIZm5xTVpjUDB0TDdwODBLcnFjK2RuMTJ4OTV3V2xhblM4NVNmT0xTK3FNRStaeDhPL3dCdVdYODZQelBXMXlQRDB0WXVYYzFOUVZibjlkUVVlWFBzeWp4ZE51RlozOUM2bEZ6VkthbGhlSjYxeHEyaDNGeE92VzBXY3FsUjVsTHZudXp0MCt2UjlEZE9jb3A4V2ZXejI5eGxGckdEcjhMT24rdEZzcVRrNmZlUzVPYnJqbGxqSjB0ZGVkYnZmNTgvbXpPeHZxVm5ya0wralFmY3duSnhwYzI2VFRXTS9lZWhXMVRRcTFhZGFyb2s1VG5KeWsrK2U3WnFoNU5hejhsMUZGcWJlK2VXT213MmF4azYvQzk4N1RVNDA1cm1vWEg3S3BId2Vlai9BUGZhZHZpNnJDMmRMUmJXTGhiMjZVcGVjcFBmZjhmaWVKYjFJMHIyblhVSHl3cUthajdFODRPenJkN0hVZFNxWGNhYnBxYVhxdDV4aFlNWVgzQnA4NlBGdm5DL3RmUDVad1RpOVhCMFgwTmo0YmpRcWNONnBDN3JTcFVYT0tsTlJ5MHR2QTExbmZzdFFqYjZQZVdEcE9UdUhGcVdlbURScFZ4VHQ2em5QbHd5L0hJa0drekRWTGJSNk51cFdGL1VyMWViRGpLbTQ3ZWZUM0h0V1ZHM3I4RlVJWE41RzFoNlEzenVEbGw3N1lScXJUUFJuZnhsdzdUMHRVcGMwSzNlYytkdkhiNG5SWjMxS002azV3U1RpMWpmRGUzekNrdHoyZFNoUjBiaDkyZEdwTzU5T2FtcTNMaUhLc2ZIOHh3L0cxZkN1b2VtT29xRHFybmRQNjNoMFBNaHFrSmFBOU11YVVxamhMbW8xRS9xZXo1L2laNk5xMXJhYVpYc2J1em5jVTYwK1pwVDVkdHZ5UFFwM3R1N21NazBvY0RTVHpoUEhKOTl6TlNXVHJhaFQwTlcrZFBxWGtxMlZ0VlM1Y2VQUTl2VEZadmd4eHY1Vm8wZlNIbDBzYzJmRHFlVHFGMW85VzFsVHM5TG5iMW5qRTNWY3NiNzdNNTlOMWV6bzZSK2o3eXhsY3c3eHoybnltbTJyVWFWekxpbEREaTFzbnc1OS9VSnBNNmVvdzBpRUlmbzJkM0tmTjYzZll4ajJZT3JIb2QvVTYrbDE3ZU1iSFQ1VzFUbVRjblVjc3JEMjNPbEZIaTMvRDV2cXVML0FMYzQrNXJsektQQUJIQ1FZQlFDa3dYQkV5aEVJeVlNaWVJQVNLQUVHQUFVQUFqQUlmSS9wY2FySFRPeFMvb09ITkxVcm1oWndmTmpsZk4zcmZ0MnBOZUhVK3R5UHlsOU9IaUduY2Exb1BETkdVWEswb3p1NjdVMDhTcU5SaEZyd2FVRy9hcEw3L2I4UFcvbjZoVFhSYi9UL2VES21zeVBpZlpoeEN1Rk8wSFErSUtsU3ZDaFozbE9kdzZIMTNSYnhVU1dWbk1ISlliU2VUK2l0clhvM0ZDblhvVmFkYWpVaXAwNmxPU2xHY1dzcHByWnByeFIvTVkvYnYwVk9OVnhWMmEwTk51YXFscU9oS0ZuV1dNWnBZZmNTMlNYMVl1SFZ0dW0yK3ArcDhYMkxxVVkzRVY3T3orRC93Qi9rMjFWdGsrd2xJaW56cG1nTUFJWUJmQXg4U2dvS3lJckFBSXloZ0JkQ0JESUJVQVI5UUEwWXRHWXdWTUhFME9VemFHQ1pHRGpjUnltYlJNRnlNR09CZzVNRTVSa2hoeWpsT1RBd1RJd1ljb2NUa3dUQmNnNDFFeTVUUEFHUVljb3daa3dUSlRGb25LY2lRNVM1R0RqNVNxSm5nWUdTWU1NRlNLQ1pLa1k0R0RMQXdBWU9JU01zRlF5TUdEaU9VendNRnlReDVRb21lQzRHUVlwRkFaQ2dvSmtGTWlCRHhESUFBRUNNb0FBQkNnRlpCbnpHUVVFQkdDRWFiZUVzdndSL1BIdGs0cWp4cDJrNnp4RFNoeVcxZXNxZHRIR0gzVUVvUWJXWHUxRk43NHkzZy9YSDBwZU1Id3IyVjNkQzJyVTRYK3NTZGhSaTVyblVKUmZlelVYdTBvK3JsZEhPTzZlTS9oZytnK0Q3SGdwU3VaZjFiTDRMbjkvd2I2VWNMSU40N0VlTzYvWi93QWUydXNaYnNLeTlHMUNtb0tUbFFsSk51T2NZa21sSmJycGpvMm5vNFAyRmFsQ3RUZE9heW5zemExay9wdmExNk4xYjBybTJyVTY5Q3JCVHAxS2MxS0U0dFpVb3RiTk5icG81MGZtYjZKbmEwcTlLbndEeFBxTDcyQ2pUMFd0V1gxb3BOZWp1ZWVxMjVFMTB6SE8wSXY5TUtTUGorcWFkVTArNGRLZkxvKzZPV1VYRm1TS1ltV1R6aUVEWmVwQUFpZ0FnREl5b0F4TWtOaUFwUXdBUWpCU01BQWhjZ29JVUVCVWlNSmw4QUNCQUlBb0FaU0I5Q0FNZ0lVQkFvQlNEQUJXVEJTZ2d3VURBQUFCQ1lCU0RBQUxnaEdBaWhBWUF5UmxJQ2dwRjFLVkFCa0hnQVVFS0NBREFCU0lwR01nZ2ZVaktZNURCV2NOMVhvMjFDcGNYRmFuUm8wb09kU3BVa294aEZMTGJiMlNTOFRsYlB6dDlMN3RNbHBPbnZnTFJybWNMKzlwS3BxVldsVmoreXQ1SnJ1V2x1cFRXRzA4ZW8xMVV6djB6VDZsL2NLakQ1dnNpeGp4TStJL1NEN1FLM0gzSDF6WHQ3cXBVMFN3bktocGxQTDVPVFpTcXBOSnAxSEZTM1djY3FmMVVmT1FEN0RRb3dvVTQwNExDV3gxcFlBQU5vT2F4dXJxeHZhRjdaWEZhMnVyZXBHclJyVXB1RTZjNHZNWlJrdDAwMG1tdWgrMGZvODlzMXR4N1p3MFBYYWxLMjRvb1U4eVNTaEMvaEZiMUlKYkthVzhvTGJyS0s1Y3hoK0tEbXNidTZzYjJqZTJWeFZ0cnFoVWpVbzFxVTNHZE9hZVZLTFc2YWUrVWVicW1tVXRSbytYUG4wZlptTW9xU1A2YXhrWnBuNTQ3RlBwRDJPdDh1ajhlVnJYVGRSOVNOQytqQndvWEwyaStmd3B6YjliTzBPdjFjSlA5Q1JlK0g0SHlxLzA2NHNLbkJXajhIMGZ3T2R4Y2VaeUFpQndrS0FBQ29FR1FBRUFDRkFBQU1YN0RJZ0JpVXBDRktDRE81UUdFeXZkR0tSQVpGQ0prb0xrUGNoUUNKRllBSVFxNkVZUUJXVHhMa2hRVk1NbVNOa0taZUJFRVhvQU1oa1lCQmtCRndDZ0FlSUJDakpHQVVnQUFJVWd3Q2xJbVhJSUFDSmdwU1pEWkFRcGl3eU40SU1oa2JMbkx4MVo4QTdhUHBFYVRvZE80MFhnbWRMVmRVY0owNVgvQUZ0N1NhbGpLVFdLMHNKdFk5VGVMekxlSjMyR20xNytwd1VWbnUraStKWXhiWjd2MGhlMlMxNENzWjZMb2xTbGM4VFhGUE1ZdEtVTEtMVzFTYTZPV040d2ZzYjJ3cGZpdSt1N3EvdmE5OWUzRlc1dXJpcEtyV3JWWk9VNms1UE1wU2IzYmJiZVMzOTNkWDk3V3ZiNjRxM04xWG02bGF0Vm01VHFTYnk1TnZkdHZ4T0ErcWFWcGRMVHFQQkRkdm0rL3dEbzZZeFVVQUFlbVpBQUFBQUFBK3E5bUhicnhwd1dxRmpjWEg2YzBla293VnBlVGJsU2d1VmN0S3A5YUNVWThxaTh4V2RvbnlvR212YjByaUhCVmltdmVScFBtZnZYc3o3WitDZU9GUnRyYS84QTBkcXM4SjJGNDFDY3BQbFdLY3ZxMU41WVNUNW5qUEtqNlBrL21HdG5sSDBmZ1B0cjdRZUVKd2hiNnpMVkxLRUZCV2VwdVZlbW94aTR4VVhsVGdsblpSa2xzc3BwWVB4MS93Q0VJeWJsYXl4N24relc2WFkvZStVTW41czRQK2xQcGRXRWFYRmZEdHphMUZGNXI2Zk5WWVNsbmIxSnRPS3gvRkxkZTNiN04yZDlvUENuYUJLclM0VTFSWDExUW9xdFd0TzdsQ3RUZzhKdmtrazJrMmszSEtUYTMzV2Z6RnpvbDliWjQ2YngzVzYreHFjSkkyM0l5WXpoVXB2RlNuT0QvaVRRVFBMbEZ4ZUdZbVF5WXRzWk1TR1dTNU1NaFNCVE5zRXlSdEFHUThOakZORmJSQUd5RTJHVVVHV1NtR1VYSUJrREhKV1FGSVFGUU1nVEpqa2dNc2dpS21BQ2tHU2tHUmtnSVV1UVFaQUxrWkprbVM1SVpseVlKbHlHVXlaR3laSTJpQXVTbUtLVkFNWkpramVBQzVHVEhJeWdESk1wam5CY2tCa0RGc1FqVXFQRk9FcHZ5aXNtVVUyOElGYklhWHgzMm44RWNFNmhXMDNpTFhLZHRxVkdtcWs3S0ZPZFNzc3g1b3B4aW55dHJEU2xqWnA5R21mSnVLUHBVNkpicWRQaHZocTl2cE9tMUd0ZVZZMEl4bnZoOHNlWnlpdG5qTVc5MXQxUFV0OUV2cmoyS2J4M2V5KzVrb1NaK2pXelFlMER0YjRFNExwMUk2cHJkRzV2SVRsQjJOaTQxN2hTaTBwUmxGUEVHczU5ZHh6aDR5MWcvSmZIZmJsMmg4WFVhOXBYMWFPbWFmVzJsYWFkRHVZdGNyaTR1ZVhVbEdTYnpGeWFlZW15UythSDZleDhIcFlsZFN6N2wrelpHbDNQclhhdjI3OFc4YVNyV09uMUt1Z2FMVWh5U3RMZXRtcFZUaTR5N3lxa25LTXVhU2NGaU9NSnB0WmZ5VUEvWTI5dFN0b0tuU2lrdmNiVXNBQUc4b0FBQi8vWiIsICJzaXplcyI6ICI1MTJ4NTEyIiwgInR5cGUiOiAiaW1hZ2UvcG5nIiwgInB1cnBvc2UiOiAiYW55IG1hc2thYmxlIn1dfQ==">
+  <meta name="theme-color" content="#080808">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SonicWM">
+  <link rel="apple-touch-icon" sizes="192x192" href="data:image/png;base64,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">
+  <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,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">
 </head>
 <body>
 
 <header>
-  <div class="logo">SONIC<span>/</span>WATERMARKER</div>
+  <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+    <div class="logo">SONIC<span>/</span>WATERMARKER</div>
+    <div class="lang-switch">
+      <button class="lang-btn active" id="langJa">JA</button>
+      <button class="lang-btn" id="langEn">EN</button>
+    </div>
+  </div>
   <div class="header-badges">
-    <div class="badge">完全無料</div>
-    <div class="badge">ブラウザ完結</div>
-    <div class="badge">枚数制限なし</div>
-    <div class="badge green">画像はサーバーに送信されません</div>
-    <div class="badge green">GPS・メタデータを自動削除</div>
+    <div class="badge" data-i18n="badge_free">完全無料</div>
+    <div class="badge" data-i18n="badge_browser">ブラウザ完結</div>
+    <div class="badge" data-i18n="badge_unlimited">枚数制限なし</div>
+    <div class="badge green" data-i18n="badge_privacy">画像はサーバーに送信されません</div>
+    <div class="badge green" data-i18n="badge_meta">GPS・メタデータを自動削除</div>
   </div>
 </header>
 
 <div class="app">
-  <aside class="sidebar">
+  <button class="mobile-sidebar-toggle" id="mobileSidebarToggle" aria-expanded="false">
+    <span data-i18n="mobile_settings">⚙ 設定パネル</span>
+    <span class="mobile-sidebar-toggle-icon">▼</span>
+  </button>
+  <aside class="sidebar" id="mainSidebar">
 
     <div>
-      <div class="section-label">01 — 対象画像</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <div class="section-label" style="margin-bottom:0" data-i18n="label_target">01 — 対象画像</div>
+        <button class="btn-clear-all" id="clearAllBtn" data-i18n="btn_clear_all" style="display:none">✕ 全削除</button>
+      </div>
       <div class="drop-zone" id="imgDropZone">
-        <input type="file" id="imgInput" accept="image/*" multiple>
+        <input type="file" id="imgInput" accept="image/*,.heic,.heif,.tif,.tiff,.bmp,.svg,.avif,.gif" multiple>
         <span class="drop-icon">🖼</span>
-        <div class="drop-title">画像をドロップ</div>
-        <div class="drop-sub">複数選択可・枚数制限なし · PNG / JPEG / WebP</div>
+        <div class="drop-title" data-i18n="drop_title">画像をドロップ</div>
+        <div class="drop-sub" data-i18n="drop_sub">複数選択可・枚数制限なし · PNG/JPEG/WebP/GIF/BMP/TIFF/AVIF/SVG/HEIC</div>
         <div id="imgCount" style="display:none" class="file-count"></div>
       </div>
+      <div class="heic-notice" id="heicNotice" data-i18n="heic_notice">⚠ HEICファイルが含まれています。変換中…</div>
     </div>
 
     <div>
-      <div class="section-label">02 — ウォーターマーク</div>
+      <div class="section-label" data-i18n="label_wm">02 — ウォーターマーク</div>
       <div class="wm-tabs">
-        <button class="wm-tab active" data-tab="image">画像WM</button>
-        <button class="wm-tab" data-tab="text">テキストWM</button>
+        <button class="wm-tab active" data-tab="image" data-i18n="tab_img">画像WM</button>
+        <button class="wm-tab" data-tab="text" data-i18n="tab_txt">テキストWM</button>
       </div>
 
       <div id="imageWmPanel">
         <div class="drop-zone" id="wmDropZone">
           <input type="file" id="wmInput" accept="image/*">
           <span class="drop-icon">💧</span>
-          <div class="drop-title">WM画像をドロップ</div>
-          <div class="drop-sub">PNG推奨（透過対応）</div>
+          <div class="drop-title" data-i18n="wm_drop_title">WM画像をドロップ</div>
+          <div class="drop-sub" data-i18n="wm_drop_sub">PNG推奨（透過対応）</div>
         </div>
         <img id="wmThumb" class="wm-thumb" alt="watermark preview">
       </div>
@@ -454,14 +1182,14 @@
       <div class="text-wm-panel" id="textWmPanel">
         <input class="txt-input" type="text" id="wmText" placeholder="透かし文字を入力…" value="@roroai290K">
         <div class="control-row">
-          <div class="control-header"><span class="control-name">フォントサイズ</span></div>
+          <div class="control-header"><span class="control-name" data-i18n="ctrl_font">フォントサイズ</span></div>
           <div class="control-input-row">
             <input type="range" id="fontSizeSlider" min="12" max="200" value="48">
             <input type="number" class="num-input" id="fontSizeNum" min="12" max="200" value="48"><span style="font-size:9px;color:var(--text-muted)">px</span>
           </div>
         </div>
         <div class="color-row">
-          <span class="color-label">文字色</span>
+          <span class="color-label" data-i18n="ctrl_color">文字色</span>
           <input type="color" id="textColor" value="#ffffff">
         </div>
       </div>
@@ -470,11 +1198,11 @@
     <div class="section-divider"></div>
 
     <div>
-      <div class="section-label">03 — 設定</div>
+      <div class="section-label" data-i18n="label_settings">03 — 設定</div>
       <div class="control-group">
 
         <div class="control-row">
-          <div class="control-header"><span class="control-name">サイズ</span></div>
+          <div class="control-header"><span class="control-name" data-i18n="ctrl_size">サイズ</span></div>
           <div class="control-input-row">
             <input type="range" id="sizeSlider" min="1" max="100" value="30">
             <input type="number" class="num-input" id="sizeNum" min="1" max="100" value="30"><span style="font-size:9px;color:var(--text-muted)">%</span>
@@ -482,7 +1210,7 @@
         </div>
 
         <div class="control-row">
-          <div class="control-header"><span class="control-name">透明度</span></div>
+          <div class="control-header"><span class="control-name" data-i18n="ctrl_opacity">透明度</span></div>
           <div class="control-input-row">
             <input type="range" id="opacitySlider" min="1" max="100" value="70">
             <input type="number" class="num-input" id="opacityNum" min="1" max="100" value="70"><span style="font-size:9px;color:var(--text-muted)">%</span>
@@ -490,7 +1218,7 @@
         </div>
 
         <div class="control-row">
-          <div class="control-header"><span class="control-name">回転</span></div>
+          <div class="control-header"><span class="control-name" data-i18n="ctrl_rotate">回転</span></div>
           <div class="control-input-row">
             <input type="range" id="rotateSlider" min="-180" max="180" value="0">
             <input type="number" class="num-input" id="rotateNum" min="-180" max="180" value="0"><span style="font-size:9px;color:var(--text-muted)">°</span>
@@ -498,7 +1226,7 @@
         </div>
 
         <div class="control-row">
-          <div class="control-header"><span class="control-name">余白</span></div>
+          <div class="control-header"><span class="control-name" data-i18n="ctrl_margin">余白</span></div>
           <div class="control-input-row">
             <input type="range" id="marginSlider" min="0" max="200" value="20">
             <input type="number" class="num-input" id="marginNum" min="0" max="200" value="20"><span style="font-size:9px;color:var(--text-muted)">px</span>
@@ -506,13 +1234,13 @@
         </div>
 
         <div class="toggle-row">
-          <span class="toggle-label">タイル配置（全面繰り返し）</span>
+          <span class="toggle-label" data-i18n="ctrl_tile">タイル配置（全面繰り返し）</span>
           <button class="toggle" id="tileToggle"></button>
         </div>
 
         <div id="positionSection">
           <div class="control-row">
-            <div class="control-header"><span class="control-name">位置</span></div>
+            <div class="control-header"><span class="control-name" data-i18n="ctrl_position">位置</span></div>
             <div class="position-grid" id="posGrid">
               <button class="pos-btn" data-pos="top-left">↖</button>
               <button class="pos-btn" data-pos="top-center">↑</button>
@@ -529,7 +1257,7 @@
 
         <div id="tileSection" style="display:none">
           <div class="control-row">
-            <div class="control-header"><span class="control-name">タイル間隔</span></div>
+            <div class="control-header"><span class="control-name" data-i18n="ctrl_tile_gap">タイル間隔</span></div>
             <div class="control-input-row">
               <input type="range" id="tileGapSlider" min="0" max="200" value="20">
               <input type="number" class="num-input" id="tileGapNum" min="0" max="200" value="20"><span style="font-size:9px;color:var(--text-muted)">px</span>
@@ -543,21 +1271,43 @@
     <div class="section-divider"></div>
 
     <div>
-      <div class="section-label">04 — 出力形式</div>
+      <div class="section-label" data-i18n="label_output">04 — 出力形式</div>
       <div class="format-row" style="margin-bottom:9px">
         <button class="fmt-btn active" data-fmt="png">PNG</button>
         <button class="fmt-btn" data-fmt="jpeg">JPEG</button>
         <button class="fmt-btn" data-fmt="webp">WebP</button>
       </div>
-      <div class="section-label" style="margin-bottom:6px">出力解像度</div>
-      <div class="res-row">
-        <button class="res-btn active" data-scale="1">元のまま</button>
+      <div class="control-header">
+        <span class="control-name" data-i18n="label_res">出力解像度</span>
+      </div>
+      <div class="res-row" style="margin-bottom:8px">
+        <button class="res-btn active" data-scale="1" data-i18n="res_orig">元のまま</button>
         <button class="res-btn" data-scale="0.75">75%</button>
         <button class="res-btn" data-scale="0.5">50%</button>
+      </div>
+      <div class="res-scale-wrap">
+        <div class="res-scale-header">
+          <span class="res-scale-label" data-i18n="res_scale_label">カスタム</span>
+          <span class="res-scale-val" id="resScaleVal">100%</span>
+        </div>
+        <div class="res-scale-row">
+          <input type="range" id="resScaleSlider" min="10" max="100" value="100" style="flex:1">
+          <input type="number" class="res-num-input" id="resScaleNum" min="10" max="100" value="100">
+          <span style="font-size:9px;color:var(--text-muted)">%</span>
+        </div>
       </div>
     </div>
 
     <div class="section-divider"></div>
+
+
+    <div class="section-divider"></div>
+
+    <div class="preset-section">
+      <div class="section-label" data-i18n="label_preset">05 — プリセット</div>
+      <div class="preset-slots" id="presetSlots"></div>
+      <div class="preset-limit" data-i18n="preset_limit">最大3件まで保存できます（無料版）</div>
+    </div>
 
     <!-- PRO BANNER -->
     <div class="pro-banner">
@@ -566,23 +1316,20 @@
         <span class="pro-badge">Coming Soon</span>
       </div>
       <div class="pro-features">
-        <div class="pro-feature-item">プリセット保存・呼び出し（設定を登録）</div>
-        <div class="pro-feature-item">WM複数同時配置（例：左上＋右下）</div>
-        <div class="pro-feature-item">一括ZIPにフォルダ分けで保存</div>
-        <div class="pro-feature-item">商用利用ライセンス付き</div>
-        <div class="pro-feature-item">新機能の先行利用</div>
-        <div class="pro-feature-item">優先サポート</div>
+        <div class="pro-feature-item" data-i18n="pro_f1">プリセット保存・呼び出し（設定を登録）</div>
+        <div class="pro-feature-item" data-i18n="pro_f2">WM複数同時配置（例：左上＋右下）</div>
+        <div class="pro-feature-item" data-i18n="pro_f3">一括ZIPにフォルダ分けで保存</div>
+        <div class="pro-feature-item" data-i18n="pro_f4">商用利用ライセンス付き</div>
+        <div class="pro-feature-item" data-i18n="pro_f5">新機能の先行利用</div>
+        <div class="pro-feature-item" data-i18n="pro_f6">優先サポート</div>
       </div>
       <button class="pro-cta" onclick="alert('PRO版は近日公開予定です！\n@roroai290K をフォローして最新情報をチェック！')">▶ 事前登録・詳細を見る</button>
     </div>
 
     <button class="btn-process" id="processBtn" disabled>
-      <div class="btn-inner"><span>▶</span><span>処理を実行</span></div>
+      <div class="btn-inner"><span>▶</span><span data-i18n="btn_process">処理を実行</span></div>
     </button>
-    <div class="progress-bar" id="progressBar">
-      <div class="progress-fill" id="progressFill"></div>
-    </div>
-    <div class="progress-text" id="progressText"></div>
+
 
   </aside>
 
@@ -590,17 +1337,33 @@
 
     <div>
       <div class="preview-header">
-        <div class="preview-title">プレビュー</div>
-        <div class="preview-sub" id="previewSub">画像を選択してください</div>
+        <div class="preview-title" data-i18n="title_preview">プレビュー</div>
+        <div class="preview-sub" id="previewSub" data-i18n="preview_placeholder">画像を選択してください</div>
       </div>
       <div style="margin-top:13px">
         <div class="empty-state" id="emptyState">
           <span class="empty-state-icon">⬡</span>
           <span class="empty-state-text">画像をロードするとプレビューが表示されます</span>
         </div>
-        <div class="canvas-wrap" id="canvasWrap" style="display:none">
-          <canvas id="previewCanvas"></canvas>
-          <button class="expand-btn" id="expandBtn">⤢ 拡大</button>
+        <div class="canvas-wrap" id="canvasWrap" style="display:none; position:relative;">
+          <div class="preview-spinner" id="previewSpinner"></div>
+          <!-- 通常プレビュー -->
+          <canvas id="previewCanvas" style="max-width:100%;display:block;border:1px solid var(--border)"></canvas>
+          <!-- 左右比較 -->
+          <div class="side-compare-wrap" id="sideCompareWrap">
+            <div class="side-compare-panel">
+              <div class="side-compare-label before" data-i18n="cmp_before">Before</div>
+              <canvas class="side-compare-canvas" id="compareBefore"></canvas>
+            </div>
+            <div class="side-compare-panel">
+              <div class="side-compare-label after" data-i18n="cmp_after">After</div>
+              <canvas class="side-compare-canvas" id="compareAfter"></canvas>
+            </div>
+          </div>
+          <div style="display:flex;gap:6px;margin-top:6px">
+            <button class="expand-btn" id="expandBtn" data-i18n="btn_expand" style="position:static;margin:0">⤢ 拡大</button>
+            <button class="compare-toggle-btn" id="compareToggleBtn" data-i18n="btn_compare" style="position:static;margin:0">⇔ 比較</button>
+          </div>
         </div>
       </div>
     </div>
@@ -608,19 +1371,22 @@
     <div class="divider"></div>
 
     <div id="imageStripSection" style="display:none">
-      <div class="preview-header">
-        <div class="preview-title">画像一覧</div>
-        <div class="preview-sub" id="stripSub"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px">
+        <div style="display:flex;align-items:baseline;gap:10px">
+          <div class="preview-title" data-i18n="title_list">画像一覧</div>
+          <div class="preview-sub" id="stripSub"></div>
+        </div>
+        <button class="btn-clear-all" id="clearAllBtnStrip" style="display:none" data-i18n="btn_clear_all">✕ 全削除</button>
       </div>
-      <div class="image-grid" id="imageGrid" style="margin-top:13px"></div>
+      <div class="image-grid" id="imageGrid"></div>
     </div>
 
     <div id="resultsSection" style="display:none">
       <div class="divider"></div>
       <div style="margin-top:18px">
         <div class="preview-header">
-          <div class="preview-title">出力結果</div>
-          <button class="btn-dl-all" id="dlAllBtn">▼ 全てダウンロード (ZIP)</button>
+          <div class="preview-title" data-i18n="title_results">出力結果</div>
+          <button class="btn-dl-all" id="dlAllBtn" data-i18n="btn_dl_all">▼ 全てダウンロード (ZIP)</button>
         </div>
         <div class="download-grid" id="downloadGrid" style="margin-top:13px"></div>
       </div>
@@ -629,13 +1395,27 @@
   </main>
 </div>
 
+
+
+<!-- NOW LOADING オーバーレイ -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-now">Now Loading</div>
+  <div class="loading-pct-big" id="loadingPctBig">0<sup>%</sup></div>
+  <div class="loading-bar-wrap">
+    <div class="loading-bar-fill" id="loadingBarFill"></div>
+  </div>
+  <div class="loading-sub" id="loadingSubText"></div>
+  <div class="loading-ring"></div>
+</div>
+
+
 <!-- MODAL -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal-inner" id="modalInner">
     <canvas id="modalCanvas"></canvas>
     <div class="modal-bar">
       <span class="modal-info" id="modalInfo"></span>
-      <button class="modal-close" id="modalClose">✕ 閉じる</button>
+      <button class="modal-close" id="modalClose" data-i18n="btn_close">✕ 閉じる</button>
     </div>
   </div>
 </div>
@@ -644,29 +1424,68 @@
 
 <footer>
   <div class="footer-left">
-    <div class="footer-credit">Created by <span>@roroai290K</span> &middot; SonicWatermarker v2.0</div>
-    <div class="footer-license">
-      &copy; 2025&ndash;2026 @roroai290K &middot; All Rights Reserved &middot; 再配布・販売・改変・二次利用・商用利用を禁止 &middot; 個人利用のみ許可<br>
-      SNS等への投稿時は作者名 @roroai290K の明記必須 &middot; 本アプリ使用により生じた損害について作者は一切責任を負いません
+    <div class="footer-credit">Created by <span>@roroai290K</span> &middot; SonicWatermarker v2.3</div>
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+      <div class="footer-license" id="footerLicense">&copy; 2025&ndash;2026 @roroai290K &middot; All Rights Reserved</div>
+      <button class="terms-btn" id="termsBtn" data-i18n="btn_terms">利用規約</button>
     </div>
   </div>
   <div class="footer-right">
     <div class="sys-req">
       <strong>動作環境（最小要件）</strong>
       Chrome 90+ &nbsp;/&nbsp; Firefox 88+ &nbsp;/&nbsp; Safari 14+ &nbsp;/&nbsp; Edge 90+<br>
-      JavaScript 有効必須 &middot; Canvas API 対応ブラウザ必須<br>
-      処理枚数制限なし（端末メモリに依存） &middot; インターネット接続不要
+      PC: Windows 10+ / macOS 11+・RAM 4GB以上推奨　スマートフォン: iOS 14+ / Android 10+・RAM 3GB以上推奨<br>
+      JavaScript 有効必須 &middot; Canvas API 対応ブラウザ必須 &middot; インターネット接続不要
     </div>
     <div class="free-badge">完全無料</div>
   </div>
 </footer>
 
-<script>
-// JSZip for ZIP download
-const zipScript = document.createElement('script');
-zipScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
-document.head.appendChild(zipScript);
+<!-- 利用規約モーダル -->
+<div class="terms-overlay" id="termsOverlay">
+  <div class="terms-modal">
+    <div class="terms-header">
+      <span class="terms-title" data-i18n="terms_title">利用規約</span>
+      <button class="terms-close-btn" id="termsCloseBtn" data-i18n="btn_terms_agree">✓ 同意して閉じる</button>
+    </div>
+    <div class="terms-body">
 
+      <div class="terms-item">
+        <div class="terms-item-label" data-i18n="terms_l1">非保存・プライバシー保護</div>
+        <div class="terms-item-text" data-i18n="terms_t1">アップロードされた画像はすべてブラウザのメモリ内のみで処理され、外部サーバーへの送信・保存は一切行いません。また、処理の過程でEXIFデータ（位置情報・撮影日時・端末情報等）は自動的に破棄されます。</div>
+      </div>
+
+      <div class="terms-item">
+        <div class="terms-item-label" data-i18n="terms_l2">AI学習への不使用</div>
+        <div class="terms-item-text" data-i18n="terms_t2">本ツールに入力された画像・テキストを含むいかなるデータも、AI・機械学習モデルの学習・改善目的に使用することは一切ありません。</div>
+      </div>
+
+      <div class="terms-item">
+        <div class="terms-item-label" data-i18n="terms_l3">著作権</div>
+        <div class="terms-item-text" data-i18n="terms_t3">本ツールで生成された画像の著作権は、元の画像の権利者に帰属します。本ツール自体に関するすべての権利は @roroai290K に帰属します。ツールの改変・再配布・販売・商用利用はお断りしております。</div>
+      </div>
+
+      <div class="terms-item">
+        <div class="terms-item-label" data-i18n="terms_l4">禁止事項</div>
+        <div class="terms-item-text" data-i18n="terms_t4">公序良俗に反する画像・第三者の権利を侵害する画像への使用を禁止します。肖像権・著作権等の権利処理はご利用者自身の責任において行ってください。</div>
+      </div>
+
+      <div class="terms-item">
+        <div class="terms-item-label" data-i18n="terms_l5">免責事項</div>
+        <div class="terms-item-text" data-i18n="terms_t5">本ツールの利用によって生じたいかなる損害・トラブルについても、作者は一切の責任を負いません。ご利用は自己責任のもとでお願いします。</div>
+      </div>
+
+    </div>
+    <div class="terms-footer">&copy; 2025&ndash;2026 @roroai290K &middot; Last updated: 2026</div>
+  </div>
+</div>
+
+<script>
+// =========================================================
+// SonicWatermarker v2.2 — Zero external dependencies
+// =========================================================
+
+// ── State ─────────────────────────────────────────────────
 const state = {
   images: [], watermark: null, wmMode: 'image',
   selectedIdx: 0, position: 'bottom-right',
@@ -677,365 +1496,1233 @@ const state = {
   results: []
 };
 
-// ── キャッシュ ──────────────────────────────────
-// アップロード済み画像をImageオブジェクトとして保持（毎回読み込まない）
-const imgCache = new Map();   // url → HTMLImageElement
-let   wmCache  = null;        // テキストWM用オフスクリーンCanvas
-
-const $ = id => document.getElementById(id);
-
-// ── デバウンス ──────────────────────────────────
-// スライダー操作が止まってから描画（もっさり防止）
+const imgCache = new Map();
+const ctxCache = new WeakMap();
+let wmCache = null;
+let currentLang = 'ja';
+const $el = (id) => document.getElementById(id);
 let previewTimer = null;
+let previewRafId = null;
+
 function schedulePreview() {
   clearTimeout(previewTimer);
-  previewTimer = setTimeout(renderPreview, 40); // 40ms待ってから描画
+  if (previewRafId) { cancelAnimationFrame(previewRafId); previewRafId = null; }
+  previewTimer = setTimeout(function() {
+    previewRafId = requestAnimationFrame(function() {
+      previewRafId = null;
+      renderPreview();
+    });
+  }, 60);
 }
 
-// ── ドラッグオーバー ────────────────────────────
-[$('imgDropZone'), $('wmDropZone')].forEach(z => {
-  z.addEventListener('dragover', e => { e.preventDefault(); z.classList.add('drag-over'); });
-  z.addEventListener('dragleave', () => z.classList.remove('drag-over'));
-  z.addEventListener('drop', e => { e.preventDefault(); z.classList.remove('drag-over'); });
+// ── i18n ──────────────────────────────────────────────────
+const T = {
+  ja: {
+    badge_free:'完全無料', badge_browser:'ブラウザ完結', badge_unlimited:'枚数制限なし',
+    badge_privacy:'画像はサーバーに送信されません', badge_meta:'GPS・メタデータを自動削除',
+    label_target:'01 — 対象画像', drop_title:'画像をドロップ',
+    drop_sub:'複数選択可・枚数制限なし · PNG/JPEG/WebP/GIF/BMP/TIFF/AVIF/SVG',
+    heic_notice:'⚠ HEICファイルが含まれています。変換中…',
+    label_wm:'02 — ウォーターマーク', tab_img:'画像WM', tab_txt:'テキストWM',
+    label_settings:'03 — 設定', ctrl_size:'サイズ', ctrl_opacity:'透明度',
+    ctrl_rotate:'回転', ctrl_margin:'余白', ctrl_tile:'タイル配置（全面繰り返し）',
+    ctrl_position:'位置', ctrl_tile_gap:'タイル間隔', ctrl_font:'フォントサイズ', ctrl_color:'文字色',
+    label_output:'04 — 出力形式', label_res:'出力解像度', res_orig:'元のまま', res_scale_label:'スケール',
+    pro_label:'⚡ PRO版 — 近日公開', pro_cta:'▶ 事前登録・詳細を見る',
+    pro_alert:'PRO版は近日公開予定です！\n@roroai290K をフォローして最新情報をチェック！',
+    btn_process:'処理を実行', title_preview:'プレビュー',
+    preview_placeholder:'画像を選択してください',
+    empty_text:'画像をロードするとプレビューが表示されます',
+    btn_expand:'⤢ 拡大', title_list:'画像一覧',
+    strip_sub:'枚 · クリックでプレビュー', count_sel:'枚選択中',
+    wm_drop_title:'WM画像をドロップ', wm_drop_sub:'PNG推奨（透過対応）',
+    title_results:'出力結果', btn_dl_all:'▼ 全てダウンロード (ZIP)',
+    zip_progress:'⏳ ZIP作成中…', processing:'処理中…', slash:'/', unit:'枚',
+    done:'完了！', done_meta:'枚処理しました · GPS・メタデータを削除済み',
+    btn_close:'✕ 閉じる',
+    sys_title:'動作環境（最小要件）',
+    sys1:'Chrome 90+ / Firefox 88+ / Safari 14+ / Edge 90+',
+    sys2:'PC: Windows 10+ / macOS 11+・RAM 4GB以上推奨　スマートフォン: iOS 14+ / Android 10+・RAM 3GB以上推奨',
+    sys3:'JavaScript 有効必須 · Canvas API 対応ブラウザ必須 · インターネット接続不要',
+    free_badge:'完全無料',
+    pro_f1:'プリセット保存・呼び出し（設定を登録）',
+    pro_f2:'WM複数同時配置（例：左上＋右下）',
+    pro_f3:'一括ZIPにフォルダ分けで保存',
+    pro_f4:'商用利用ライセンス付き',
+    pro_f5:'新機能の先行利用',
+    pro_f6:'優先サポート',
+    cmp_before:'前', cmp_after:'後', btn_compare:'⇔ 比較',
+    footer_license:'© 2025–2026 @roroai290K · All Rights Reserved',
+    btn_clear_all:'✕ 全削除', res_scale_label:'カスタム',
+    zip_popup_title:'処理完了', zip_popup_desc:'ZIPファイルに名前を付けて保存します',
+    zip_btn_save:'▼ 保存する', zip_btn_cancel:'後で',
+    label_preset:'05 — プリセット', preset_empty:'空き', preset_limit:'最大3件まで保存できます（無料版）',
+    preset_save:'+ 現在の設定を保存', preset_load:'▶ 適用', preset_del:'削除',
+    preset_saved:'保存しました', preset_loaded:'✓ 適用済み',
+    preset_overwrite:'上書き', preset_name_ph:'プリセット名を入力…',
+    preset_confirm:'保存', preset_cancel:'キャンセル',
+    mobile_settings:'⚙ 設定パネル',
+    btn_terms_agree:'✓ 同意して閉じる',
+    btn_terms:'利用規約',
+    terms_title:'利用規約',
+    terms_l1:'非保存・プライバシー保護',
+    terms_t1:'アップロードされた画像はすべてブラウザのメモリ内のみで処理され、外部サーバーへの送信・保存は一切行いません。また、処理の過程でEXIFデータ（位置情報・撮影日時・端末情報等）は自動的に破棄されます。',
+    terms_l2:'AI学習への不使用',
+    terms_t2:'本ツールに入力された画像・テキストを含むいかなるデータも、AI・機械学習モデルの学習・改善目的に使用することは一切ありません。',
+    terms_l3:'著作権',
+    terms_t3:'本ツールで生成された画像の著作権は、元の画像の権利者に帰属します。本ツール自体に関するすべての権利は @roroai290K に帰属します。ツールの改変・再配布・販売・商用利用はお断りしております。',
+    terms_l4:'禁止事項',
+    terms_t4:'公序良俗に反する画像・第三者の権利を侵害する画像への使用を禁止します。肖像権・著作権等の権利処理はご利用者自身の責任において行ってください。',
+    terms_l5:'免責事項',
+    terms_t5:'本ツールの利用によって生じたいかなる損害・トラブルについても、作者は一切の責任を負いません。ご利用は自己責任のもとでお願いします。',
+  },
+  en: {
+    badge_free:'Free', badge_browser:'Browser Only', badge_unlimited:'Unlimited Images',
+    badge_privacy:'No Server Upload', badge_meta:'GPS & Metadata Removed',
+    label_target:'01 — Target Images', drop_title:'Drop Images Here',
+    drop_sub:'Multi-select · No limit · PNG/JPEG/WebP/GIF/BMP/TIFF/AVIF/SVG',
+    heic_notice:'⚠ HEIC file detected. Converting…',
+    label_wm:'02 — Watermark', tab_img:'Image WM', tab_txt:'Text WM',
+    label_settings:'03 — Settings', ctrl_size:'Size', ctrl_opacity:'Opacity',
+    ctrl_rotate:'Rotate', ctrl_margin:'Margin', ctrl_tile:'Tile (Repeat Across Image)',
+    ctrl_position:'Position', ctrl_tile_gap:'Tile Gap', ctrl_font:'Font Size', ctrl_color:'Text Color',
+    label_output:'04 — Output', label_res:'Resolution', res_orig:'Original', res_scale_label:'Scale',
+    pro_label:'⚡ PRO — Coming Soon', pro_cta:'▶ Pre-register / Learn More',
+    pro_alert:'PRO version coming soon!\nFollow @roroai290K for updates!',
+    btn_process:'Process Images', title_preview:'Preview',
+    preview_placeholder:'Select an image to preview',
+    empty_text:'Load images to see preview',
+    btn_expand:'⤢ Expand', title_list:'Image List',
+    strip_sub:'files · Click to preview', count_sel:'files selected',
+    wm_drop_title:'Drop WM Image Here', wm_drop_sub:'PNG recommended (transparency)',
+    title_results:'Results', btn_dl_all:'▼ Download All (ZIP)',
+    zip_progress:'⏳ Creating ZIP…', processing:'Processing…', slash:'/', unit:'',
+    done:'Done!', done_meta:'files processed · GPS & Metadata removed',
+    btn_close:'✕ Close',
+    sys_title:'System Requirements',
+    sys1:'Chrome 90+ / Firefox 88+ / Safari 14+ / Edge 90+',
+    sys2:'PC: Windows 10+ / macOS 11+・4GB RAM recommended　Mobile: iOS 14+ / Android 10+・3GB RAM recommended',
+    sys3:'JavaScript enabled · Canvas API required · No internet connection required',
+    free_badge:'Completely Free',
+    pro_f1:'Preset save & recall',
+    pro_f2:'Multiple WM placement (e.g. top-left + bottom-right)',
+    pro_f3:'ZIP with organized folders',
+    pro_f4:'Commercial use license',
+    pro_f5:'Early access to new features',
+    pro_f6:'Priority support',
+    cmp_before:'Before', cmp_after:'After', btn_compare:'⇔ Compare',
+    footer_license:'© 2025–2026 @roroai290K · All Rights Reserved',
+    btn_clear_all:'✕ Clear All', res_scale_label:'Custom',
+    zip_popup_title:'Processing Complete', zip_popup_desc:'Save your images as a ZIP file',
+    zip_btn_save:'▼ Save ZIP', zip_btn_cancel:'Later',
+    label_preset:'05 — Presets', preset_empty:'Empty', preset_limit:'Up to 3 presets (Free)',
+    preset_save:'+ Save Current', preset_load:'▶ Apply', preset_del:'Del',
+    preset_saved:'Saved', preset_loaded:'✓ Applied',
+    preset_overwrite:'Overwrite', preset_name_ph:'Enter preset name…',
+    preset_confirm:'Save', preset_cancel:'Cancel',
+    mobile_settings:'⚙ Settings',
+    btn_terms_agree:'✓ Agree & Close',
+    btn_terms:'Terms of Use',
+    terms_title:'Terms of Use',
+    terms_l1:'Privacy & Data Protection',
+    terms_t1:'All uploaded images are processed exclusively within your browser memory. No data is ever sent to or stored on external servers. EXIF metadata (GPS location, timestamps, device info, etc.) is automatically stripped during processing.',
+    terms_l2:'No AI Training',
+    terms_t2:'No images, text, or any other data submitted to this tool will ever be used for AI or machine learning model training or improvement purposes.',
+    terms_l3:'Copyright',
+    terms_t3:'Copyright of processed images remains with the original rights holder. All rights to this tool itself belong to @roroai290K. Modification, redistribution, resale, or commercial use of this tool is prohibited.',
+    terms_l4:'Prohibited Use',
+    terms_t4:'Use of this tool for images that violate public order, morality, or third-party rights is strictly prohibited. Users are solely responsible for ensuring proper rights clearance for any images processed.',
+    terms_l5:'Disclaimer',
+    terms_t5:'The author assumes no liability for any damages or disputes arising from the use of this tool. Use is entirely at your own risk.',
+  }
+};
+
+function tx(key) { return T[currentLang][key] || key; }
+
+function applyLang(lang) {
+  currentLang = lang;
+  document.getElementById('htmlRoot').lang = lang;
+  $el('langJa').classList.toggle('active', lang === 'ja');
+  $el('langEn').classList.toggle('active', lang === 'en');
+
+  document.querySelectorAll('[data-i18n]').forEach(function(elem) {
+    var key = elem.dataset.i18n;
+    if (T[lang][key] !== undefined) elem.textContent = T[lang][key];
+  });
+
+  // PRO buttons (not data-i18n due to onclick)
+  var proCtaBtn = document.querySelector('.pro-cta');
+  if (proCtaBtn) {
+    proCtaBtn.textContent = tx('pro_cta');
+    proCtaBtn.onclick = function() { alert(tx('pro_alert')); };
+  }
+  var proLabel = document.querySelector('.pro-label');
+  if (proLabel) proLabel.textContent = tx('pro_label');
+
+  var sysReq = document.querySelector('.sys-req');
+  if (sysReq) sysReq.innerHTML = '<strong>' + tx('sys_title') + '</strong>' + tx('sys1') + '<br>' + tx('sys2') + '<br>' + tx('sys3');
+
+  var freeB = document.querySelector('.free-badge');
+  if (freeB) freeB.textContent = tx('free_badge');
+
+  var footerLic = document.getElementById('footerLicense');
+  if (footerLic) footerLic.textContent = tx('footer_license');
+
+  // 利用規約モーダル: data-i18nで自動更新済み（querySelectorAll処理済み）
+
+  var emptyTxt = document.querySelector('.empty-state-text');
+  if (emptyTxt) emptyTxt.textContent = tx('empty_text');
+
+  var imgListTitle = document.querySelector('#imageStripSection .preview-title');
+  if (imgListTitle) imgListTitle.textContent = tx('title_list');
+
+  var imgCountEl = $el('imgCount');
+  if (imgCountEl && imgCountEl.style.display !== 'none' && state.images.length) {
+    imgCountEl.textContent = state.images.length + ' ' + tx('count_sel');
+  }
+  var stripSubEl = $el('stripSub');
+  if (stripSubEl && state.images.length) {
+    stripSubEl.textContent = state.images.length + ' ' + tx('strip_sub');
+  }
+}
+
+$el('langJa').addEventListener('click', function() { applyLang('ja'); });
+$el('langEn').addEventListener('click', function() { applyLang('en'); });
+
+// ── Drag over ────────────────────────────────────────────
+[$el('imgDropZone'), $el('wmDropZone')].forEach(function(z) {
+  z.addEventListener('dragover', function(e) { e.preventDefault(); z.classList.add('drag-over'); });
+  z.addEventListener('dragleave', function() { z.classList.remove('drag-over'); });
+  z.addEventListener('drop', function(e) { e.preventDefault(); z.classList.remove('drag-over'); });
 });
 
-// ── WMタブ ──────────────────────────────────────
-document.querySelectorAll('.wm-tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.wm-tab').forEach(t => t.classList.remove('active'));
+// ── WM tabs ──────────────────────────────────────────────
+document.querySelectorAll('.wm-tab').forEach(function(tab) {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.wm-tab').forEach(function(t2) { t2.classList.remove('active'); });
     tab.classList.add('active');
     state.wmMode = tab.dataset.tab;
-    $('imageWmPanel').style.display = state.wmMode === 'image' ? 'block' : 'none';
-    $('textWmPanel').classList.toggle('active', state.wmMode === 'text');
+    $el('imageWmPanel').style.display = state.wmMode === 'image' ? 'block' : 'none';
+    $el('textWmPanel').classList.toggle('active', state.wmMode === 'text');
     wmCache = null;
-    updateProcess(); schedulePreview();
+    updateProcess();
+    schedulePreview();
   });
 });
 
-// ── 画像読み込み（キャッシュ付き）─────────────────
-$('imgInput').addEventListener('change', () => loadImages($('imgInput').files));
-$('imgDropZone').addEventListener('drop', e => loadImages(e.dataTransfer.files));
+// ── Image loading ────────────────────────────────────────
+$el('imgInput').addEventListener('change', function() { loadImages($el('imgInput').files); });
+$el('imgDropZone').addEventListener('drop', function(e) { loadImages(e.dataTransfer.files); });
 
 function loadImages(files) {
-  const imgs = Array.from(files).filter(f => f.type.startsWith('image/'));
+  var imgs = Array.from(files).filter(function(f) {
+    return f.type.startsWith('image/') || /\.(tif|tiff|bmp|svg|avif|gif)$/i.test(f.name);
+  });
   if (!imgs.length) return;
 
-  // 古いURLを解放してキャッシュクリア
-  state.images.forEach(({ url }) => { URL.revokeObjectURL(url); imgCache.delete(url); });
-  state.images = imgs.map(f => ({ file: f, url: URL.createObjectURL(f), name: f.name }));
+  state.images.forEach(function(obj) { URL.revokeObjectURL(obj.url); imgCache.delete(obj.url); });
+  state.images = imgs.map(function(f) { return { file: f, url: URL.createObjectURL(f), name: f.name }; });
 
-  $('imgCount').textContent = `${state.images.length} 枚選択中`;
-  $('imgCount').style.display = 'inline-block';
+  $el('imgCount').textContent = state.images.length + ' ' + tx('count_sel');
+  $el('imgCount').style.display = 'inline-block';
+  $el('clearAllBtn').style.display = 'inline-block';
+  $el('clearAllBtnStrip').style.display = 'inline-block';
   state.selectedIdx = 0;
-
-  // 全画像を先行してキャッシュ（サムネイル表示も高速化）
-  state.images.forEach(({ url }) => preloadImage(url));
-
-  renderImageGrid(); updateProcess(); schedulePreview();
+  state.images.forEach(function(obj) { preloadImage(obj.url); });
+  renderImageGrid();
+  updateProcess();
+  schedulePreview();
 }
 
-function preloadImage(url) {
-  if (imgCache.has(url)) return imgCache.get(url);
-  const img = new Image();
-  img.onload = () => imgCache.set(url, img);
-  img.src = url;
-  return img;
-}
-
-function getImage(url) {
-  return new Promise(resolve => {
-    if (imgCache.has(url)) { resolve(imgCache.get(url)); return; }
-    const img = new Image();
-    img.onload = () => { imgCache.set(url, img); resolve(img); };
-    img.src = url;
-  });
-}
-
-// ── ウォーターマーク画像 ──────────────────────────
-$('wmInput').addEventListener('change', () => loadWatermark($('wmInput').files[0]));
-$('wmDropZone').addEventListener('drop', e => { if(e.dataTransfer.files[0]) loadWatermark(e.dataTransfer.files[0]); });
+// ── Watermark image ───────────────────────────────────────
+$el('wmInput').addEventListener('change', function() { loadWatermark($el('wmInput').files[0]); });
+$el('wmDropZone').addEventListener('drop', function(e) { if (e.dataTransfer.files[0]) loadWatermark(e.dataTransfer.files[0]); });
 
 function loadWatermark(file) {
   if (!file || !file.type.startsWith('image/')) return;
-  const url = URL.createObjectURL(file);
-  const img = new Image();
-  img.onload = () => {
-    state.watermark = { img, url };
-    $('wmThumb').src = url; $('wmThumb').style.display = 'block';
-    updateProcess(); schedulePreview();
+  var url = URL.createObjectURL(file);
+  var img = new Image();
+  img.onload = function() {
+    state.watermark = { img: img, url: url };
+    $el('wmThumb').src = url;
+    $el('wmThumb').style.display = 'block';
+    updateProcess();
+    schedulePreview();
   };
   img.src = url;
 }
 
-// ── テキストWM ───────────────────────────────────
-$('wmText').addEventListener('input', () => { state.wmText = $('wmText').value; wmCache = null; schedulePreview(); });
-$('textColor').addEventListener('input', () => { state.textColor = $('textColor').value; wmCache = null; schedulePreview(); });
+// ── Text WM ───────────────────────────────────────────────
+$el('wmText').addEventListener('input', function() { state.wmText = $el('wmText').value; wmCache = null; schedulePreview(); });
+$el('textColor').addEventListener('input', function() { state.textColor = $el('textColor').value; wmCache = null; schedulePreview(); });
 
-// ── スライダー＋数値入力（連動）─────────────────
-function setupControl(sliderId, numId, key) {
-  const sl = $(sliderId), num = $(numId);
+// ── Slider + Number input ────────────────────────────────
+function setupControl(sliderId, numId, stateKey) {
+  var sl = $el(sliderId), num = $el(numId);
   if (!sl || !num) return;
-  const sync = (val) => {
+  function sync(val) {
     val = Math.min(parseFloat(sl.max), Math.max(parseFloat(sl.min), parseFloat(val)));
     if (isNaN(val)) return;
-    state[key] = val;
-    sl.value = val; num.value = val;
-    const pct = ((val - sl.min) / (sl.max - sl.min)) * 100;
+    state[stateKey] = val;
+    sl.value = val;
+    num.value = val;
+    var pct = ((val - sl.min) / (sl.max - sl.min)) * 100;
     sl.style.setProperty('--val', pct + '%');
-    if (key === 'fontSize') wmCache = null;
+    if (stateKey === 'fontSize') wmCache = null;
     schedulePreview();
-  };
-  sl.addEventListener('input', () => sync(sl.value));
-  num.addEventListener('input', () => sync(num.value));
-  num.addEventListener('blur',  () => sync(num.value));
+  }
+  sl.addEventListener('input', function() { sync(sl.value); });
+  num.addEventListener('input', function() { sync(num.value); });
+  num.addEventListener('blur', function() { sync(num.value); });
   sync(sl.value);
 }
 
-setupControl('sizeSlider',     'sizeNum',     'size');
-setupControl('opacitySlider',  'opacityNum',  'opacity');
-setupControl('rotateSlider',   'rotateNum',   'rotate');
-setupControl('marginSlider',   'marginNum',   'margin');
-setupControl('tileGapSlider',  'tileGapNum',  'tileGap');
+setupControl('sizeSlider', 'sizeNum', 'size');
+setupControl('opacitySlider', 'opacityNum', 'opacity');
+setupControl('rotateSlider', 'rotateNum', 'rotate');
+setupControl('marginSlider', 'marginNum', 'margin');
+setupControl('tileGapSlider', 'tileGapNum', 'tileGap');
 setupControl('fontSizeSlider', 'fontSizeNum', 'fontSize');
 
-// ── 位置グリッド ─────────────────────────────────
-$('posGrid').addEventListener('click', e => {
-  const btn = e.target.closest('.pos-btn');
+// ── Position grid ────────────────────────────────────────
+$el('posGrid').addEventListener('click', function(e) {
+  var btn = e.target.closest('.pos-btn');
   if (!btn) return;
-  document.querySelectorAll('.pos-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.pos-btn').forEach(function(b) { b.classList.remove('active'); });
   btn.classList.add('active');
   state.position = btn.dataset.pos;
   schedulePreview();
 });
 
-// ── タイルトグル ─────────────────────────────────
-$('tileToggle').addEventListener('click', () => {
+// ── Tile toggle ───────────────────────────────────────────
+$el('tileToggle').addEventListener('click', function() {
   state.tile = !state.tile;
-  $('tileToggle').classList.toggle('on', state.tile);
-  $('positionSection').style.display = state.tile ? 'none' : 'block';
-  $('tileSection').style.display = state.tile ? 'block' : 'none';
+  $el('tileToggle').classList.toggle('on', state.tile);
+  $el('positionSection').style.display = state.tile ? 'none' : 'block';
+  $el('tileSection').style.display = state.tile ? 'block' : 'none';
   schedulePreview();
 });
 
-// ── フォーマット ─────────────────────────────────
-document.querySelectorAll('.fmt-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.fmt-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active'); state.format = btn.dataset.fmt;
+// ── Format ───────────────────────────────────────────────
+document.querySelectorAll('.fmt-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.fmt-btn').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    state.format = btn.dataset.fmt;
   });
 });
 
-// ── 解像度 ───────────────────────────────────────
-document.querySelectorAll('.res-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.res-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active'); state.scale = parseFloat(btn.dataset.scale);
-  });
-});
-
-function updateProcess() {
-  const hasWm = state.wmMode === 'text' ? state.wmText.trim().length > 0 : !!state.watermark;
-  $('processBtn').disabled = !(state.images.length > 0 && hasWm);
-}
-
-$('processBtn').addEventListener('click', processAll);
-
-// ── 画像グリッド ─────────────────────────────────
-function renderImageGrid() {
-  const grid = $('imageGrid');
-  grid.innerHTML = '';
-  $('imageStripSection').style.display = 'block';
-  $('stripSub').textContent = `${state.images.length} 枚 · クリックでプレビュー`;
-  state.images.forEach((img, i) => {
-    const card = document.createElement('div');
-    card.className = 'img-card' + (i === state.selectedIdx ? ' selected' : '');
-    card.innerHTML = `<img src="${img.url}" alt="${img.name}" loading="lazy"><div class="img-overlay">PREVIEW</div><div class="img-selected-badge"><svg width="10" height="8" viewBox="0 0 10 8"><path d="M1 4l3 3 5-6" stroke="#000" stroke-width="1.5" fill="none"/></svg></div>`;
-    card.addEventListener('click', () => {
-      state.selectedIdx = i;
-      document.querySelectorAll('.img-card').forEach(c => c.classList.remove('selected'));
-      card.classList.add('selected'); schedulePreview();
+// ── Resolution (ボタン + スライダー連動) ─────────────────
+(function() {
+  var sl = $el('resScaleSlider'), num = $el('resScaleNum'), val = $el('resScaleVal');
+  function syncRes(v, skipBtnUpdate) {
+    v = Math.min(100, Math.max(10, Math.round(parseFloat(v))));
+    if (isNaN(v)) return;
+    state.scale = v / 100;
+    sl.value = v; num.value = v;
+    val.textContent = v + '%';
+    var pct = ((v - 10) / 90 * 100);
+    sl.style.setProperty('--val', pct + '%');
+    if (!skipBtnUpdate) {
+      // ボタンのアクティブ状態を同期
+      document.querySelectorAll('.res-btn').forEach(function(b) {
+        var bv = Math.round(parseFloat(b.dataset.scale) * 100);
+        b.classList.toggle('active', bv === v);
+      });
+    }
+  }
+  sl.addEventListener('input', function() { syncRes(sl.value); });
+  num.addEventListener('input', function() { syncRes(num.value); });
+  num.addEventListener('blur',  function() { syncRes(num.value); });
+  // res-btn クリック → スライダーも同期
+  document.querySelectorAll('.res-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.res-btn').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      var v = Math.round(parseFloat(btn.dataset.scale) * 100);
+      syncRes(v, true);
     });
-    grid.appendChild(card);
+  });
+  syncRes(100);
+})();
+
+
+// ── プリセット (LocalStorage, 最大3件) ─────────────────
+var PRESET_KEY = 'swm_presets_v1';
+var MAX_PRESETS = 3;
+
+function getPresets() {
+  try { return JSON.parse(localStorage.getItem(PRESET_KEY) || '[]'); }
+  catch(e) { return []; }
+}
+
+function savePresets(arr) {
+  try { localStorage.setItem(PRESET_KEY, JSON.stringify(arr)); } catch(e) {}
+}
+
+function currentSettings(customName) {
+  var posLabel = {
+    'top-left':'↖','top-center':'↑','top-right':'↗',
+    'center-left':'←','center':'＋','center-right':'→',
+    'bottom-left':'↙','bottom-center':'↓','bottom-right':'↘'
+  }[state.position] || state.position;
+  return {
+    name: customName || (state.wmMode === 'text' ? '"' + state.wmText + '"' : 'IMG-WM'),
+    wmMode: state.wmMode,
+    wmText: state.wmText,
+    textColor: state.textColor,
+    fontSize: state.fontSize,
+    size: state.size,
+    opacity: state.opacity,
+    rotate: state.rotate,
+    margin: state.margin,
+    tile: state.tile,
+    tileGap: state.tileGap,
+    position: state.position,
+    posLabel: posLabel,
+    format: state.format,
+    scale: state.scale,
+    savedAt: new Date().toLocaleDateString()
+  };
+}
+
+function applyPreset(p) {
+  // テキスト設定
+  if (p.wmMode) state.wmMode = p.wmMode;
+  if (p.wmText !== undefined) { state.wmText = p.wmText; $el('wmText').value = p.wmText; }
+  if (p.textColor) { state.textColor = p.textColor; $el('textColor').value = p.textColor; }
+
+  // 数値スライダー
+  var sliders = {
+    fontSize: ['fontSizeSlider','fontSizeNum'],
+    size:     ['sizeSlider','sizeNum'],
+    opacity:  ['opacitySlider','opacityNum'],
+    rotate:   ['rotateSlider','rotateNum'],
+    margin:   ['marginSlider','marginNum'],
+    tileGap:  ['tileGapSlider','tileGapNum'],
+  };
+  Object.keys(sliders).forEach(function(k) {
+    if (p[k] === undefined) return;
+    state[k] = p[k];
+    var ids = sliders[k];
+    var sl = $el(ids[0]), num = $el(ids[1]);
+    if (sl) { sl.value = p[k]; var pct=((p[k]-sl.min)/(sl.max-sl.min))*100; sl.style.setProperty('--val',pct+'%'); }
+    if (num) num.value = p[k];
+  });
+
+  // タイル
+  if (p.tile !== undefined) {
+    state.tile = p.tile;
+    var tog = $el('tileToggle');
+    if (tog) { tog.classList.toggle('on', p.tile); }
+    var ts = $el('tileSection');
+    if (ts) ts.style.display = p.tile ? 'block' : 'none';
+    var ps = $el('positionSection');
+    if (ps) ps.style.display = p.tile ? 'none' : 'block';
+  }
+
+  // 位置
+  if (p.position) {
+    state.position = p.position;
+    document.querySelectorAll('.pos-cell').forEach(function(c) {
+      c.classList.toggle('active', c.dataset.pos === p.position);
+    });
+  }
+
+  // フォーマット
+  if (p.format) {
+    state.format = p.format;
+    document.querySelectorAll('.fmt-btn').forEach(function(b) {
+      b.classList.toggle('active', b.dataset.fmt === p.format);
+    });
+  }
+
+  // 解像度
+  if (p.scale !== undefined) {
+    state.scale = p.scale;
+    var v = Math.round(p.scale * 100);
+    var rsl = $el('resScaleSlider'), rnum = $el('resScaleNum'), rval = $el('resScaleVal');
+    if (rsl) { rsl.value = v; var pct=((v-10)/90*100); rsl.style.setProperty('--val',pct+'%'); }
+    if (rnum) rnum.value = v;
+    if (rval) rval.textContent = v + '%';
+    document.querySelectorAll('.res-btn').forEach(function(b) {
+      b.classList.toggle('active', Math.round(parseFloat(b.dataset.scale)*100) === v);
+    });
+  }
+
+  // wmCacheをクリア
+  wmCache = null;
+  schedulePreview();
+}
+
+function renderPresets() {
+  var slots = $el('presetSlots');
+  if (!slots) return;
+  var presets = getPresets();
+  slots.innerHTML = '';
+  var frag = document.createDocumentFragment();
+
+  for (var i = 0; i < MAX_PRESETS; i++) {
+    var p = presets[i] || null;
+
+    if (!p) {
+      // ── 空きスロット ──
+      var card = document.createElement('div');
+      card.className = 'preset-card-empty';
+
+      var emptyLabel = document.createElement('span');
+      emptyLabel.className = 'preset-empty-label';
+      emptyLabel.textContent = 'SLOT ' + (i + 1);
+
+      var saveNewBtn = document.createElement('button');
+      saveNewBtn.className = 'preset-save-new-btn';
+      saveNewBtn.textContent = tx('preset_save');
+
+      // 名前入力エリア
+      var nameWrap = document.createElement('div');
+      nameWrap.className = 'preset-name-input-wrap';
+
+      var nameInput = document.createElement('input');
+      nameInput.className = 'preset-name-input';
+      nameInput.type = 'text';
+      nameInput.placeholder = tx('preset_name_ph');
+      nameInput.maxLength = 20;
+
+      var confirmBtn = document.createElement('button');
+      confirmBtn.className = 'preset-name-confirm';
+      confirmBtn.textContent = tx('preset_confirm');
+
+      var cancelBtn = document.createElement('button');
+      cancelBtn.className = 'preset-name-cancel';
+      cancelBtn.textContent = tx('preset_cancel');
+
+      nameWrap.appendChild(nameInput);
+      nameWrap.appendChild(confirmBtn);
+      nameWrap.appendChild(cancelBtn);
+
+      // ボタン → 名前入力表示
+      (function(sw, nw, ni, idx) {
+        sw.addEventListener('click', function() {
+          sw.style.display = 'none';
+          nw.classList.add('show');
+          ni.focus();
+        });
+        // 確定保存
+        function doSave() {
+          var n = ni.value.trim() || ('Preset ' + (idx + 1));
+          var arr = getPresets();
+          while (arr.length <= idx) arr.push(null);
+          arr[idx] = currentSettings(n);
+          savePresets(arr);
+          renderPresets();
+        }
+        nw.querySelector('.preset-name-confirm').addEventListener('click', doSave);
+        ni.addEventListener('keydown', function(e) { if (e.key === 'Enter') doSave(); });
+        nw.querySelector('.preset-name-cancel').addEventListener('click', function() {
+          nw.classList.remove('show');
+          sw.style.display = '';
+          ni.value = '';
+        });
+      })(saveNewBtn, nameWrap, nameInput, i);
+
+      card.appendChild(emptyLabel);
+      card.appendChild(saveNewBtn);
+      frag.appendChild(card);
+      frag.appendChild(nameWrap);
+
+    } else {
+      // ── 保存済みカード ──
+      var card = document.createElement('div');
+      card.className = 'preset-card-saved';
+
+      // ヘッダー: 名前 + 日付
+      var header = document.createElement('div');
+      header.className = 'preset-card-header';
+      var nameEl = document.createElement('span');
+      nameEl.className = 'preset-card-name';
+      nameEl.textContent = p.name;
+      var dateEl = document.createElement('span');
+      dateEl.className = 'preset-card-date';
+      dateEl.textContent = p.savedAt || '';
+      header.appendChild(nameEl);
+      header.appendChild(dateEl);
+
+      // 設定サマリーチップ
+      var summary = document.createElement('div');
+      summary.className = 'preset-card-summary';
+      var chips = [
+        p.wmMode === 'text' ? 'TEXT' : 'IMG',
+        'SIZE ' + p.size + '%',
+        'OPACITY ' + p.opacity + '%',
+        p.posLabel || p.position,
+        p.rotate ? 'ROT ' + p.rotate + '°' : null,
+        p.tile ? 'TILE' : null,
+        p.format ? p.format.toUpperCase() : null,
+        p.scale && p.scale !== 1 ? 'SCALE ' + Math.round(p.scale * 100) + '%' : null,
+      ];
+      chips.filter(Boolean).forEach(function(txt) {
+        var chip = document.createElement('span');
+        chip.className = 'preset-chip';
+        chip.textContent = txt;
+        summary.appendChild(chip);
+      });
+
+      // アクションボタン
+      var actions = document.createElement('div');
+      actions.className = 'preset-card-actions';
+
+      var applyBtn = document.createElement('button');
+      applyBtn.className = 'preset-apply-btn';
+      applyBtn.textContent = tx('preset_load');
+
+      var overwriteBtn = document.createElement('button');
+      overwriteBtn.className = 'preset-overwrite-btn';
+      overwriteBtn.textContent = tx('preset_overwrite');
+
+      var delBtn = document.createElement('button');
+      delBtn.className = 'preset-del-btn';
+      delBtn.textContent = tx('preset_del');
+
+      (function(preset, aBtn, oBtn, dBtn, idx) {
+        // 適用
+        aBtn.addEventListener('click', function() {
+          applyPreset(preset);
+          aBtn.classList.add('applied');
+          aBtn.textContent = tx('preset_loaded');
+          setTimeout(function() {
+            aBtn.classList.remove('applied');
+            aBtn.textContent = tx('preset_load');
+          }, 1400);
+        });
+        // 上書き保存
+        oBtn.addEventListener('click', function() {
+          var arr = getPresets();
+          while (arr.length <= idx) arr.push(null);
+          arr[idx] = currentSettings(preset.name); // 名前は引き継ぐ
+          savePresets(arr);
+          oBtn.textContent = '✓';
+          setTimeout(renderPresets, 800);
+        });
+        // 削除
+        dBtn.addEventListener('click', function() {
+          var arr = getPresets();
+          arr[idx] = null;
+          while (arr.length && !arr[arr.length - 1]) arr.pop();
+          savePresets(arr);
+          renderPresets();
+        });
+      })(p, applyBtn, overwriteBtn, delBtn, i);
+
+      actions.appendChild(applyBtn);
+      actions.appendChild(overwriteBtn);
+      actions.appendChild(delBtn);
+
+      card.appendChild(header);
+      card.appendChild(summary);
+      card.appendChild(actions);
+      frag.appendChild(card);
+    }
+  }
+  slots.appendChild(frag);
+}
+
+// 言語切替時にプリセットUIも更新
+var _origApplyLang = applyLang;
+applyLang = function(lang) {
+  _origApplyLang(lang);
+  renderPresets();
+};
+
+// 初期描画
+renderPresets();
+
+
+// ── モバイル サイドバートグル ──────────────────────
+(function() {
+  var btn = $el('mobileSidebarToggle');
+  var sidebar = $el('mainSidebar');
+  if (!btn || !sidebar) return;
+  btn.addEventListener('click', function() {
+    var isOpen = sidebar.classList.toggle('mobile-open');
+    btn.classList.toggle('open', isOpen);
+    btn.setAttribute('aria-expanded', isOpen);
+  });
+  // 768px超になったら強制オープン状態をリセット
+  var mq = window.matchMedia('(max-width: 768px)');
+  function onMQ(e) {
+    if (!e.matches) {
+      sidebar.classList.remove('mobile-open');
+      btn.classList.remove('open');
+    }
+  }
+  mq.addEventListener ? mq.addEventListener('change', onMQ) : mq.addListener(onMQ);
+})();
+
+// ── Process button state ─────────────────────────────────
+function updateProcess() {
+  var hasWm = state.wmMode === 'text' ? state.wmText.trim().length > 0 : !!state.watermark;
+  $el('processBtn').disabled = !(state.images.length > 0 && hasWm);
+}
+
+$el('processBtn').addEventListener('click', processAll);
+
+// ── Image grid ───────────────────────────────────────────
+function renderImageGrid() {
+  var grid = $el('imageGrid');
+  grid.innerHTML = '';
+  $el('imageStripSection').style.display = 'block';
+  $el('stripSub').textContent = state.images.length + ' ' + tx('strip_sub');
+  // DocumentFragment でまとめてDOMに追加（リフローを1回に抑制）
+  var frag = document.createDocumentFragment();
+  state.images.forEach(function(imgObj, i) {
+    var card = document.createElement('div');
+    card.className = 'img-card' + (i === state.selectedIdx ? ' selected' : '');
+    var imgTag = document.createElement('img');
+    imgTag.src = imgObj.url;
+    imgTag.alt = imgObj.name;
+    imgTag.loading = 'lazy';
+    imgTag.decoding = 'async';
+    var overlay = document.createElement('div');
+    overlay.className = 'img-overlay';
+    overlay.textContent = 'PREVIEW';
+    var badge = document.createElement('div');
+    badge.className = 'img-selected-badge';
+    badge.innerHTML = '<svg width="10" height="8" viewBox="0 0 10 8"><path d="M1 4l3 3 5-6" stroke="#000" stroke-width="1.5" fill="none"/></svg>';
+    card.appendChild(imgTag);
+    card.appendChild(overlay);
+    card.appendChild(badge);
+    card.addEventListener('click', function() {
+      state.selectedIdx = i;
+      document.querySelectorAll('.img-card').forEach(function(c) { c.classList.remove('selected'); });
+      card.classList.add('selected');
+      schedulePreview();
+    });
+    frag.appendChild(card);
+  });
+  grid.appendChild(frag);
+}
+
+// ── Image cache ───────────────────────────────────────────
+function preloadImage(url) {
+  if (imgCache.has(url)) return imgCache.get(url);
+  var img = new Image();
+  img.onload = function() { imgCache.set(url, img); };
+  img.src = url;
+  return img;
+}
+
+function getImage(url) {
+  return new Promise(function(resolve, reject) {
+    if (imgCache.has(url)) { resolve(imgCache.get(url)); return; }
+    var img = new Image();
+    img.onload = function() { imgCache.set(url, img); resolve(img); };
+    img.onerror = function() { reject(new Error('Failed to load: ' + url)); };
+    img.src = url;
   });
 }
 
-// ── プレビュー（低解像度で高速描画）──────────────
-// プレビュー用は最大800pxに縮小して描画（出力時はフル解像度）
-const PREVIEW_MAX = 800;
+// ── Preview ───────────────────────────────────────────────
+var PREVIEW_MAX = 800;
 
-async function renderPreview() {
+function renderPreview() {
   if (!state.images.length) return;
-  const { url, name } = state.images[state.selectedIdx];
-  const img = await getImage(url);
-
-  // プレビュー用縮小スケールを計算
-  const previewScale = Math.min(1, PREVIEW_MAX / Math.max(img.naturalWidth, img.naturalHeight));
-  compositeOnCanvas(img, $('previewCanvas'), previewScale);
-
-  $('emptyState').style.display = 'none';
-  $('canvasWrap').style.display = 'block';
-  $('previewSub').textContent = `${name} (${img.naturalWidth} × ${img.naturalHeight})`;
+  showSpinner();
+  var imgObj = state.images[state.selectedIdx];
+  getImage(imgObj.url).then(function(img) {
+    $el('emptyState').style.display = 'none';
+    $el('canvasWrap').style.display = 'block';
+    $el('previewSub').textContent = imgObj.name + ' (' + img.naturalWidth + ' x ' + img.naturalHeight + ')';
+    if (compareMode) {
+      // 比較モード: previewCanvas は非表示なので描画スキップ
+      renderCompare(img);
+      hideSpinner();
+    } else {
+      var pScale = Math.min(1, PREVIEW_MAX / Math.max(img.naturalWidth, img.naturalHeight));
+      compositeOnCanvas(img, $el('previewCanvas'), pScale);
+      hideSpinner();
+    }
+  });
 }
 
-// ── テキストWMキャンバス（キャッシュ）──────────────
+// ── Text WM canvas (cached) ───────────────────────────────
 function buildTextWmCanvas() {
   if (wmCache) return wmCache;
-  const c = document.createElement('canvas');
-  const fs = state.fontSize;
-  const ctx = c.getContext('2d');
-  ctx.font = `bold ${fs}px 'DM Mono', monospace`;
-  const w = Math.ceil(ctx.measureText(state.wmText).width) + 4;
-  const h = Math.ceil(fs * 1.3);
+  var fs = state.fontSize;
+  var fontStr = 'bold ' + fs + "px 'DM Mono', monospace";
+  // サイズ計測用の仮canvas（OffscreenCanvasが使えない環境向け）
+  var measure = document.createElement('canvas');
+  var mctx = measure.getContext('2d');
+  mctx.font = fontStr;
+  var w = Math.ceil(mctx.measureText(state.wmText).width) + 4;
+  var h = Math.ceil(fs * 1.3);
+  // 本番canvas: サイズ確定後に1回だけgetContext
+  var c = document.createElement('canvas');
   c.width = w; c.height = h;
-  const ctx2 = c.getContext('2d');
-  ctx2.font = `bold ${fs}px 'DM Mono', monospace`;
-  ctx2.fillStyle = state.textColor;
-  ctx2.fillText(state.wmText, 2, fs);
+  var ctx = c.getContext('2d');
+  ctx.font = fontStr;
+  ctx.fillStyle = state.textColor;
+  ctx.fillText(state.wmText, 2, fs);
   wmCache = c;
   return c;
 }
 
-// ── 合成コア（previewScale引数でプレビュー/出力を切り替え）──
-function compositeOnCanvas(baseImg, canvas, previewScale = null) {
-  const outputScale = previewScale !== null ? previewScale : state.scale;
-  const W = Math.round((baseImg.naturalWidth || baseImg.width) * outputScale);
-  const H = Math.round((baseImg.naturalHeight || baseImg.height) * outputScale);
-  canvas.width = W; canvas.height = H;
-  const ctx = canvas.getContext('2d');
+// ── Composite core ────────────────────────────────────────
+function compositeOnCanvas(baseImg, canvas, previewScale) {
+  var outScale = (previewScale !== undefined && previewScale !== null) ? previewScale : state.scale;
+  var W = Math.round((baseImg.naturalWidth || baseImg.width) * outScale);
+  var H = Math.round((baseImg.naturalHeight || baseImg.height) * outScale);
+  // サイズ変更時はctxキャッシュを破棄してから再設定
+  if (canvas.width !== W || canvas.height !== H) {
+    ctxCache.delete(canvas);
+    canvas.width  = W;
+    canvas.height = H;
+  }
+  var ctx = ctxCache.get(canvas);
+  if (!ctx) { ctx = canvas.getContext('2d'); ctxCache.set(canvas, ctx); }
   ctx.clearRect(0, 0, W, H);
   ctx.drawImage(baseImg, 0, 0, W, H);
 
-  let wmSrc, wmW, wmH;
+  var wmSrc;
   if (state.wmMode === 'text') {
-    if (!state.wmText.trim()) return;
+    if (!state.wmText.trim()) { ctx.globalAlpha = 1; return; }
     wmSrc = buildTextWmCanvas();
   } else {
-    if (!state.watermark) return;
+    if (!state.watermark) { ctx.globalAlpha = 1; return; }
     wmSrc = state.watermark.img;
   }
-  wmW = Math.round(W * state.size / 100);
-  wmH = Math.round((wmSrc.height / wmSrc.width) * wmW);
 
-  ctx.globalAlpha = state.opacity / 100;
-  const rad = (state.rotate * Math.PI) / 180;
-  const m = Math.round(state.margin * outputScale);
+  var wmW = Math.round(W * state.size / 100);
+  var wmH = Math.round((wmSrc.height / wmSrc.width) * wmW);
+  var rad = (state.rotate * Math.PI) / 180;
+  var m = Math.round(state.margin * outScale);
+  var alpha = state.opacity / 100;
+  var cosR = Math.cos(rad), sinR = Math.sin(rad);
+  var hw = wmW / 2, hh = wmH / 2;
+
+  ctx.globalAlpha = alpha;
 
   if (state.tile) {
-    const stepX = wmW + Math.round(state.tileGap * outputScale);
-    const stepY = wmH + Math.round(state.tileGap * outputScale);
-    for (let ty = -wmH; ty < H + wmH; ty += stepY) {
-      for (let tx = -wmW; tx < W + wmW; tx += stepX) {
-        ctx.save();
-        ctx.translate(tx + wmW / 2, ty + wmH / 2);
-        ctx.rotate(rad);
-        ctx.drawImage(wmSrc, -wmW / 2, -wmH / 2, wmW, wmH);
-        ctx.restore();
+    var stepX = wmW + Math.round(state.tileGap * outScale);
+    var stepY = wmH + Math.round(state.tileGap * outScale);
+    // save/restore の代わりに setTransform で行列を直接セット（高速）
+    for (var ty = -wmH; ty < H + wmH; ty += stepY) {
+      for (var tx = -wmW; tx < W + wmW; tx += stepX) {
+        var cx = tx + hw, cy = ty + hh;
+        ctx.setTransform(cosR, sinR, -sinR, cosR, cx, cy);
+        ctx.drawImage(wmSrc, -hw, -hh, wmW, wmH);
       }
     }
+    ctx.setTransform(1, 0, 0, 1, 0, 0); // reset
   } else {
-    const pos = state.position;
-    const x = pos.includes('left') ? m : pos.includes('right') ? W - wmW - m : (W - wmW) / 2;
-    const y = pos.includes('top')  ? m : pos.includes('bottom') ? H - wmH - m : (H - wmH) / 2;
-    ctx.save();
-    ctx.translate(x + wmW / 2, y + wmH / 2);
-    ctx.rotate(rad);
-    ctx.drawImage(wmSrc, -wmW / 2, -wmH / 2, wmW, wmH);
-    ctx.restore();
+    var pos = state.position;
+    var x = pos.indexOf('left') >= 0 ? m : pos.indexOf('right') >= 0 ? W - wmW - m : (W - wmW) / 2;
+    var y = pos.indexOf('top') >= 0 ? m : pos.indexOf('bottom') >= 0 ? H - wmH - m : (H - wmH) / 2;
+    ctx.setTransform(cosR, sinR, -sinR, cosR, x + hw, y + hh);
+    ctx.drawImage(wmSrc, -hw, -hh, wmW, wmH);
+    ctx.setTransform(1, 0, 0, 1, 0, 0); // reset
   }
   ctx.globalAlpha = 1;
 }
 
-// ── 一括処理（フル解像度）───────────────────────
-async function processAll() {
-  state.results = [];
-  $('downloadGrid').innerHTML = '';
-  $('resultsSection').style.display = 'none';
-  $('progressBar').style.display = 'block';
-  $('progressText').style.display = 'block';
-  $('progressFill').style.width = '0%';
-  $('processBtn').disabled = true;
-
-  const mimeMap = { png: 'image/png', jpeg: 'image/jpeg', webp: 'image/webp' };
-  const mime = mimeMap[state.format];
-  const ext = state.format === 'jpeg' ? 'jpg' : state.format;
-  const off = $('offscreen');
-
-  for (let i = 0; i < state.images.length; i++) {
-    $('progressText').textContent = `処理中… ${i + 1} / ${state.images.length} 枚`;
-    const { url, name } = state.images[i];
-    const img = await getImage(url); // キャッシュから取得（再読み込みなし）
-    compositeOnCanvas(img, off, null); // フル解像度で合成
-    const dataUrl = off.toDataURL(mime, 0.92);
-    state.results.push({ dataUrl, name: name.replace(/\.[^.]+$/, '') + `_wm.${ext}` });
-    $('progressFill').style.width = ((i + 1) / state.images.length * 100) + '%';
-    await new Promise(r => setTimeout(r, 0)); // ブラウザに処理を返す
+// ── Process all ───────────────────────────────────────────
+function finishProcess() {
+  $el('processBtn').disabled = false;
+  $el('loadingOverlay').classList.remove('show');
+  if (state.results.length === 0) {
+    alert(currentLang === 'ja'
+      ? 'エラー: 処理できた画像がありません。WMの設定を確認してください。'
+      : 'Error: No images were processed. Please check your watermark settings.');
+    return;
   }
-
-  $('progressText').textContent = `完了！ ${state.results.length} 枚処理しました · GPS・メタデータを削除済み`;
   renderResults();
-  $('processBtn').disabled = false;
-  setTimeout(() => {
-    $('progressBar').style.display = 'none';
-    $('progressFill').style.width = '0%';
-    $('progressText').style.display = 'none';
-  }, 2500);
 }
 
-// ── 結果表示 ─────────────────────────────────────
-function renderResults() {
-  const grid = $('downloadGrid');
-  grid.innerHTML = '';
-  state.results.forEach(({ dataUrl, name }) => {
-    const card = document.createElement('div');
-    card.className = 'dl-card';
-    card.innerHTML = `<span class="dl-name">${name}</span><button class="dl-btn">DL</button>`;
-    card.querySelector('.dl-btn').addEventListener('click', () => {
-      const a = document.createElement('a'); a.href = dataUrl; a.download = name; a.click();
-    });
-    grid.appendChild(card);
-  });
-  $('resultsSection').style.display = 'block';
-}
+function processAll() {
+  state.results = [];
+  $el('downloadGrid').innerHTML = '';
+  $el('resultsSection').style.display = 'none';
+  $el('loadingOverlay').classList.add('show');
+  $el('loadingPctBig').textContent = '0';
+  $el('loadingBarFill').style.width = '0%';
+  $el('loadingSubText').textContent = '0 / ' + state.images.length;
+  $el('processBtn').disabled = true;
 
-// ── ZIP一括DL ────────────────────────────────────
-$('dlAllBtn').addEventListener('click', async () => {
-  const btn = $('dlAllBtn');
-  if (typeof JSZip !== 'undefined') {
-    btn.textContent = '⏳ ZIP作成中…'; btn.disabled = true;
-    const zip = new JSZip();
-    state.results.forEach(({ dataUrl, name }) => {
-      zip.file(name, dataUrl.split(',')[1], { base64: true });
-    });
-    const blob = await zip.generateAsync({ type: 'blob' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `watermarked_${state.results.length}files.zip`;
-    a.click();
-    btn.textContent = '▼ 全てダウンロード (ZIP)'; btn.disabled = false;
-  } else {
-    state.results.forEach(({ dataUrl, name }, i) => {
-      setTimeout(() => { const a = document.createElement('a'); a.href = dataUrl; a.download = name; a.click(); }, i * 120);
-    });
+  var mime = { png:'image/png', jpeg:'image/jpeg', webp:'image/webp' }[state.format];
+  var quality = state.format === 'png' ? 1 : 0.90;
+  var ext = state.format === 'jpeg' ? 'jpg' : state.format;
+  var off = $el('offscreen');
+  var total = state.images.length;
+  var idx = 0;
+
+  var nameCount = {};
+  function uniqueName(base) {
+    var key = base.toLowerCase();
+    if (!nameCount[key]) { nameCount[key] = 1; return base; }
+    var n = nameCount[key]++;
+    var dot = base.lastIndexOf('.');
+    return dot >= 0 ? base.slice(0, dot) + '_' + n + base.slice(dot) : base + '_' + n;
   }
+
+  function processChunk() {
+    var cur = idx++;
+    var imgObj = state.images[cur];
+    var img = imgCache.get(imgObj.url);
+    var baseName = imgObj.name.replace(/\.[^.]+$/, '') + '_wm.' + ext;
+    var outName = uniqueName(baseName);
+
+    function onBlob(blob) {
+      // blobをそのまま保持（ZIP時に直接使用）
+      state.results.push({ blob: blob, name: outName });
+      var pct = Math.round(idx / total * 100);
+      $el('loadingPctBig').textContent = pct;
+      $el('loadingBarFill').style.width = pct + '%';
+      $el('loadingSubText').textContent = idx + ' / ' + total;
+      if (idx < total) {
+        if (idx % 8 === 0) { setTimeout(processChunk, 0); } else { processChunk(); }
+      } else { finishProcess(); }
+    }
+
+    function doProcess(loadedImg) {
+      compositeOnCanvas(loadedImg, off, null);
+      off.toBlob(function(blob) {
+        if (blob) { onBlob(blob); }
+        else {
+          // toBlob失敗時フォールバック
+          var dataUrl = off.toDataURL(mime, quality);
+          var byteStr = atob(dataUrl.split(',')[1]);
+          var arr = new Uint8Array(byteStr.length);
+          for (var i = 0; i < byteStr.length; i++) arr[i] = byteStr.charCodeAt(i);
+          onBlob(new Blob([arr], { type: mime }));
+        }
+      }, mime, quality);
+    }
+
+    if (img) {
+      doProcess(img);
+    } else {
+      getImage(imgObj.url).then(doProcess).catch(function(e) {
+        console.warn('process failed:', e.message);
+        var pct = Math.round(idx / total * 100);
+        $el('loadingPctBig').textContent = pct;
+        $el('loadingBarFill').style.width = pct + '%';
+        if (idx < total) { setTimeout(processChunk, 0); }
+        else { finishProcess(); }
+      });
+    }
+  }
+
+  var loaded = 0;
+  function onLoad() {
+    loaded++;
+    if (loaded === total) {
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+          if (idx < total) processChunk();
+        });
+      });
+    }
+  }
+  state.images.forEach(function(imgObj) {
+    getImage(imgObj.url).then(onLoad).catch(function(e) {
+      console.warn('preload failed:', e.message);
+      onLoad();
+    });
+  });
+}
+
+// ── Results ───────────────────────────────────────────────
+function renderResults() {
+  var grid = $el('downloadGrid');
+  grid.innerHTML = '';
+  var frag = document.createDocumentFragment();
+  state.results.forEach(function(result) {
+    var card = document.createElement('div');
+    card.className = 'dl-card';
+    var nameEl = document.createElement('span');
+    nameEl.className = 'dl-name';
+    nameEl.textContent = result.name;
+    var dlBtn = document.createElement('button');
+    dlBtn.className = 'dl-btn';
+    dlBtn.textContent = 'DL';
+    dlBtn.addEventListener('click', function() {
+      var url = URL.createObjectURL(result.blob);
+      var a = document.createElement('a');
+      a.href = url; a.download = result.name;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(function() { URL.revokeObjectURL(url); }, 5000);
+    });
+    card.appendChild(nameEl);
+    card.appendChild(dlBtn);
+    frag.appendChild(card);
+  });
+  grid.appendChild(frag);
+  $el('resultsSection').style.display = 'block';
+  $el('dlAllBtn').textContent = tx('btn_dl_all');
+}
+
+// ── CRC32 & ZIP builder (no external library) ─────────────
+function crc32(data) {
+  var crc = 0xFFFFFFFF;
+  for (var i = 0; i < data.length; i++) {
+    crc ^= data[i];
+    for (var j = 0; j < 8; j++) {
+      crc = (crc >>> 1) ^ (crc & 1 ? 0xEDB88320 : 0);
+    }
+  }
+  return (crc ^ 0xFFFFFFFF) >>> 0;
+}
+
+function buildZip(files, callback) {
+  // 全BlobをArrayBufferに並列変換してからZIPを構築
+  var buffers = new Array(files.length);
+  var done = 0;
+  files.forEach(function(file, i) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      buffers[i] = new Uint8Array(e.target.result);
+      done++;
+      if (done === files.length) callback(assemble(buffers));
+    };
+    reader.readAsArrayBuffer(file.blob);
+  });
+
+  function assemble(bufs) {
+    function u8(str) { return new TextEncoder().encode(str); }
+    var parts = [];
+    var centralDir = [];
+    var offset = 0;
+    var now = new Date();
+    var dosTime = ((now.getHours() << 11) | (now.getMinutes() << 5) | (now.getSeconds() >> 1));
+    var dosDate = (((now.getFullYear() - 1980) << 9) | ((now.getMonth() + 1) << 5) | now.getDate());
+
+    files.forEach(function(file, i) {
+      var nameBytes = u8(file.name);
+      var raw = bufs[i];
+      var checksum = crc32(raw);
+
+      var lfh = new DataView(new ArrayBuffer(30 + nameBytes.length));
+      lfh.setUint32(0, 0x04034b50, true);
+      lfh.setUint16(4, 20, true); lfh.setUint16(6, 0, true); lfh.setUint16(8, 0, true);
+      lfh.setUint16(10, dosTime, true); lfh.setUint16(12, dosDate, true);
+      lfh.setUint32(14, checksum, true); lfh.setUint32(18, raw.length, true); lfh.setUint32(22, raw.length, true);
+      lfh.setUint16(26, nameBytes.length, true); lfh.setUint16(28, 0, true);
+      nameBytes.forEach(function(b, j) { lfh.setUint8(30 + j, b); });
+      parts.push(new Uint8Array(lfh.buffer));
+      parts.push(raw);
+
+      var cde = new DataView(new ArrayBuffer(46 + nameBytes.length));
+      cde.setUint32(0, 0x02014b50, true);
+      cde.setUint16(4, 20, true); cde.setUint16(6, 20, true); cde.setUint16(8, 0, true); cde.setUint16(10, 0, true);
+      cde.setUint16(12, dosTime, true); cde.setUint16(14, dosDate, true);
+      cde.setUint32(16, checksum, true); cde.setUint32(20, raw.length, true); cde.setUint32(24, raw.length, true);
+      cde.setUint16(28, nameBytes.length, true); cde.setUint16(30, 0, true); cde.setUint16(32, 0, true);
+      cde.setUint16(34, 0, true); cde.setUint16(36, 0, true); cde.setUint32(38, 0, true);
+      cde.setUint32(42, offset, true);
+      nameBytes.forEach(function(b, j) { cde.setUint8(46 + j, b); });
+      centralDir.push(new Uint8Array(cde.buffer));
+
+      offset += 30 + nameBytes.length + raw.length;
+    });
+
+    var cdSize = centralDir.reduce(function(s, a) { return s + a.length; }, 0);
+    var eocd = new DataView(new ArrayBuffer(22));
+    eocd.setUint32(0, 0x06054b50, true); eocd.setUint16(4, 0, true); eocd.setUint16(6, 0, true);
+    eocd.setUint16(8, centralDir.length, true); eocd.setUint16(10, centralDir.length, true);
+    eocd.setUint32(12, cdSize, true); eocd.setUint32(16, offset, true); eocd.setUint16(20, 0, true);
+
+    var all = parts.concat(centralDir).concat([new Uint8Array(eocd.buffer)]);
+    var total = all.reduce(function(s, a) { return s + a.length; }, 0);
+    var out = new Uint8Array(total);
+    var pos = 0;
+    all.forEach(function(a) { out.set(a, pos); pos += a.length; });
+    return out;
+  }
+}
+
+$el('dlAllBtn').addEventListener('click', function() {
+  if (!state.results.length) return;
+  var now = new Date();
+  var dateStr = now.getFullYear() + ('0'+(now.getMonth()+1)).slice(-2) + ('0'+now.getDate()).slice(-2);
+  dlAll('watermarked_' + dateStr + '.zip');
 });
 
-// ── モーダル拡大表示 ─────────────────────────────
-async function openModal() {
+// ── Modal ─────────────────────────────────────────────────
+function openModal() {
   if (!state.images.length) return;
-  const { url, name } = state.images[state.selectedIdx];
-  const img = await getImage(url);
-  const mc = $('modalCanvas');
-  compositeOnCanvas(img, mc, null); // モーダルはフル解像度
-  $('modalInfo').textContent = `${name}  ·  ${mc.width} × ${mc.height} px`;
-  $('modalOverlay').classList.add('open');
+  var imgObj = state.images[state.selectedIdx];
+  getImage(imgObj.url).then(function(img) {
+    var mc = $el('modalCanvas');
+    compositeOnCanvas(img, mc, null);
+    $el('modalInfo').textContent = imgObj.name + '  ·  ' + mc.width + ' x ' + mc.height + ' px';
+    $el('modalOverlay').classList.add('open');
+  });
 }
 
-function closeModal() { $('modalOverlay').classList.remove('open'); }
+function closeModal() { $el('modalOverlay').classList.remove('open'); }
 
-$('expandBtn').addEventListener('click', openModal);
-$('modalClose').addEventListener('click', closeModal);
-$('modalOverlay').addEventListener('click', e => { if (e.target === $('modalOverlay')) closeModal(); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+$el('expandBtn').addEventListener('click', openModal);
+$el('modalClose').addEventListener('click', closeModal);
+$el('modalOverlay').addEventListener('click', function(e) { if (e.target === $el('modalOverlay')) closeModal(); });
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
+
+
+// ── 一括削除ボタン ────────────────────────────────────────
+function doClearAll() {
+  if (!state.images.length) return;
+  state.images = [];
+  state.selectedIdx = 0;
+  imgCache.clear();
+  wmCache = null;
+  $el('imageGrid').innerHTML = '';
+  $el('imageStripSection').style.display = 'none';
+  $el('canvasWrap').style.display = 'none';
+  $el('emptyState').style.display = 'flex';
+  $el('imgCount').style.display = 'none';
+  $el('clearAllBtn').style.display = 'none';
+  $el('resultsSection').style.display = 'none';
+  $el('clearAllBtnStrip').style.display = 'none';
+  disableCompareMode();
+  updateProcess();
+}
+$el('clearAllBtn').addEventListener('click', doClearAll);
+$el('clearAllBtnStrip').addEventListener('click', doClearAll);
+
+// ── ZIP保存ポップアップ ───────────────────────────────────
+
+function dlAll(filename) {
+  var files = state.results.filter(Boolean);
+  if (!files.length) return;
+  var fname = filename || 'watermarked.zip';
+  buildZip(files, function(zip) {
+    var blob = new Blob([zip], { type: 'application/zip' });
+    if (window.showSaveFilePicker) {
+      window.showSaveFilePicker({
+        suggestedName: fname,
+        types: [{ description: 'ZIP Archive', accept: { 'application/zip': ['.zip'] } }]
+      }).then(function(fh) {
+        return fh.createWritable().then(function(w) {
+          return w.write(blob).then(function() { return w.close(); });
+        });
+      }).catch(function(e) {
+        if (e.name !== 'AbortError') fallbackDl(blob, fname);
+      });
+    } else {
+      fallbackDl(blob, fname);
+    }
+  });
+}
+function fallbackDl(blob, fname) {
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = fname;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(function() { URL.revokeObjectURL(a.href); }, 5000);
+}
+
+// ── 利用規約モーダル ─────────────────────────────────────
+function openTerms() {
+  $el('termsOverlay').classList.add('open');
+}
+function closeTerms() {
+  $el('termsOverlay').classList.remove('open');
+}
+$el('termsBtn').addEventListener('click', openTerms);
+$el('termsCloseBtn').addEventListener('click', closeTerms);
+$el('termsOverlay').addEventListener('click', function(e) {
+  if (e.target === $el('termsOverlay')) closeTerms();
+});
+
+/*
+ * ============================================================
+ * TODO: PRO機能 — 不可視透かし（電子指紋）
+ * ============================================================
+ * 方式: DCT変換 × SHA-256ハッシュ × アプリ固有秘密鍵
+ * 概要:
+ *   1. 画像をDCT変換（周波数ドメインに変換）
+ *   2. 中周波数帯域に 日時+セッションID のSHA-256ハッシュを分散埋め込み
+ *   3. 埋め込みパターンをアプリ固有の秘密鍵で暗号化
+ *   4. 再アップロード時に逆DCT+秘密鍵照合で「SWM処理済み」を検証
+ * 特徴:
+ *   - 肉眼では完全に不可視（ピクセル値変化 ±1〜2）
+ *   - 軽圧縮・リサイズ耐性あり
+ *   - SonicWatermarker以外では検証不可のオリジナル方式
+ * ============================================================
+ */
+
+// ── ローディングスピナー ─────────────────────────────────
+function showSpinner() {
+  var sp = $el('previewSpinner');
+  if (sp) sp.classList.add('show');
+}
+function hideSpinner() {
+  var sp = $el('previewSpinner');
+  if (sp) sp.classList.remove('show');
+}
+
+// ── 比較スライダー ────────────────────────────────────────
+var compareMode = false;
+var isDragging = false;
+var compareRatio = 0.5;
+
+// setCompareRatio: 左右並列表示に移行のため不要
+
+function enableCompareMode() {
+  if (!state.images.length) return;
+  compareMode = true;
+  $el('previewCanvas').style.display = 'none';
+  $el('sideCompareWrap').classList.add('show');
+  $el('compareToggleBtn').classList.add('active');
+  renderCompare();
+}
+
+function disableCompareMode() {
+  compareMode = false;
+  $el('previewCanvas').style.display = 'block';
+  $el('sideCompareWrap').classList.remove('show');
+  $el('compareToggleBtn').classList.remove('active');
+}
+
+function renderCompare(imgArg) {
+  if (!state.images.length) return;
+  var imgObj = state.images[state.selectedIdx];
+  function doRender(img) {
+    var pScale = Math.min(1, 600 / Math.max(img.naturalWidth, img.naturalHeight));
+    var W = Math.round(img.naturalWidth * pScale);
+    var H = Math.round(img.naturalHeight * pScale);
+    // Before: 元画像
+    var before = $el('compareBefore');
+    if (before.width !== W || before.height !== H) {
+      before.width  = W;
+      before.height = H;
+    }
+    var bctx = ctxCache.get(before);
+    if (!bctx) { bctx = before.getContext('2d'); ctxCache.set(before, bctx); }
+    bctx.clearRect(0, 0, W, H);
+    bctx.drawImage(img, 0, 0, W, H);
+    // After: WM合成
+    compositeOnCanvas(img, $el('compareAfter'), pScale);
+  }
+  if (imgArg) { doRender(imgArg); } else { getImage(imgObj.url).then(doRender); }
+}
+
+$el('compareToggleBtn').addEventListener('click', function() {
+  if (compareMode) { disableCompareMode(); } else { enableCompareMode(); }
+});
+
+// 比較モード: 左右並列表示のためドラッグ操作不要
+
+// 初期化
+
+// ── Service Worker (PWA オフライン対応) ──────────
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js', { scope: './' })
+    .then(function(r) { console.log('[SW] registered', r.scope); })
+    .catch(function(e) { console.warn('[SW] failed:', e); });
+}
+
 </script>
+
 </body>
 </html>
