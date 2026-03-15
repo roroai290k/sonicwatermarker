@@ -1382,7 +1382,7 @@
       <div style="font-size:9px;color:#888;letter-spacing:0.1em;text-transform:uppercase;margin:10px 0 6px;" data-i18n="pro_plan_sub">サブスク版（開発中）</div>
       <div class="pro-features">
         <div class="pro-feature-item" style="color:#aaa;" data-i18n="sub_feat1">高耐性不可視透かし（リサイズ・再圧縮対応）</div>
-        <div class="pro-feature-item" style="color:#aaa;" data-i18n="sub_feat2">JPEG・リサイズ対応</div>
+        <div class="pro-feature-item" style="color:#aaa;" data-i18n="sub_feat2">SNS投稿後も消えない高耐性透かし</div>
         <div class="pro-feature-item" style="color:#aaa;" data-i18n="sub_feat3">完全メタデータ削除</div>
         <div class="pro-feature-item" style="color:#aaa;" data-i18n="sub_feat4">新機能の先行利用</div>
         <div class="pro-feature-item" style="color:#aaa;" data-i18n="sub_feat5">優先サポート</div>
@@ -1390,9 +1390,11 @@
 
       <!-- BOOTH購入リンク -->
       <div style="border-top:1px solid #2a2a2a;margin:8px 0;"></div>
-      <a id="boothLinkBtn" href="https://roroai290k.booth.pm/" target="_blank" rel="noopener"
+      <!-- ▼▼▼ ここにBOOTH商品ページのURLを貼ってください ▼▼▼ -->
+      <a id="boothLinkBtn" href="https://roro-ai.booth.pm/items/8024920" target="_blank" rel="noopener"
         style="display:block;text-align:center;padding:8px;background:rgba(232,255,71,0.08);border:1px solid #e8ff47;color:#e8ff47;font-family:'DM Mono',monospace;font-size:9px;font-weight:700;letter-spacing:0.1em;text-decoration:none;margin-bottom:8px;"
         data-i18n="booth_link">PRO版を購入する（BOOTH）</a>
+      <!-- ▲▲▲ BOOTH商品ページURL ▲▲▲ -->
 
       <!-- ライセンスキー認証UI -->
       <div id="licenseSection">
@@ -1709,6 +1711,7 @@ const T = {
     sonic_jpeg_note:'⚠ JPEG選択中：Exifメタデータに埋め込みます（ピクセル無変更）',
     sonic_webp_note:'⚠ WebP選択中：XMPメタデータに埋め込みます（ピクセル無変更）',
     sonic_btn:'✓ 処理時に自動で埋め込まれます',
+    detect_title:'SonicMark 検出',
     detect_btn:'検出する',
     detect_choose:'ファイルを選択',
     detect_no_file:'ファイルが選択されていません',
@@ -1825,6 +1828,7 @@ const T = {
     sonic_jpeg_note:'⚠ JPEG selected: Fingerprint embedded in Exif metadata (pixels unchanged)',
     sonic_webp_note:'⚠ WebP selected: Fingerprint embedded in XMP metadata (pixels unchanged)',
     sonic_btn:'✓ Auto-embedded during processing',
+    detect_title:'SonicMark Detection',
     detect_btn:'Detect',
     detect_choose:'Choose File',
     detect_no_file:'No file selected',
@@ -1935,14 +1939,17 @@ function applyLang(lang) {
     if (T[lang][key] !== undefined) elem.textContent = T[lang][key];
   });
 
-  // PRO buttons (not data-i18n due to onclick)
-  var proCtaBtn = document.querySelector('.pro-cta');
-  if (proCtaBtn) {
-    proCtaBtn.textContent = tx('pro_cta');
-    proCtaBtn.onclick = function() { alert(tx('pro_alert')); };
-  }
+  // PRO label update
   var proLabel = document.querySelector('.pro-label');
   if (proLabel) proLabel.textContent = tx('pro_label');
+
+  // 不可視透かしノートを言語に合わせて更新
+  var jpegNote = $el('sonicJpegNote');
+  if (jpegNote && jpegNote.style.display !== 'none') {
+    jpegNote.textContent = state.format === 'jpeg'
+      ? tx('sonic_jpeg_note')
+      : tx('sonic_webp_note');
+  }
 
   var sysReq = document.querySelector('.sys-req');
   if (sysReq) sysReq.innerHTML = '<strong>' + tx('sys_title') + '</strong>' + tx('sys1') + '<br>' + tx('sys2') + '<br>' + tx('sys3');
