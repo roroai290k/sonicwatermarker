@@ -1578,7 +1578,7 @@
 
 <footer>
   <div class="footer-left">
-    <div class="footer-credit">Created by <span>@roroai290K</span> &middot; SonicWatermarker v3.0</div>
+    <div class="footer-credit">Created by <span>@roroai290K</span> &middot; SonicWatermarker v3.0.1</div>
     <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
       <div class="footer-license" id="footerLicense">&copy; 2025&ndash;2026 @roroai290K &middot; All Rights Reserved</div>
       <button class="terms-btn" id="termsBtn" data-i18n="btn_terms">利用規約</button>
@@ -3318,19 +3318,20 @@ function crc32(data) {
 
 function buildZip(files, callback) {
   // 全BlobをArrayBufferに並列変換してからZIPを構築
-  var buffers = new Array(files.length);
+  var fileList = files.slice(); // スナップショットを取りクロージャ混線を防ぐ
+  var buffers = new Array(fileList.length);
   var done = 0;
-  files.forEach(function(file, i) {
+  fileList.forEach(function(file, i) {
     var reader = new FileReader();
     reader.onload = function(e) {
       buffers[i] = new Uint8Array(e.target.result);
       done++;
-      if (done === files.length) callback(assemble(buffers));
+      if (done === fileList.length) callback(assemble(buffers, fileList));
     };
     reader.readAsArrayBuffer(file.blob);
   });
 
-  function assemble(bufs) {
+  function assemble(bufs, fileList) {
     function u8(str) { return new TextEncoder().encode(str); }
     var parts = [];
     var centralDir = [];
@@ -3339,7 +3340,7 @@ function buildZip(files, callback) {
     var dosTime = ((now.getHours() << 11) | (now.getMinutes() << 5) | (now.getSeconds() >> 1));
     var dosDate = (((now.getFullYear() - 1980) << 9) | ((now.getMonth() + 1) << 5) | now.getDate());
 
-    files.forEach(function(file, i) {
+    fileList.forEach(function(file, i) {
       var nameBytes = u8(file.name);
       var raw = bufs[i];
       var checksum = crc32(raw);
