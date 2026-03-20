@@ -1158,13 +1158,13 @@
         <button class="btn-clear-all" id="clearAllBtn" data-i18n="btn_clear_all" style="display:none">✕ 全削除</button>
       </div>
       <div class="drop-zone" id="imgDropZone">
-        <input type="file" id="imgInput" accept="image/*,.heic,.heif,.tif,.tiff,.bmp,.svg,.avif,.gif" multiple>
+        <input type="file" id="imgInput" accept="image/*,.tif,.tiff,.bmp,.svg,.avif,.gif" multiple>
         <span class="drop-icon">🖼</span>
         <div class="drop-title" data-i18n="drop_title">画像をドロップ</div>
-        <div class="drop-sub" data-i18n="drop_sub">複数選択可・枚数制限なし · PNG/JPEG/WebP/GIF/BMP/TIFF/AVIF/SVG/HEIC</div>
+        <div class="drop-sub" data-i18n="drop_sub">複数選択可・枚数制限なし · PNG/JPEG/WebP/GIF/BMP/TIFF/AVIF/SVG</div>
         <div id="imgCount" style="display:none" class="file-count"></div>
       </div>
-      <div class="heic-notice" id="heicNotice" data-i18n="heic_notice">⚠ HEICファイルが含まれています。変換中…</div>
+      <div class="heic-notice" id="heicNotice" style="display:none !important"></div>
     </div>
 
     <div>
@@ -1578,7 +1578,7 @@
 
 <footer>
   <div class="footer-left">
-    <div class="footer-credit">Created by <span>@roroai290K</span> &middot; SonicWatermarker v3.0.1</div>
+    <div class="footer-credit">Created by <span>@roroai290K</span> &middot; SonicWatermarker v3.1</div>
     <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
       <div class="footer-license" id="footerLicense">&copy; 2025&ndash;2026 @roroai290K &middot; All Rights Reserved</div>
       <button class="terms-btn" id="termsBtn" data-i18n="btn_terms">利用規約</button>
@@ -2111,13 +2111,26 @@ $el('imgInput').addEventListener('change', function() { loadImages($el('imgInput
 $el('imgDropZone').addEventListener('drop', function(e) { loadImages(e.dataTransfer.files); });
 
 function loadImages(files) {
+  // HEIC/HEIFは未対応のため除外
   var imgs = Array.from(files).filter(function(f) {
+    if (/\.(heic|heif)$/i.test(f.name) || f.type === 'image/heic' || f.type === 'image/heif') {
+      return false;
+    }
     return f.type.startsWith('image/') || /\.(tif|tiff|bmp|svg|avif|gif)$/i.test(f.name);
   });
   if (!imgs.length) return;
 
   state.images.forEach(function(obj) { URL.revokeObjectURL(obj.url); imgCache.delete(obj.url); });
   state.images = imgs.map(function(f) { return { file: f, url: URL.createObjectURL(f), name: f.name }; });
+
+  // 新しい画像を読み込んだら前回の出力結果をリセット
+  try {
+    state.results = [];
+    $el('resultsSection').style.display = 'none';
+    $el('downloadGrid').innerHTML = '';
+  } catch(e) {
+    console.warn('[loadImages] 結果リセットエラー:', e);
+  }
 
   $el('imgCount').textContent = state.images.length + ' ' + tx('count_sel');
   $el('imgCount').style.display = 'inline-block';
@@ -2276,7 +2289,7 @@ function savePresets(arr) {
 function currentSettings(customName) {
   var posLabel = {
     'top-left':'↖','top-center':'↑','top-right':'↗',
-    'center-left':'←','center':'＋','center-right':'→',
+    'middle-left':'←','center':'＋','middle-right':'→',
     'bottom-left':'↙','bottom-center':'↓','bottom-right':'↘'
   }[state.position] || state.position;
   return {
@@ -2337,7 +2350,7 @@ function applyPreset(p) {
   // 位置
   if (p.position) {
     state.position = p.position;
-    document.querySelectorAll('.pos-cell').forEach(function(c) {
+    document.querySelectorAll('.pos-btn').forEach(function(c) {
       c.classList.toggle('active', c.dataset.pos === p.position);
     });
   }
@@ -2797,23 +2810,38 @@ function renderPreview() {
 // ── Text WM canvas (cached) ───────────────────────────────
 function buildTextWmCanvas() {
   if (wmCache) return wmCache;
-  var fs = state.fontSize;
-  var fontStr = 'bold ' + fs + "px 'DM Mono', monospace";
-  // サイズ計測用の仮canvas（OffscreenCanvasが使えない環境向け）
-  var measure = document.createElement('canvas');
-  var mctx = measure.getContext('2d');
-  mctx.font = fontStr;
-  var w = Math.ceil(mctx.measureText(state.wmText).width) + 4;
-  var h = Math.ceil(fs * 1.3);
-  // 本番canvas: サイズ確定後に1回だけgetContext
-  var c = document.createElement('canvas');
-  c.width = w; c.height = h;
-  var ctx = c.getContext('2d');
-  ctx.font = fontStr;
-  ctx.fillStyle = state.textColor;
-  ctx.fillText(state.wmText, 2, fs);
-  wmCache = c;
-  return c;
+  try {
+    var fs = Math.max(1, Math.round(state.fontSize || 48));
+    var text = state.wmText || '';
+    if (!text.trim()) return null;
+    var fontStr = 'bold ' + fs + "px 'DM Mono', monospace";
+
+    // サイズ計測用の仮canvas
+    var measure = document.createElement('canvas');
+    var mctx = measure.getContext('2d');
+    if (!mctx) return null;
+    mctx.font = fontStr;
+    var textW = mctx.measureText(text).width;
+    var w = Math.max(1, Math.ceil(textW) + 8);
+    var h = Math.max(1, Math.ceil(fs * 1.4));
+
+    // 本番canvas
+    var c = document.createElement('canvas');
+    c.width = w;
+    c.height = h;
+    var ctx = c.getContext('2d');
+    if (!ctx) return null;
+    ctx.font = fontStr;
+    ctx.fillStyle = state.textColor || '#ffffff';
+    // ベースライン位置をフォントサイズに合わせて正確に配置
+    ctx.fillText(text, 4, fs * 1.05);
+    wmCache = c;
+    return c;
+  } catch(e) {
+    console.warn('[buildTextWmCanvas] エラー:', e);
+    wmCache = null;
+    return null;
+  }
 }
 
 // ── Composite core ────────────────────────────────────────
@@ -2836,6 +2864,7 @@ function compositeOnCanvas(baseImg, canvas, previewScale) {
   if (state.wmMode === 'text') {
     if (!state.wmText.trim()) { ctx.globalAlpha = 1; return; }
     wmSrc = buildTextWmCanvas();
+    if (!wmSrc) { ctx.globalAlpha = 1; return; }
   } else {
     if (!state.watermark) { ctx.globalAlpha = 1; return; }
     wmSrc = state.watermark.img;
@@ -3418,6 +3447,12 @@ function doClearAll() {
   state.selectedIdx = 0;
   imgCache.clear();
   wmCache = null;
+  // 出力結果もリセット（state.resultsに残ったblobのURLを解放）
+  try {
+    state.results = [];
+  } catch(e) {
+    console.warn('[doClearAll] state.results リセットエラー:', e);
+  }
   $el('imageGrid').innerHTML = '';
   $el('imageStripSection').style.display = 'none';
   $el('canvasWrap').style.display = 'none';
@@ -3425,6 +3460,7 @@ function doClearAll() {
   $el('imgCount').style.display = 'none';
   $el('clearAllBtn').style.display = 'none';
   $el('resultsSection').style.display = 'none';
+  $el('downloadGrid').innerHTML = '';
   $el('clearAllBtnStrip').style.display = 'none';
   disableCompareMode();
   updateProcess();
@@ -3831,21 +3867,20 @@ function dctReadBit(data, W, bx, by, strength) {
 // 🚨 元画像保護のためImageDataは必ずコピーしてから操作すること
 async function embedSonicMarkToCanvas(canvas, licenseKey, outputFormat) {
   try {
-    // outputFormat: 実際の出力形式（actualFormat）を使う
-    // state.format はユーザー選択値であり、JPEG→PNG変換後も 'jpeg' のままなので使わない
     var fmt = outputFormat || state.format;
     var W = canvas.width;
     var H = canvas.height;
     if (W * H < 10000) return;
 
+    if (fmt === 'jpeg' || fmt === 'webp') {
+      // JPEG/WebP はメタデータ方式（embedSonicMarkToJpegBlob/WebPBlob）で処理
+      return;
+    }
+
     await sonicPrepareCache(licenseKey);
     var bits     = _sonicCache.bits;
     var bitCount = _sonicCache.bitCount;
     var seed     = _sonicCache.seed;
-
-    // WM描画位置を出力画像サイズで計算
-    var wmRect = sonicCalcWmRect(W, H);
-    var wx = wmRect.x, wy = wmRect.y, ww = wmRect.w, wh = wmRect.h;
 
     // 🚨 必ずImageDataをコピーしてから操作する（元画像保護）
     var ctx = canvas.getContext('2d');
@@ -3853,33 +3888,20 @@ async function embedSonicMarkToCanvas(canvas, licenseKey, outputFormat) {
     var imgData = new ImageData(new Uint8ClampedArray(srcData.data), W, H);
     var data    = imgData.data;
 
-    if (fmt === 'jpeg' || fmt === 'webp') {
-      // JPEG/WebP はメタデータ方式（embedSonicMarkToJpegBlob/WebPBlob）で処理
-      // この関数では何もしない
-      return;
-    }
+    // ── PNG：画像全体からseedで分散選択するLSB方式（v3.1）────────
+    // ※ v3.0以前のWM領域限定方式はstateに依存しており
+    //    ツールを再起動すると検出座標がずれて検出不能になるバグがあった。
+    // ※ v3.1では画像全体（W×H）を対象にseedから位置を生成するため
+    //    stateに一切依存せず、再起動後・別環境でも確実に検出できる。
+    var maxIndex = data.length - 4;
+    if (maxIndex < 4) return;
+    var positions = sonicGenPositions(seed, bitCount * 3, maxIndex);
+    if (positions.length < bitCount) return;
 
-    // ── PNG / WebP：WM領域へのLSB方式 ────────────────────────
-    // WM領域内のピクセルに限定してLSBを埋め込む（元画像は保護済み）
-    var wmMaxIdx = ww * wh * 4 - 4;
-    if (wmMaxIdx < 4) return;
-    var localPos = sonicGenPositions(seed, bitCount * 3, wmMaxIdx);
-
-    // ローカル座標 → グローバル座標に変換
-    var globalPos = localPos.map(function(p) {
-      var localPx = Math.floor(p / 4);
-      var lx = localPx % ww;
-      var ly = Math.floor(localPx / ww);
-      var gx = wx + lx;
-      var gy = wy + ly;
-      if (gx < 0 || gx >= W || gy < 0 || gy >= H) return -1;
-      return (gy * W + gx) * 4; // Rチャンネル
-    }).filter(function(p) { return p >= 0; });
-
-    var redundancy2 = Math.min(3, Math.floor(globalPos.length / bitCount));
-    if (redundancy2 < 1) redundancy2 = 1;
-    for (var r2 = 0; r2 < redundancy2; r2++) {
-      sonicEmbedBits(data, globalPos.slice(r2 * bitCount, (r2 + 1) * bitCount), bits);
+    var redundancy = Math.min(3, Math.floor(positions.length / bitCount));
+    if (redundancy < 1) redundancy = 1;
+    for (var r = 0; r < redundancy; r++) {
+      sonicEmbedBits(data, positions.slice(r * bitCount, (r + 1) * bitCount), bits);
     }
 
     // コピーしたimageDataのみをcanvasに書き戻す
@@ -3898,7 +3920,7 @@ async function embedSonicMark(canvas, licenseKey) {
   console.warn('[SonicMark] embedSonicMarkは非推奨です。embedSonicMarkToWmを使用してください。');
 }
 
-// 画像からSonicMarkを検出する（PNG:LSB方式 / JPEG:全体分散輝度差パターン方式 自動判定）
+// 画像からSonicMarkを検出する（PNG:全体分散LSB方式 / JPEG/WebP:バイナリ方式）
 async function detectSonicMark(canvas) {
   try {
     var ctx = canvas.getContext('2d');
@@ -3922,70 +3944,35 @@ async function detectSonicMark(canvas) {
       var seed = await sha256hex(seedRaw);
       var expectedHash_lsb = (await sha256hex(licenseKey + SONICMARK_SECRET)).slice(0, 8);
 
-      // ── LSB検出（PNG / WebP）──────────────────────────────────
-      // embedSonicMarkToCanvas と同じWM領域座標でLSBを読む
-      var wmRectPng = sonicCalcWmRect(W, H);
-      var wmX_p = wmRectPng.x, wmY_p = wmRectPng.y;
-      var wmW_p = wmRectPng.w, wmH_p = wmRectPng.h;
-      var wmMaxIdx_d = wmW_p * wmH_p * 4 - 4;
-      if (wmMaxIdx_d >= 4) {
-        var localPos_d = sonicGenPositions(seed, bitCount * 3, wmMaxIdx_d);
-        var globalPos_d = localPos_d.map(function(p) {
-          var lpx = Math.floor(p / 4);
-          var lx = lpx % wmW_p;
-          var ly = Math.floor(lpx / wmW_p);
-          var gx = wmX_p + lx;
-          var gy = wmY_p + ly;
-          if (gx < 0 || gx >= W || gy < 0 || gy >= H) return -1;
-          return (gy * W + gx) * 4;
-        }).filter(function(p) { return p >= 0; });
-
-        if (globalPos_d.length >= bitCount) {
-          var redundancyL = Math.min(3, Math.floor(globalPos_d.length / bitCount));
-          if (redundancyL < 1) redundancyL = 1;
-          var lBits = [];
-          for (var i = 0; i < bitCount; i++) {
-            var votes = 0;
-            for (var r = 0; r < redundancyL; r++) {
-              var pIdx = r * bitCount + i;
-              if (pIdx < globalPos_d.length) votes += data[globalPos_d[pIdx]] & 1;
-            }
-            lBits.push(votes > redundancyL / 2 ? 1 : 0);
-          }
-          var lStr = sonicBitsToStr(lBits);
-          if (lStr.charCodeAt(0) === 0x53 && lStr.charCodeAt(1) === 0x4D &&
-              lStr.charCodeAt(2) === 0x4B && lStr.charCodeAt(3) === 0x31) {
-            var lHash = lStr.slice(4, 12);
-            if (lHash === expectedHash_lsb) return { detected: true, key: licenseKey, method: 'WM-LSB(v2.7)' };
-          }
-        }
-      }
-
-      // ── 方式②: 全体LSB検出（フォールバック・旧方式対応）──
+      // ── 方式①（v3.1）: 画像全体分散LSB検出（主方式）──────────────
+      // embedSonicMarkToCanvas v3.1 と同じ「全体分散」で読む。
+      // stateに一切依存しないため再起動後・別環境でも確実に検出できる。
       var lsbRedundancy = 3;
       var maxIndex = data.length - 4;
-      var positions = sonicGenPositions(seed, bitCount * lsbRedundancy, maxIndex);
-      if (positions.length >= bitCount) {
-        var resultBits = [];
-        for (var i = 0; i < bitCount; i++) {
-          var votes = 0;
-          for (var r = 0; r < lsbRedundancy; r++) {
-            var idx = r * bitCount + i;
-            if (idx < positions.length) votes += data[positions[idx]] & 1;
+      if (maxIndex >= 4) {
+        var positions = sonicGenPositions(seed, bitCount * lsbRedundancy, maxIndex);
+        if (positions.length >= bitCount) {
+          var redundancyActual = Math.min(lsbRedundancy, Math.floor(positions.length / bitCount));
+          if (redundancyActual < 1) redundancyActual = 1;
+          var resultBits = [];
+          for (var i = 0; i < bitCount; i++) {
+            var votes = 0;
+            for (var r = 0; r < redundancyActual; r++) {
+              var idx = r * bitCount + i;
+              if (idx < positions.length) votes += data[positions[idx]] & 1;
+            }
+            resultBits.push(votes > redundancyActual / 2 ? 1 : 0);
           }
-          resultBits.push(votes >= 2 ? 1 : 0);
-        }
-        var readStr = sonicBitsToStr(resultBits);
-        if (readStr.charCodeAt(0) === 0x53 && readStr.charCodeAt(1) === 0x4D &&
-            readStr.charCodeAt(2) === 0x4B && readStr.charCodeAt(3) === 0x31) {
-          var readHash = readStr.slice(4, 12);
-          if (readHash === expectedHash_lsb) return { detected: true, key: licenseKey, method: 'LSB(全体)' };
+          var readStr = sonicBitsToStr(resultBits);
+          if (readStr.charCodeAt(0) === 0x53 && readStr.charCodeAt(1) === 0x4D &&
+              readStr.charCodeAt(2) === 0x4B && readStr.charCodeAt(3) === 0x31) {
+            var readHash = readStr.slice(4, 12);
+            if (readHash === expectedHash_lsb) return { detected: true, key: licenseKey, method: 'LSB(v3.1)' };
+          }
         }
       }
 
       // ── 後方互換：旧ブロック方式（v2.4以前）で試みる ──
-      // v2.5以降はLSB方式に統一したが、旧ファイルの検出のために残す
-      // 旧v2.4: redundancy=5、順番埋め込み（r * bitCount + i）
       var blockRedundancy_v24 = 5;
       var totalBlocks2 = Math.floor(W / 8) * Math.floor(H / 8);
       if (totalBlocks2 >= bitCount * blockRedundancy_v24) {
