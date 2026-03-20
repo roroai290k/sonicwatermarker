@@ -4585,20 +4585,12 @@ async function verifyKey(key) {
     var checksum = hash.slice(0, 4).toUpperCase();
     if (checksum === parsed.checksum) {
       // TRIALキーは発行から31日で失効
+      // timestampにエポック日数(base36)が埋め込まれているため
+      // localStorage不要・別ブラウザ/別端末でも同じ結果になる
       if (type === 'TRIAL') {
-        // timestampはkeygen.htmlでDate.now()の末尾4文字(16進)
-        // 完全な発行日時はUIDの後半8文字+timestamp4文字で構成されている
-        // ただし完全な復元はできないため、localStorageの初回認証日から計算
-        var storageKey = 'sonicTrialActivated_' + parsed.uid;
-        var activatedAt = localStorage.getItem(storageKey);
-        if (!activatedAt) {
-          // 初回認証 → 現在時刻を保存
-          localStorage.setItem(storageKey, String(Date.now()));
-          activatedAt = String(Date.now());
-        }
-        var elapsed = Date.now() - parseInt(activatedAt, 10);
-        var elapsedDays = elapsed / (1000 * 60 * 60 * 24);
-        if (elapsedDays > TRIAL_DAYS) return 'expired';
+        var issueDays = parseInt(parsed.timestamp, 36);
+        var todayDays = Math.floor(Date.now() / 86400000);
+        if (todayDays - issueDays > TRIAL_DAYS) return 'expired';
       }
       return true;
     }
