@@ -1411,7 +1411,8 @@
       <!-- PRO有効時の表示 -->
       <div id="proActiveSection" style="display:none;">
         <div style="border-top:1px solid #2a2a2a;margin:8px 0;"></div>
-        <div style="font-size:9px;color:#e8ff47;letter-spacing:0.1em;" data-i18n="pro_active_label">✓ PRO版 有効中</div>
+        <div id="proActiveLabelMain" style="font-size:9px;color:#e8ff47;letter-spacing:0.1em;">✓ PRO版 有効中</div>
+        <div id="proTrialRemaining" style="display:none;font-size:9px;color:#aaa;letter-spacing:0.06em;margin-top:4px;"></div>
         <button onclick="deactivateLicense()" style="margin-top:6px;background:none;border:none;color:#444;font-size:9px;cursor:pointer;letter-spacing:0.05em;text-decoration:underline;" data-i18n="license_revoke">ライセンスを解除</button>
       </div>
     </div>
@@ -1959,6 +1960,24 @@ function applyLang(lang) {
 
   var footerLic = document.getElementById('footerLicense');
   if (footerLic) footerLic.textContent = tx('footer_license');
+
+  // PRO/TRIAL有効中表示を言語に合わせて更新
+  if (proActive) {
+    var labelEl2 = $el('proActiveLabelMain');
+    var trialEl2 = $el('proTrialRemaining');
+    var parsed2 = parseKey(proLicenseKey);
+    if (parsed2 && trialEl2 && trialEl2.style.display !== 'none') {
+      var issueDays2 = parseInt(parsed2.timestamp, 36);
+      var todayDays2 = Math.floor(Date.now() / 86400000);
+      var rem2 = Math.max(0, TRIAL_DAYS - (todayDays2 - issueDays2));
+      if (labelEl2) labelEl2.textContent = lang === 'ja' ? '✓ お試し版 有効中' : '✓ TRIAL Active';
+      trialEl2.textContent = lang === 'ja'
+        ? '残り ' + rem2 + ' 日（発行日から31日間）'
+        : rem2 + ' day(s) remaining (31 days from issue)';
+    } else if (labelEl2 && (!trialEl2 || trialEl2.style.display === 'none')) {
+      labelEl2.textContent = lang === 'ja' ? '✓ PRO版 有効中' : '✓ PRO Active';
+    }
+  }
 
   // 利用規約モーダル: data-i18nで自動更新済み（querySelectorAll処理済み）
 
@@ -4644,9 +4663,44 @@ function showProActive() {
   // サイドバーPROバナー更新
   $el('licenseSection').style.display = 'none';
   $el('proActiveSection').style.display = 'block';
-  $el('proBadge').textContent = 'PRO';
-  $el('proBadge').style.background = '#e8ff47';
-  $el('proLabel').textContent = '⚡ PRO版 — 有効';
+
+  // TRIAL / PRO を判定して表示を出し分ける
+  var parsed = parseKey(proLicenseKey);
+  var isTrial = false;
+  var remainingDays = 0;
+  if (parsed) {
+    var issueDays = parseInt(parsed.timestamp, 36);
+    var todayDays = Math.floor(Date.now() / 86400000);
+    remainingDays = Math.max(0, TRIAL_DAYS - (todayDays - issueDays));
+    // checksumがTRIAL由来かどうかはverifyKey済みなのでparsed.timestampが
+    // base36日数かどうかで判定（PRO版のts4は旧方式の可能性があるため
+    // 残り日数が0〜31の範囲内ならTRIALと見なす）
+    isTrial = (remainingDays >= 0 && remainingDays <= TRIAL_DAYS + 1);
+    // より確実にTRIALか判定：発行日数が現在より未来または極端に古い場合はPRO扱い
+    if (issueDays > todayDays || todayDays - issueDays > TRIAL_DAYS) isTrial = false;
+  }
+
+  var labelEl = $el('proActiveLabelMain');
+  var trialEl = $el('proTrialRemaining');
+
+  if (isTrial) {
+    labelEl.textContent = currentLang === 'ja' ? '✓ お試し版 有効中' : '✓ TRIAL Active';
+    trialEl.style.display = 'block';
+    trialEl.textContent = currentLang === 'ja'
+      ? '残り ' + remainingDays + ' 日（発行日から31日間）'
+      : remainingDays + ' day(s) remaining (31 days from issue)';
+    $el('proBadge').textContent = 'TRIAL';
+    $el('proBadge').style.background = '#555';
+    $el('proBadge').style.color = '#e8ff47';
+    $el('proLabel').textContent = currentLang === 'ja' ? '⚡ お試し版 — 有効' : '⚡ TRIAL — Active';
+  } else {
+    labelEl.textContent = currentLang === 'ja' ? '✓ PRO版 有効中' : '✓ PRO Active';
+    trialEl.style.display = 'none';
+    $el('proBadge').textContent = 'PRO';
+    $el('proBadge').style.background = '#e8ff47';
+    $el('proBadge').style.color = '#000';
+    $el('proLabel').textContent = currentLang === 'ja' ? '⚡ PRO版 — 有効' : '⚡ PRO — Active';
+  }
 
   // ① ヘッダーにPROバッジ表示
   $el('headerProBadge').style.display = 'block';
