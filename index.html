@@ -1962,20 +1962,24 @@ function applyLang(lang) {
   if (footerLic) footerLic.textContent = tx('footer_license');
 
   // PRO/TRIAL有効中表示を言語に合わせて更新
+  // verifyKeyの結果（'PRO'/'TRIAL'）はproActiveLabelMainのtextContentで判断する
   if (proActive) {
     var labelEl2 = $el('proActiveLabelMain');
     var trialEl2 = $el('proTrialRemaining');
-    var parsed2 = parseKey(proLicenseKey);
-    if (parsed2 && trialEl2 && trialEl2.style.display !== 'none') {
-      var issueDays2 = parseInt(parsed2.timestamp, 36);
-      var todayDays2 = Math.floor(Date.now() / 86400000);
-      var rem2 = Math.max(0, TRIAL_DAYS - (todayDays2 - issueDays2));
-      if (labelEl2) labelEl2.textContent = lang === 'ja' ? '✓ お試し版 有効中' : '✓ TRIAL Active';
-      trialEl2.textContent = lang === 'ja'
-        ? '残り ' + rem2 + ' 日（発行日から31日間）'
-        : rem2 + ' day(s) remaining (31 days from issue)';
-    } else if (labelEl2 && (!trialEl2 || trialEl2.style.display === 'none')) {
-      labelEl2.textContent = lang === 'ja' ? '✓ PRO版 有効中' : '✓ PRO Active';
+    var isTrial2 = trialEl2 && trialEl2.style.display !== 'none';
+    if (isTrial2) {
+      var parsed2 = parseKey(proLicenseKey);
+      if (parsed2) {
+        var issueDays2 = parseInt(parsed2.timestamp, 36);
+        var todayDays2 = Math.floor(Date.now() / 86400000);
+        var rem2 = Math.max(0, TRIAL_DAYS - (todayDays2 - issueDays2));
+        if (labelEl2) labelEl2.textContent = lang === 'ja' ? '✓ お試し版 有効中' : '✓ TRIAL Active';
+        trialEl2.textContent = lang === 'ja'
+          ? '残り ' + rem2 + ' 日（発行日から31日間）'
+          : rem2 + ' day(s) remaining (31 days from issue)';
+      }
+    } else {
+      if (labelEl2) labelEl2.textContent = lang === 'ja' ? '✓ PRO版 有効中' : '✓ PRO Active';
     }
   }
 
@@ -4610,14 +4614,15 @@ async function verifyKey(key) {
         var issueDays = parseInt(parsed.timestamp, 36);
         var todayDays = Math.floor(Date.now() / 86400000);
         if (todayDays - issueDays > TRIAL_DAYS) return 'expired';
+        return 'TRIAL';
       }
-      return true;
+      return 'PRO';
     }
   }
   return false;
 }
 
-// verifyKeyの戻り値: true=有効, false=無効, 'expired'=期限切れ
+// verifyKeyの戻り値: 'PRO'=有効(PRO), 'TRIAL'=有効(TRIAL), 'expired'=期限切れ, false=無効
 async function verifyKeyWithMsg(key) {
   var result = await verifyKey(key);
   return result;
@@ -4639,12 +4644,12 @@ async function activateLicense() {
     msg.textContent = currentLang === 'ja'
       ? 'TRIALキーの有効期限（31日）が切れています。PRO版の購入をご検討ください。'
       : 'TRIAL key has expired (31 days). Please consider upgrading to PRO.';
-  } else if (result === true) {
+  } else if (result === 'PRO' || result === 'TRIAL') {
     proActive = true;
     proLicenseKey = key;
     localStorage.setItem('sonicProKey', key);
     msg.textContent = '';
-    showProActive();
+    showProActive(result);
   } else {
     msg.style.color = '#ff6b6b';
     msg.textContent = currentLang === 'ja' ? '無効なキーです。ご確認ください。' : 'Invalid key. Please check and try again.';
@@ -4659,26 +4664,23 @@ function deactivateLicense() {
   showProInactive();
 }
 
-function showProActive() {
+function showProActive(licenseType) {
+  // verifyKey()から受け取った正確なキー種別で表示を出し分ける
+  // 推測ロジック不要・PRO/TRIALを確実に判定できる
+  var isTrial = (licenseType === 'TRIAL');
+  var remainingDays = 0;
+  if (isTrial) {
+    var parsed = parseKey(proLicenseKey);
+    if (parsed) {
+      var issueDays = parseInt(parsed.timestamp, 36);
+      var todayDays = Math.floor(Date.now() / 86400000);
+      remainingDays = Math.max(0, TRIAL_DAYS - (todayDays - issueDays));
+    }
+  }
+
   // サイドバーPROバナー更新
   $el('licenseSection').style.display = 'none';
   $el('proActiveSection').style.display = 'block';
-
-  // TRIAL / PRO を判定して表示を出し分ける
-  var parsed = parseKey(proLicenseKey);
-  var isTrial = false;
-  var remainingDays = 0;
-  if (parsed) {
-    var issueDays = parseInt(parsed.timestamp, 36);
-    var todayDays = Math.floor(Date.now() / 86400000);
-    remainingDays = Math.max(0, TRIAL_DAYS - (todayDays - issueDays));
-    // checksumがTRIAL由来かどうかはverifyKey済みなのでparsed.timestampが
-    // base36日数かどうかで判定（PRO版のts4は旧方式の可能性があるため
-    // 残り日数が0〜31の範囲内ならTRIALと見なす）
-    isTrial = (remainingDays >= 0 && remainingDays <= TRIAL_DAYS + 1);
-    // より確実にTRIALか判定：発行日数が現在より未来または極端に古い場合はPRO扱い
-    if (issueDays > todayDays || todayDays - issueDays > TRIAL_DAYS) isTrial = false;
-  }
 
   var labelEl = $el('proActiveLabelMain');
   var trialEl = $el('proTrialRemaining');
@@ -4786,11 +4788,11 @@ function showProInactive() {
     var saved = localStorage.getItem('sonicProKey');
     if (saved) {
       var result = await verifyKey(saved);
-      if (result === true) {
+      if (result === 'PRO' || result === 'TRIAL') {
         proActive = true;
         proLicenseKey = saved;
         $el('licenseInput').value = saved;
-        showProActive();
+        showProActive(result);
       } else if (result === 'expired') {
         // TRIAL期限切れ：キーは残しておいてメッセージだけ表示
         $el('licenseInput').value = saved;
