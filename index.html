@@ -121,6 +121,102 @@
   .wm-tab:first-child { border-right: none; }
   .wm-tab.active { background: rgba(232,255,71,0.07); border-color: var(--accent); color: var(--accent); }
 
+  .layer-add-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 8px; }
+  .layer-add-btn {
+    padding: 8px 6px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: #aaa;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .layer-add-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .layer-add-btn:disabled { color: #444; border-color: #222; cursor: not-allowed; background: #101010; }
+  .layer-limit-note { font-size: 9px; color: #666; letter-spacing: 0.05em; line-height: 1.6; margin-bottom: 8px; }
+  .layer-list { display: flex; flex-direction: column; gap: 6px; }
+  .layer-card {
+    border: 1px solid var(--border);
+    background: #101010;
+    padding: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .layer-card:hover { border-color: #555; }
+  .layer-card.active { border-color: var(--accent); background: rgba(232,255,71,0.04); }
+  .layer-card.missing { border-color: #684400; background: rgba(232,160,0,0.04); }
+  .layer-card-top { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 5px; }
+  .layer-card-title { display: flex; align-items: center; gap: 6px; min-width: 0; }
+  .layer-kind {
+    font-size: 8px;
+    color: #000;
+    background: var(--accent);
+    font-family: 'DM Mono', monospace;
+    font-weight: 700;
+    padding: 2px 5px;
+    letter-spacing: 0.08em;
+  }
+  .layer-pos { font-size: 11px; color: #ddd; font-family: 'DM Mono', monospace; }
+  .layer-name { font-size: 9px; color: #aaa; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .layer-meta { font-size: 8px; color: #666; letter-spacing: 0.05em; line-height: 1.5; }
+  .layer-actions { display: flex; gap: 4px; flex-shrink: 0; }
+  .layer-mini-btn {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    color: #888;
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    padding: 3px 5px;
+    cursor: pointer;
+  }
+  .layer-mini-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .layer-empty {
+    border: 1px dashed var(--border);
+    padding: 12px 10px;
+    color: #666;
+    font-size: 9px;
+    line-height: 1.7;
+    text-align: center;
+  }
+  .position-picker {
+    border: 1px solid #333;
+    background: #0f0f0f;
+    padding: 10px;
+    margin: 8px 0;
+  }
+  .position-picker-title { font-size: 9px; color: #aaa; letter-spacing: 0.08em; margin-bottom: 8px; }
+  .position-pick-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+  .position-pick-btn {
+    aspect-ratio: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: #aaa;
+    cursor: pointer;
+    font-size: 12px;
+  }
+  .position-pick-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .position-pick-btn.used { color: #333; border-color: #222; cursor: not-allowed; background: #0c0c0c; }
+  .layer-editor-empty {
+    border: 1px dashed var(--border);
+    padding: 12px 10px;
+    color: #666;
+    font-size: 9px;
+    line-height: 1.7;
+    text-align: center;
+  }
+  .layer-editor { display: none; flex-direction: column; gap: 13px; }
+  .layer-editor.active { display: flex; }
+  .image-layer-panel, .text-layer-panel { display: none; flex-direction: column; gap: 9px; }
+  .image-layer-panel.active, .text-layer-panel.active { display: flex; }
+  .pos-btn.used {
+    color: #333;
+    border-color: #222;
+    background: #0c0c0c;
+    cursor: not-allowed;
+  }
+
   .drop-zone {
     border: 1px dashed var(--border);
     padding: 18px 14px;
@@ -663,7 +759,8 @@
     line-height: 1.9;
     letter-spacing: 0.04em;
   }
-  .terms-foot {
+  .terms-foot,
+  .terms-footer {
     padding: 10px 22px;
     border-top: 1px solid #1a1a1a;
     font-size: 9px;
@@ -1016,7 +1113,7 @@
   }
 
   /* ── タブレット: 768px以下 ── */
-  @media (max-width: 768px) {
+  @media (max-width: 900px), (hover: none) and (pointer: coarse) and (max-width: 1180px) {
     body { height: auto; overflow: auto; }
 
     header { padding: 12px 16px; }
@@ -1043,9 +1140,16 @@
       contain: none;
     }
     aside.sidebar.mobile-open {
-      max-height: 2000px;
-      padding: 18px;
-      overflow-y: auto;
+      max-height: none;
+      padding: 18px 18px calc(92px + env(safe-area-inset-bottom));
+      overflow: visible;
+    }
+
+    aside.sidebar.mobile-open .btn-process {
+      position: sticky;
+      bottom: calc(12px + env(safe-area-inset-bottom));
+      z-index: 20;
+      box-shadow: 0 -10px 26px rgba(0,0,0,0.72);
     }
 
     .main {
@@ -1070,6 +1174,38 @@
 
     .loading-pct-big { font-size: 52px; }
     .loading-bar-wrap { width: 220px; }
+
+    footer {
+      padding: 14px 16px calc(18px + env(safe-area-inset-bottom));
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .footer-right { gap: 10px; }
+
+    .terms-overlay {
+      padding: 10px;
+      align-items: stretch;
+    }
+
+    .terms-modal {
+      max-width: none;
+      max-height: calc(100dvh - 20px);
+      min-height: 0;
+    }
+
+    .terms-header {
+      padding: 12px;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .terms-title { font-size: 11px; letter-spacing: 0.14em; }
+    .terms-close-btn { min-height: 34px; padding: 7px 10px; white-space: normal; text-align: center; }
+    .terms-body { padding: 14px; -webkit-overflow-scrolling: touch; }
+    .terms-item { margin-bottom: 16px; padding-bottom: 16px; }
+    .terms-item-text { font-size: 10px; line-height: 1.8; }
+    .terms-footer { padding: 10px 14px; }
   }
 
   /* ── スマホ: 480px以下 ── */
@@ -1168,46 +1304,54 @@
     </div>
 
     <div>
-      <div class="section-label" data-i18n="label_wm">02 — ウォーターマーク</div>
-      <div class="wm-tabs">
-        <button class="wm-tab active" data-tab="image" data-i18n="tab_img">画像WM</button>
-        <button class="wm-tab" data-tab="text" data-i18n="tab_txt">テキストWM</button>
+      <div class="section-label" data-i18n="label_wm">02 — WMレイヤー</div>
+      <div class="layer-add-row">
+        <button class="layer-add-btn" id="addTextLayerBtn" data-i18n="layer_add_text">＋ テキスト</button>
+        <button class="layer-add-btn" id="addImageLayerBtn" data-i18n="layer_add_image">＋ 画像</button>
       </div>
-
-      <div id="imageWmPanel">
-        <div class="drop-zone" id="wmDropZone">
-          <input type="file" id="wmInput" accept="image/*">
-          <span class="drop-icon">💧</span>
-          <div class="drop-title" data-i18n="wm_drop_title">WM画像をドロップ</div>
-          <div class="drop-sub" data-i18n="wm_drop_sub">PNG推奨（透過対応）</div>
-        </div>
-        <div id="wmThumbWrap" style="display:none; position:relative; margin-top:7px;">
-          <img id="wmThumb" class="wm-thumb" alt="watermark preview" style="margin-top:0;">
-          <button id="wmClearBtn" style="position:absolute;top:4px;right:4px;background:#111;border:1px solid #444;color:#ccc;font-size:10px;padding:2px 7px;cursor:pointer;letter-spacing:0.05em;">✕ 削除</button>
-        </div>
+      <div class="layer-limit-note" id="layerLimitNote"></div>
+      <div class="position-picker" id="layerPositionPicker" style="display:none">
+        <div class="position-picker-title" id="layerPositionPickerTitle" data-i18n="layer_pick_pos">配置する位置を選んでください</div>
+        <div class="position-pick-grid" id="layerPositionGrid"></div>
       </div>
-
-      <div class="text-wm-panel" id="textWmPanel">
-        <input class="txt-input" type="text" id="wmText" placeholder="透かし文字を入力…" value="@roroai290K">
-        <div class="control-row">
-          <div class="control-header"><span class="control-name" data-i18n="ctrl_font">フォントサイズ</span></div>
-          <div class="control-input-row">
-            <input type="range" id="fontSizeSlider" min="12" max="200" value="48">
-            <input type="number" class="num-input" id="fontSizeNum" min="12" max="200" value="48"><span style="font-size:9px;color:var(--text-muted)">px</span>
-          </div>
-        </div>
-        <div class="color-row">
-          <span class="color-label" data-i18n="ctrl_color">文字色</span>
-          <input type="color" id="textColor" value="#ffffff">
-        </div>
-      </div>
+      <div class="layer-list" id="wmLayerList"></div>
     </div>
 
     <div class="section-divider"></div>
 
     <div>
-      <div class="section-label" data-i18n="label_settings">03 — 設定</div>
-      <div class="control-group">
+      <div class="section-label" data-i18n="label_settings">03 — 選択中レイヤー</div>
+      <div class="layer-editor-empty" id="layerEditorEmpty" data-i18n="layer_empty_editor">レイヤーを追加すると設定できます。</div>
+      <div class="layer-editor" id="layerEditor">
+        <div class="text-layer-panel" id="textWmPanel">
+          <input class="txt-input" type="text" id="wmText" placeholder="透かし文字を入力…" value="@roroai290K">
+          <div class="control-row">
+            <div class="control-header"><span class="control-name" data-i18n="ctrl_font">フォントサイズ</span></div>
+            <div class="control-input-row">
+              <input type="range" id="fontSizeSlider" min="12" max="200" value="48">
+              <input type="number" class="num-input" id="fontSizeNum" min="12" max="200" value="48"><span style="font-size:9px;color:var(--text-muted)">px</span>
+            </div>
+          </div>
+          <div class="color-row">
+            <span class="color-label" data-i18n="ctrl_color">文字色</span>
+            <input type="color" id="textColor" value="#ffffff">
+          </div>
+        </div>
+
+        <div class="image-layer-panel" id="imageWmPanel">
+          <div class="drop-zone" id="wmDropZone">
+            <input type="file" id="wmInput" accept="image/*">
+            <span class="drop-icon">💧</span>
+            <div class="drop-title" data-i18n="wm_drop_title">WM画像をドロップ</div>
+            <div class="drop-sub" data-i18n="wm_drop_sub">PNG推奨（透過対応）</div>
+          </div>
+          <div id="wmThumbWrap" style="display:none; position:relative; margin-top:7px;">
+            <img id="wmThumb" class="wm-thumb" alt="watermark preview" style="margin-top:0;">
+            <button id="wmClearBtn" style="position:absolute;top:4px;right:4px;background:#111;border:1px solid #444;color:#ccc;font-size:10px;padding:2px 7px;cursor:pointer;letter-spacing:0.05em;">✕ 削除</button>
+          </div>
+        </div>
+
+        <div class="control-group">
 
         <div class="control-row">
           <div class="control-header"><span class="control-name" data-i18n="ctrl_size">サイズ</span></div>
@@ -1273,6 +1417,7 @@
           </div>
         </div>
 
+        </div>
       </div>
     </div>
 
@@ -1375,17 +1520,7 @@
       <div class="pro-features" id="proFeatures">
         <div class="pro-feature-item" data-i18n="pro_feat1">商用利用ライセンス</div>
         <div class="pro-feature-item" data-i18n="pro_feat2">不可視透かし（電子指紋）PNG・JPEG・WebP対応</div>
-        <div class="pro-feature-item" data-i18n="pro_feat3">プリセット10件</div>
-      </div>
-
-      <!-- サブスク版予告 -->
-      <div style="font-size:9px;color:#888;letter-spacing:0.1em;text-transform:uppercase;margin:10px 0 6px;" data-i18n="pro_plan_sub">サブスク版（開発中）</div>
-      <div class="pro-features">
-        <div class="pro-feature-item" style="color:#aaa;" data-i18n="sub_feat1">高耐性不可視透かし（リサイズ・再圧縮対応）</div>
-        <div class="pro-feature-item" style="color:#aaa;" data-i18n="sub_feat2">SNS投稿後も消えない高耐性透かし</div>
-        <div class="pro-feature-item" style="color:#aaa;" data-i18n="sub_feat3">完全メタデータ削除</div>
-        <div class="pro-feature-item" style="color:#aaa;" data-i18n="sub_feat4">新機能の先行利用</div>
-        <div class="pro-feature-item" style="color:#aaa;" data-i18n="sub_feat5">優先サポート</div>
+        <div class="pro-feature-item" data-i18n="pro_feat3">9レイヤー・プリセット10件</div>
       </div>
 
       <!-- BOOTH購入リンク -->
@@ -1401,11 +1536,13 @@
         <div style="font-size:9px;color:#888;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;" data-i18n="license_label">ライセンスキー認証</div>
         <div style="display:flex;gap:6px;">
           <input type="text" id="licenseInput" placeholder="SONIC-XXXX-XXXX-XXXX-XXXX"
+            autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
             style="flex:1;background:#0a0a0a;border:1px solid #2a2a2a;color:#e0e0e0;font-family:'DM Mono',monospace;font-size:10px;padding:7px 8px;outline:none;letter-spacing:0.05em;">
           <button id="licenseBtn" onclick="activateLicense()"
             style="background:#e8ff47;color:#000;border:none;font-family:'DM Mono',monospace;font-size:10px;font-weight:700;padding:7px 12px;cursor:pointer;letter-spacing:0.05em;white-space:nowrap;" data-i18n="license_btn">認証</button>
         </div>
         <div id="licenseMsg" style="font-size:9px;margin-top:5px;letter-spacing:0.05em;"></div>
+        <div id="licenseSecurityNote" data-i18n="license_security_note" style="font-size:8px;color:#666;line-height:1.55;margin-top:6px;letter-spacing:0.04em;">配信・画面共有・スクリーンショット時は、ライセンスキーが映らないようご注意ください。</div>
       </div>
 
       <!-- PRO有効時の表示 -->
@@ -1478,6 +1615,7 @@
         <div class="preview-header">
           <div class="preview-title" data-i18n="title_results">出力結果</div>
           <button class="btn-dl-all" id="dlAllBtn" data-i18n="btn_dl_all">▼ 全てダウンロード (ZIP)</button>
+          <div id="zipAllStatus" style="font-size:9px;color:#555;margin-top:6px;min-height:12px;letter-spacing:0.05em;"></div>
         </div>
         <div class="download-grid" id="downloadGrid" style="margin-top:13px"></div>
       </div>
@@ -1579,7 +1717,7 @@
 
 <footer>
   <div class="footer-left">
-    <div class="footer-credit">Created by <span>@roroai290K</span> &middot; SonicWatermarker v3.1</div>
+    <div class="footer-credit">Created by <span>@roroai290K</span> &middot; SonicWatermarker v4.2</div>
     <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
       <div class="footer-license" id="footerLicense">&copy; 2025&ndash;2026 @roroai290K &middot; All Rights Reserved</div>
       <button class="terms-btn" id="termsBtn" data-i18n="btn_terms">利用規約</button>
@@ -1607,7 +1745,7 @@
 
       <div class="terms-item">
         <div class="terms-item-label" data-i18n="terms_l1">非保存・プライバシー保護</div>
-        <div class="terms-item-text" data-i18n="terms_t1">アップロードされた画像はすべてブラウザのメモリ内のみで処理され、外部サーバーへの送信・保存は一切行いません。また、処理の過程でEXIFデータ（位置情報・撮影日時・端末情報等）は自動的に破棄されます。ただしPRO版の不可視透かし機能を有効にした場合は、SonicMark識別子のみがメタデータとして書き込まれます（個人情報は含みません）。</div>
+        <div class="terms-item-text" data-i18n="terms_t1">アップロードされた画像・透かし画像・入力テキストはすべてブラウザのメモリ内のみで処理され、外部サーバーへの送信・保存は一切行いません。また、処理の過程でEXIFデータ（位置情報・撮影日時・端末情報等）は自動的に破棄されます。ただしPRO版の不可視透かし機能を有効にした場合は、SonicMark識別子のみがメタデータとして書き込まれます（個人情報は含みません）。</div>
       </div>
 
       <div class="terms-item">
@@ -1627,36 +1765,44 @@
 
       <div class="terms-item">
         <div class="terms-item-label" data-i18n="terms_l5">免責事項</div>
-        <div class="terms-item-text" data-i18n="terms_t5">本ツールの利用によって生じたいかなる損害・トラブルについても、作者は一切の責任を負いません。ご利用は自己責任のもとでお願いします。</div>
+        <div class="terms-item-text" data-i18n="terms_t5">本ツールは現状のまま提供され、特定の目的への適合性、常時利用、完全な動作、エラーや不具合がないこと、データの保存・復元、SonicMarkの永続性や法的証拠能力を保証するものではありません。本ツールの利用、利用不能、処理結果、データ消失、第三者との紛争、ライセンスキーの紛失・漏洩等により生じた損害・トラブルについて、作者は法令上認められる範囲で責任を負いません。当方が損害賠償責任を負う場合でも、その責任額は利用者が本ツールに実際に支払った金額を上限とします。ただし、当方の故意または重大な過失による場合、その他法令により責任の免除または制限が認められない場合を除きます。画像の権利確認、公開、販売、配布、元画像のバックアップ、ライセンスキーの管理は利用者自身の責任で行ってください。</div>
       </div>
 
       <div class="terms-item">
         <div class="terms-item-label" data-i18n="terms_l6">技術的免責・法的保証について</div>
-        <div class="terms-item-text" data-i18n="terms_t6">本ツールが採用する不可視透かし（SonicMark）技術は、PNG用LSB方式・JPEG用Exifメタデータ方式・WebP用XMPメタデータ方式とSHA-256ハッシュを組み合わせた独自実装です。JPEG・WebPはピクセルデータを一切変更しません。PNGはRチャンネルの最下位1ビットのみを変更します。GPS・撮影情報等の個人データは引き続き自動削除され、SonicMark識別子のみが書き込まれます。処理直後のファイルを手元に保管することで、「自分が最初に作成・処理した」ことをSonicWatermarkerを通じてのみ確認できます。これは補助的な手段であり、法的証拠能力を保証するものではありません。SNSへのアップロード・再保存・リサイズ等により透かしが消失する場合があります。</div>
+        <div class="terms-item-text" data-i18n="terms_t6">本ツールが採用する不可視透かし（SonicMark）技術は、PNG用LSB方式・JPEG用Exifメタデータ方式・WebP用XMPメタデータ方式とSHA-256ハッシュを組み合わせた独自実装です。JPEG・WebPはピクセルデータを一切変更しません。PNGはRチャンネルの最下位1ビットのみを変更します。GPS・撮影情報等の個人データは引き続き自動削除され、SonicMark識別子のみが書き込まれます。処理直後のファイルを手元に保管することで、「自分が最初に作成・処理した」ことをSonicWatermarkerを通じてのみ確認できます。権利者の許可なくウォーターマーク、著作者表示、権利管理情報等を除去・改変したうえで画像を利用・転載・販売・配布する行為は、著作権侵害その他の法的問題となる場合があります。本ツールは無断利用の抑止および権利主張時の補助を目的とするものであり、著作権侵害の完全な防止や法的証拠能力を保証するものではありません。SNSへのアップロード・再保存・リサイズ等により透かしが消失する場合があります。</div>
+      </div>
+
+      <div class="terms-item">
+        <div class="terms-item-label" data-i18n="terms_l9">レイヤー機能について</div>
+        <div class="terms-item-text" data-i18n="terms_t9">ウォーターマークのレイヤー機能では、無料版は最大2レイヤー、PRO版・お試し版は最大9レイヤーまで使用できます。同じ配置位置に複数レイヤーを置くことはできません。画像ウォーターマークを含むプリセットは、ブラウザの安全仕様により画像ファイル本体を保存しないため、あとから適用する際に画像を再選択していただく必要があります。</div>
       </div>
 
       <div class="terms-item">
         <div class="terms-item-label" data-i18n="terms_l7">PRO版ライセンスについて</div>
-        <div class="terms-item-text" data-i18n="terms_t7">PRO版ライセンスキーは購入者本人のみが使用できます。ライセンスキーの第三者への譲渡・共有・再販売は禁止します。ライセンスキーの不正利用が確認された場合、予告なく該当キーを無効化する場合があります。デジタルコンテンツの性質上、原則として返金はお受けできません。ただし、キーの未着・無効など当方の不備が原因の場合は個別に対応いたします。お問い合わせはX（@roroai290k）までご連絡ください。</div>
+        <div class="terms-item-text" data-i18n="terms_t7">PRO版ライセンスキーは購入者本人のみが使用できます。ライセンスキーの第三者への譲渡・共有・再販売は禁止します。配信・画面共有・スクリーンショット等によりライセンスキーが第三者に知られた場合、その管理責任は利用者本人にあります。本ツールはブラウザ完結型で動作し、画像を外部サーバーへ送信しない設計のため、ライセンス認証もブラウザ内で行われます。そのため、サーバー認証型DRMやオンライン認証システムと同等の不正利用防止・改ざん防止を保証するものではありません。不正利用が確認された場合、今後のバージョンでの利用制限、サポート対象外、再発行停止等の対応を行う場合があります。デジタルコンテンツの性質上、原則として返金はお受けできません。ただし、キーの未着・無効など当方の不備が原因の場合は個別に対応いたします。お問い合わせはX（@roroai290k）までご連絡ください。</div>
       </div>
 
       <div class="terms-item">
         <div class="terms-item-label" data-i18n="terms_l8">サービスの変更・終了について</div>
-        <div class="terms-item-text" data-i18n="terms_t8">本ツールおよび本利用規約は、事前の通知なく変更・追加・削除される場合があります。重要な変更はX（@roroai290k）にてお知らせします。また、本ツールの提供を予告なく終了する場合があります。変更後も継続して利用した場合、改訂後の利用規約に同意したものとみなします。なお、本ツールはブラウザ完結型のため、サービス終了後もダウンロード済みのファイルは引き続き使用できます。</div>
+        <div class="terms-item-text" data-i18n="terms_t8">本ツールの仕様・機能・価格・提供条件および本利用規約は、利用者への個別通知または個別同意なく、必要に応じて変更・追加・削除される場合があります。重要な変更は可能な範囲でX（@roroai290k）にてお知らせします。また、本ツールの提供を予告なく一時停止または終了する場合があります。変更後も本ツールを継続して利用した場合、改訂後の利用規約に同意したものとみなします。なお、本ツールはブラウザ完結型のため、サービス終了後もダウンロード済みのファイルは引き続き使用できます。本規約は日本法に準拠します。法令に別段の定めがある場合を除き、本ツールに関して紛争が生じた場合は、作者の所在地を管轄する裁判所を第一審の専属的合意管轄裁判所とします。</div>
       </div>
 
     </div>
-    <div class="terms-footer">&copy; 2025&ndash;2026 @roroai290K &middot; Last updated: 2026-03</div>
+    <div class="terms-footer">&copy; 2025&ndash;2026 @roroai290K &middot; Last updated: 2026-06</div>
   </div>
 </div>
 
 <script>
 // =========================================================
-// SonicWatermarker v3.0 — Zero external dependencies
+// SonicWatermarker v4.2 — Zero external dependencies
 // =========================================================
 
 // ── State ─────────────────────────────────────────────────
 const state = {
+  // v4: ウォーターマークは複数レイヤーで管理する
+  wmLayers: [], activeLayerId: null,
+  // v3互換用の値。古いプリセット変換や安全な移行のため残す。
   images: [], watermark: null, wmMode: 'image',
   selectedIdx: 0, position: 'bottom-right',
   size: 30, opacity: 70, rotate: 0, margin: 20,
@@ -1670,9 +1816,32 @@ const state = {
 
 const imgCache = new Map();
 const ctxCache = new WeakMap();
-let wmCache = null;
 let currentLang = 'ja';
 const $el = (id) => document.getElementById(id);
+const WM_LAYER_LIMITS = Object.freeze({ free: 2, pro: 9 });
+const WM_POSITIONS = [
+  'top-left','top-center','top-right',
+  'middle-left','center','middle-right',
+  'bottom-left','bottom-center','bottom-right'
+];
+const WM_POS_LABELS = {
+  'top-left':'↖', 'top-center':'↑', 'top-right':'↗',
+  'middle-left':'←', 'center':'＋', 'middle-right':'→',
+  'bottom-left':'↙', 'bottom-center':'↓', 'bottom-right':'↘'
+};
+const WM_POS_NAMES_JA = {
+  'top-left':'左上', 'top-center':'上', 'top-right':'右上',
+  'middle-left':'左', 'center':'中央', 'middle-right':'右',
+  'bottom-left':'左下', 'bottom-center':'下', 'bottom-right':'右下'
+};
+const WM_POS_NAMES_EN = {
+  'top-left':'Top Left', 'top-center':'Top', 'top-right':'Top Right',
+  'middle-left':'Left', 'center':'Center', 'middle-right':'Right',
+  'bottom-left':'Bottom Left', 'bottom-center':'Bottom', 'bottom-right':'Bottom Right'
+};
+let pendingLayerType = null;
+let _layerSeq = 0;
+var _layerTextCache = new Map();
 // アプリアイコン（通知・PWA用）
 var SONIC_ICON_BASE64 = 'data:image/jpeg;base64,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';
 let previewTimer = null;
@@ -1697,8 +1866,18 @@ const T = {
     label_target:'01 — 対象画像', drop_title:'画像をドロップ',
     drop_sub:'複数選択可・枚数制限なし · PNG/JPEG/WebP/GIF/BMP/TIFF/AVIF/SVG',
     heic_notice:'⚠ HEICファイルが含まれています。変換中…',
-    label_wm:'02 — ウォーターマーク', tab_img:'画像WM', tab_txt:'テキストWM',
-    label_settings:'03 — 設定', ctrl_size:'サイズ', ctrl_opacity:'透明度',
+    label_wm:'02 — WMレイヤー', tab_img:'画像WM', tab_txt:'テキストWM',
+    layer_add_text:'＋ テキスト', layer_add_image:'＋ 画像',
+    layer_pick_pos:'配置する位置を選んでください',
+    layer_empty:'まだレイヤーがありません。テキストまたは画像を追加してください。',
+    layer_empty_editor:'レイヤーを追加すると設定できます。',
+    layer_limit_free:'無料版は最大2レイヤーまで使用できます。',
+    layer_limit_pro:'PRO版は最大9レイヤーまで使用できます。',
+    layer_limit_reached:'これ以上追加できません。PRO版では最大9レイヤー使用できます。',
+    layer_limit_over:'現在のレイヤー数が上限を超えています。不要なレイヤーを削除してください。',
+    layer_missing_image:'画像を再選択してください',
+    layer_text_default:'透かし文字',
+    label_settings:'03 — 選択中レイヤー', ctrl_size:'サイズ', ctrl_opacity:'透明度',
     ctrl_rotate:'回転', ctrl_margin:'余白', ctrl_tile:'タイル配置（全面繰り返し）',
     ctrl_position:'位置', ctrl_tile_gap:'タイル間隔', ctrl_font:'フォントサイズ', ctrl_color:'文字色',
     label_output:'04 — 出力形式',
@@ -1718,18 +1897,14 @@ const T = {
     detect_no_file:'ファイルが選択されていません',
     license_label:'ライセンスキー認証',
     license_btn:'認証',
+    license_security_note:'配信・画面共有・スクリーンショット時は、ライセンスキーが映らないようご注意ください。',
     pro_active_label:'✓ PRO版 有効中',
     license_revoke:'ライセンスを解除',
     pro_feat1:'商用利用ライセンス',
     pro_feat2:'不可視透かし（電子指紋）PNG・JPEG・WebP対応',
-    pro_feat3:'プリセット10件',
+    pro_feat3:'9レイヤー・プリセット10件',
     pro_plan_buy:'PRO版（買い切り）',
-    pro_plan_sub:'サブスク版（開発中）',
-    sub_feat1:'高耐性不可視透かし（リサイズ・再圧縮対応）',
-    sub_feat2:'SNS投稿後も消えない高耐性透かし',
-    sub_feat3:'完全メタデータ削除',
-    sub_feat4:'新機能の先行利用',
-    sub_feat5:'優先サポート', label_res:'出力解像度', res_orig:'元のまま', res_scale_label:'スケール',
+    label_res:'出力解像度', res_orig:'元のまま', res_scale_label:'スケール',
     pro_label:'⚡ PRO版 — 販売中', pro_cta:'▶ BOOTHで購入する',
     pro_alert:'PRO版を購入してさらに便利に！\nBOOTHで販売中です。',
     btn_process:'処理を実行',
@@ -1737,6 +1912,7 @@ const T = {
     backup_msg:'処理後の画像は別ファイルとして保存されます。\nただし誤って元画像を上書きするリスクがあります。\n\n必ず元画像のバックアップを取ってから処理してください。\n下のボタンで今すぐZIPバックアップを作成できます。',
     backup_zip_btn:'元画像をZIPにまとめて保存する',
     backup_zip_making:'ZIPを作成中...',
+    backup_zip_progress:'ZIP作成中... {done}/{total}',
     backup_zip_done:'✓ バックアップZIPを保存しました',
     backup_zip_fail:'ZIPの作成に失敗しました',
     backup_ok:'バックアップ済み — 処理を実行',
@@ -1751,6 +1927,14 @@ const T = {
     err_copied:'コピーしました',
     err_critical:'処理失敗率が5%を超えたため処理を中断しました。\n成功: {ok}枚 / 失敗: {fail}枚 / 合計: {total}枚',
     err_skipped:'処理完了（{fail}枚スキップ）\n失敗したファイル:',
+    layer_incomplete_confirm:'未設定のレイヤーがあります。\n\n{items}\n\nこのまま処理すると、これらのレイヤーは出力されません。\n処理を続けますか？',
+    layer_incomplete_image:'{n}番目: 画像レイヤー / {pos} / 画像未選択',
+    layer_incomplete_text:'{n}番目: 文字レイヤー / {pos} / 文字未入力',
+    preset_rename:'名前変更',
+    preset_rename_prompt:'新しいプリセット名を入力してください',
+    zip_all_progress:'ZIP作成中... {done}/{total}',
+    zip_all_done:'✓ ZIPを保存しました',
+    zip_all_fail:'ZIPの作成に失敗しました',
     booth_link:'PRO版を購入する（BOOTH）',
     backup_title:'⚠ 処理前の確認',
     backup_msg:'処理された画像は元のファイルとは別に保存されますが、\n元画像ファイルを誤って上書きしてしまうリスクがあります。\n\n処理を実行する前に、必ず元の画像ファイルの\nバックアップを取ってください。\n\n過去に大切な画像を失った経験を教訓に、\nこの確認を設けています。',
@@ -1771,12 +1955,6 @@ const T = {
     sys2:'PC: Windows 10+ / macOS 11+・RAM 4GB以上推奨　スマートフォン: iOS 14+ / Android 10+・RAM 3GB以上推奨',
     sys3:'JavaScript 有効必須 · Canvas API 対応ブラウザ必須 · インターネット接続不要',
     free_badge:'完全無料',
-    pro_f1:'プリセット保存・呼び出し（設定を登録）',
-    pro_f2:'WM複数同時配置（例：左上＋右下）',
-    pro_f3:'一括ZIPにフォルダ分けで保存',
-    pro_f4:'商用利用ライセンス付き',
-    pro_f5:'新機能の先行利用',
-    pro_f6:'優先サポート',
     cmp_before:'前', cmp_after:'後', btn_compare:'⇔ 比較',
     footer_license:'© 2025–2026 @roroai290K · All Rights Reserved',
     btn_clear_all:'✕ 全削除', res_scale_label:'カスタム',
@@ -1792,7 +1970,7 @@ const T = {
     btn_terms:'利用規約',
     terms_title:'利用規約',
     terms_l1:'非保存・プライバシー保護',
-    terms_t1:'アップロードされた画像はすべてブラウザのメモリ内のみで処理され、外部サーバーへの送信・保存は一切行いません。また、処理の過程でEXIFデータ（位置情報・撮影日時・端末情報等）は自動的に破棄されます。ただしPRO版の不可視透かし機能を有効にした場合は、SonicMark識別子のみがメタデータとして書き込まれます（個人情報は含みません）。',
+    terms_t1:'アップロードされた画像・透かし画像・入力テキストはすべてブラウザのメモリ内のみで処理され、外部サーバーへの送信・保存は一切行いません。また、処理の過程でEXIFデータ（位置情報・撮影日時・端末情報等）は自動的に破棄されます。ただしPRO版の不可視透かし機能を有効にした場合は、SonicMark識別子のみがメタデータとして書き込まれます（個人情報は含みません）。',
     terms_l2:'AI学習への不使用',
     terms_t2:'本ツールに入力された画像・テキストを含むいかなるデータも、AI・機械学習モデルの学習・改善目的に使用することは一切ありません。',
     terms_l3:'著作権',
@@ -1800,13 +1978,15 @@ const T = {
     terms_l4:'禁止事項',
     terms_t4:'公序良俗に反する画像・第三者の権利を侵害する画像への使用を禁止します。肖像権・著作権等の権利処理はご利用者自身の責任において行ってください。',
     terms_l5:'免責事項',
-    terms_t5:'本ツールの利用によって生じたいかなる損害・トラブルについても、作者は一切の責任を負いません。ご利用は自己責任のもとでお願いします。',
+    terms_t5:'本ツールは現状のまま提供され、特定の目的への適合性、常時利用、完全な動作、エラーや不具合がないこと、データの保存・復元、SonicMarkの永続性や法的証拠能力を保証するものではありません。本ツールの利用、利用不能、処理結果、データ消失、第三者との紛争、ライセンスキーの紛失・漏洩等により生じた損害・トラブルについて、作者は法令上認められる範囲で責任を負いません。当方が損害賠償責任を負う場合でも、その責任額は利用者が本ツールに実際に支払った金額を上限とします。ただし、当方の故意または重大な過失による場合、その他法令により責任の免除または制限が認められない場合を除きます。画像の権利確認、公開、販売、配布、元画像のバックアップ、ライセンスキーの管理は利用者自身の責任で行ってください。',
     terms_l6:'技術的免責・法的保証について',
-    terms_t6:'本ツールが採用する不可視透かし（SonicMark）技術は、PNG用LSB方式・JPEG用Exifメタデータ方式・WebP用XMPメタデータ方式とSHA-256ハッシュを組み合わせた独自実装です。JPEG・WebPはピクセルデータを一切変更しません。PNGはRチャンネルの最下位1ビットのみを変更します。GPS・撮影情報等の個人データは引き続き自動削除され、SonicMark識別子のみが書き込まれます。処理直後のファイルを手元に保管することで、「自分が最初に作成・処理した」ことをSonicWatermarkerを通じてのみ確認できます。これは補助的な手段であり、法的証拠能力を保証するものではありません。SNSへのアップロード・再保存・リサイズ等により透かしが消失する場合があります。',
+    terms_t6:'本ツールが採用する不可視透かし（SonicMark）技術は、PNG用LSB方式・JPEG用Exifメタデータ方式・WebP用XMPメタデータ方式とSHA-256ハッシュを組み合わせた独自実装です。JPEG・WebPはピクセルデータを一切変更しません。PNGはRチャンネルの最下位1ビットのみを変更します。GPS・撮影情報等の個人データは引き続き自動削除され、SonicMark識別子のみが書き込まれます。処理直後のファイルを手元に保管することで、「自分が最初に作成・処理した」ことをSonicWatermarkerを通じてのみ確認できます。権利者の許可なくウォーターマーク、著作者表示、権利管理情報等を除去・改変したうえで画像を利用・転載・販売・配布する行為は、著作権侵害その他の法的問題となる場合があります。本ツールは無断利用の抑止および権利主張時の補助を目的とするものであり、著作権侵害の完全な防止や法的証拠能力を保証するものではありません。SNSへのアップロード・再保存・リサイズ等により透かしが消失する場合があります。',
     terms_l7:'PRO版ライセンスについて',
     terms_l8:'サービスの変更・終了について',
-    terms_t8:'本ツールおよび本利用規約は、事前の通知なく変更・追加・削除される場合があります。重要な変更はX（@roroai290k）にてお知らせします。また、本ツールの提供を予告なく終了する場合があります。変更後も継続して利用した場合、改訂後の利用規約に同意したものとみなします。なお、本ツールはブラウザ完結型のため、サービス終了後もダウンロード済みのファイルは引き続き使用できます。',
-    terms_t7:'PRO版ライセンスキーは購入者本人のみが使用できます。ライセンスキーの第三者への譲渡・共有・再販売は禁止します。ライセンスキーの不正利用が確認された場合、予告なく該当キーを無効化する場合があります。デジタルコンテンツの性質上、原則として返金はお受けできません。ただし、キーの未着・無効など当方の不備が原因の場合は個別に対応いたします。お問い合わせはX（@roroai290k）までご連絡ください。',
+    terms_l9:'レイヤー機能について',
+    terms_t9:'ウォーターマークのレイヤー機能では、無料版は最大2レイヤー、PRO版・お試し版は最大9レイヤーまで使用できます。同じ配置位置に複数レイヤーを置くことはできません。画像ウォーターマークを含むプリセットは、ブラウザの安全仕様により画像ファイル本体を保存しないため、あとから適用する際に画像を再選択していただく必要があります。',
+    terms_t8:'本ツールの仕様・機能・価格・提供条件および本利用規約は、利用者への個別通知または個別同意なく、必要に応じて変更・追加・削除される場合があります。重要な変更は可能な範囲でX（@roroai290k）にてお知らせします。また、本ツールの提供を予告なく一時停止または終了する場合があります。変更後も本ツールを継続して利用した場合、改訂後の利用規約に同意したものとみなします。なお、本ツールはブラウザ完結型のため、サービス終了後もダウンロード済みのファイルは引き続き使用できます。本規約は日本法に準拠します。法令に別段の定めがある場合を除き、本ツールに関して紛争が生じた場合は、作者の所在地を管轄する裁判所を第一審の専属的合意管轄裁判所とします。',
+    terms_t7:'PRO版ライセンスキーは購入者本人のみが使用できます。ライセンスキーの第三者への譲渡・共有・再販売は禁止します。配信・画面共有・スクリーンショット等によりライセンスキーが第三者に知られた場合、その管理責任は利用者本人にあります。本ツールはブラウザ完結型で動作し、画像を外部サーバーへ送信しない設計のため、ライセンス認証もブラウザ内で行われます。そのため、サーバー認証型DRMやオンライン認証システムと同等の不正利用防止・改ざん防止を保証するものではありません。不正利用が確認された場合、今後のバージョンでの利用制限、サポート対象外、再発行停止等の対応を行う場合があります。デジタルコンテンツの性質上、原則として返金はお受けできません。ただし、キーの未着・無効など当方の不備が原因の場合は個別に対応いたします。お問い合わせはX（@roroai290k）までご連絡ください。',
   },
   en: {
     badge_free:'Free', badge_browser:'Browser Only', badge_unlimited:'Unlimited Images',
@@ -1814,8 +1994,18 @@ const T = {
     label_target:'01 — Target Images', drop_title:'Drop Images Here',
     drop_sub:'Multi-select · No limit · PNG/JPEG/WebP/GIF/BMP/TIFF/AVIF/SVG',
     heic_notice:'⚠ HEIC file detected. Converting…',
-    label_wm:'02 — Watermark', tab_img:'Image WM', tab_txt:'Text WM',
-    label_settings:'03 — Settings', ctrl_size:'Size', ctrl_opacity:'Opacity',
+    label_wm:'02 — WM Layers', tab_img:'Image WM', tab_txt:'Text WM',
+    layer_add_text:'+ Text', layer_add_image:'+ Image',
+    layer_pick_pos:'Choose a position',
+    layer_empty:'No layers yet. Add text or image watermark.',
+    layer_empty_editor:'Add a layer to edit settings.',
+    layer_limit_free:'Free version supports up to 2 layers.',
+    layer_limit_pro:'PRO supports up to 9 layers.',
+    layer_limit_reached:'No more layers can be added. PRO supports up to 9 layers.',
+    layer_limit_over:'The current layer count exceeds your limit. Please delete extra layers.',
+    layer_missing_image:'Please reselect image',
+    layer_text_default:'Watermark text',
+    label_settings:'03 — Selected Layer', ctrl_size:'Size', ctrl_opacity:'Opacity',
     ctrl_rotate:'Rotate', ctrl_margin:'Margin', ctrl_tile:'Tile (Repeat Across Image)',
     ctrl_position:'Position', ctrl_tile_gap:'Tile Gap', ctrl_font:'Font Size', ctrl_color:'Text Color',
     label_output:'04 — Output',
@@ -1835,18 +2025,14 @@ const T = {
     detect_no_file:'No file selected',
     license_label:'License Key',
     license_btn:'Activate',
+    license_security_note:'When streaming, screen sharing, or taking screenshots, please make sure your license key is not visible.',
     pro_active_label:'✓ PRO Active',
     license_revoke:'Deactivate License',
     pro_feat1:'Commercial Use License',
     pro_feat2:'Invisible Watermark (PNG / JPEG / WebP)',
-    pro_feat3:'10 Preset Slots',
+    pro_feat3:'9 Layers + 10 Preset Slots',
     pro_plan_buy:'PRO (One-time)',
-    pro_plan_sub:'Subscription (Coming Soon)',
-    sub_feat1:'High-durability watermark (resize & recompression resistant)',
-    sub_feat2:'Survives SNS upload and re-saving',
-    sub_feat3:'Full metadata removal',
-    sub_feat4:'Early access to new features',
-    sub_feat5:'Priority support', label_res:'Resolution', res_orig:'Original', res_scale_label:'Scale',
+    label_res:'Resolution', res_orig:'Original', res_scale_label:'Scale',
     pro_label:'⚡ PRO — Now Available', pro_cta:'▶ Buy on BOOTH',
     pro_alert:'Upgrade to PRO for more features!\nNow available on BOOTH.',
     btn_process:'Process Images',
@@ -1854,6 +2040,7 @@ const T = {
     backup_msg:'Processed images are saved as new files.\nHowever, there is a risk of accidentally overwriting originals.\n\nPlease back up your original images before processing.\nYou can create a ZIP backup right now using the button below.',
     backup_zip_btn:'Save originals as ZIP backup',
     backup_zip_making:'Creating ZIP...',
+    backup_zip_progress:'Creating ZIP... {done}/{total}',
     backup_zip_done:'✓ Backup ZIP saved successfully',
     backup_zip_fail:'Failed to create ZIP backup',
     backup_ok:'Backed up — Process now',
@@ -1868,6 +2055,14 @@ const T = {
     err_copied:'Copied!',
     err_critical:'Processing aborted: failure rate exceeded 5%.\nSucceeded: {ok} / Failed: {fail} / Total: {total}',
     err_skipped:'Done ({fail} skipped)\nFailed files:',
+    layer_incomplete_confirm:'Some layers are not configured.\n\n{items}\n\nThese layers will not be rendered if you continue.\nContinue processing?',
+    layer_incomplete_image:'Layer {n}: Image layer / {pos} / no image selected',
+    layer_incomplete_text:'Layer {n}: Text layer / {pos} / empty text',
+    preset_rename:'Rename',
+    preset_rename_prompt:'Enter a new preset name',
+    zip_all_progress:'Creating ZIP... {done}/{total}',
+    zip_all_done:'✓ ZIP saved',
+    zip_all_fail:'Failed to create ZIP',
     booth_link:'Buy PRO version (BOOTH)',
     backup_title:'⚠ Before You Process',
     backup_msg:'Processed images are saved separately from your originals.\nHowever, there is a risk of accidentally overwriting source files.\n\nPlease make sure you have a backup of your original images\nbefore proceeding.\n\nThis warning exists because valuable illustrations were lost\nduring development testing. Please stay safe.',
@@ -1888,12 +2083,6 @@ const T = {
     sys2:'PC: Windows 10+ / macOS 11+・4GB RAM recommended　Mobile: iOS 14+ / Android 10+・3GB RAM recommended',
     sys3:'JavaScript enabled · Canvas API required · No internet connection required',
     free_badge:'Completely Free',
-    pro_f1:'Preset save & recall',
-    pro_f2:'Multiple WM placement (e.g. top-left + bottom-right)',
-    pro_f3:'ZIP with organized folders',
-    pro_f4:'Commercial use license',
-    pro_f5:'Early access to new features',
-    pro_f6:'Priority support',
     cmp_before:'Before', cmp_after:'After', btn_compare:'⇔ Compare',
     footer_license:'© 2025–2026 @roroai290K · All Rights Reserved',
     btn_clear_all:'✕ Clear All', res_scale_label:'Custom',
@@ -1909,7 +2098,7 @@ const T = {
     btn_terms:'Terms of Use',
     terms_title:'Terms of Use',
     terms_l1:'Privacy & Data Protection',
-    terms_t1:'All uploaded images are processed exclusively within your browser memory. No data is ever sent to or stored on external servers. EXIF metadata (GPS location, timestamps, device info, etc.) is automatically stripped during processing. Exception: when PRO invisible watermark is enabled, only the SonicMark identifier is written to metadata (no personal information is included).',
+    terms_t1:'All uploaded source images, watermark images, and entered text are processed exclusively within your browser memory. No data is ever sent to or stored on external servers. EXIF metadata (GPS location, timestamps, device info, etc.) is automatically stripped during processing. Exception: when PRO invisible watermark is enabled, only the SonicMark identifier is written to metadata (no personal information is included).',
     terms_l2:'No AI Training',
     terms_t2:'No images, text, or any other data submitted to this tool will ever be used for AI or machine learning model training or improvement purposes.',
     terms_l3:'Copyright',
@@ -1917,13 +2106,15 @@ const T = {
     terms_l4:'Prohibited Use',
     terms_t4:'Use of this tool for images that violate public order, morality, or third-party rights is strictly prohibited. Users are solely responsible for ensuring proper rights clearance for any images processed.',
     terms_l5:'Disclaimer',
-    terms_t5:'The author assumes no liability for any damages or disputes arising from the use of this tool. Use is entirely at your own risk.',
+    terms_t5:'This tool is provided as-is. The author does not guarantee fitness for a particular purpose, uninterrupted availability, complete operation, absence of errors or defects, preservation or restoration of data, permanence of SonicMark, or legal evidentiary value. To the maximum extent permitted by law, the author is not liable for damages or disputes arising from use or inability to use this tool, processing results, data loss, disputes with third parties, or loss/leakage of license keys. If the author is liable for damages, the total liability shall be limited to the amount actually paid by the user for this tool, except in cases of intentional misconduct or gross negligence by the author, or where such exclusion or limitation is not permitted by law. Users are responsible for rights clearance, publication, sale, distribution, backing up original images, and managing their license keys.',
     terms_l6:'Technical Disclaimer & Legal Notice',
-    terms_t6:'SonicWatermarker\'s invisible watermark (SonicMark) uses LSB embedding for PNG, Exif metadata for JPEG, and XMP metadata for WebP, combined with SHA-256 hashing. JPEG and WebP pixel data is never modified. PNG modifies only the LSB (lowest 1 bit) of the R channel. GPS and personal metadata are still automatically removed; only the SonicMark identifier is written. By retaining the processed file, you can verify through SonicWatermarker alone that you were the first to create or process it. This is supplementary only and does not constitute legal evidence. The watermark may be lost after SNS upload, re-saving, or resizing.',
+    terms_t6:'SonicWatermarker\'s invisible watermark (SonicMark) uses LSB embedding for PNG, Exif metadata for JPEG, and XMP metadata for WebP, combined with SHA-256 hashing. JPEG and WebP pixel data is never modified. PNG modifies only the LSB (lowest 1 bit) of the R channel. GPS and personal metadata are still automatically removed; only the SonicMark identifier is written. By retaining the processed file, you can verify through SonicWatermarker alone that you were the first to create or process it. Removing or altering watermarks, author attribution, rights management information, or similar indications without the rights holder\'s permission and then using, reposting, selling, or distributing the image may result in copyright infringement or other legal issues. This tool is intended to help deter unauthorized use and support rights claims, but it does not guarantee complete prevention of copyright infringement or legal evidentiary value. The watermark may be lost after SNS upload, re-saving, or resizing.',
     terms_l7:'PRO License Terms',
     terms_l8:'Service Changes & Termination',
-    terms_t8:'This tool and its terms of use may be changed, added to, or removed without prior notice. Important updates will be announced via X (@roroai290k). The service may also be discontinued without advance notice. Continued use after any changes constitutes acceptance of the revised terms. As this tool runs entirely in the browser, any downloaded files will remain fully functional even after the service ends.',
-    terms_t7:'PRO license keys are for the purchaser\'s personal use only. Transferring, sharing, or reselling license keys to third parties is strictly prohibited. Keys found to be misused may be revoked without notice. Due to the nature of digital content, refunds are generally not accepted. However, if the issue is caused by our error (e.g., key not delivered or invalid), we will handle it on a case-by-case basis. Please contact us via X (@roroai290k).',
+    terms_l9:'Watermark Layer Feature',
+    terms_t9:'The watermark layer feature supports up to 2 layers in the free version and up to 9 layers in PRO or TRIAL. Multiple layers cannot use the same placement position. Presets that include image watermark layers do not store the image files themselves for browser security reasons, so those images must be selected again when the preset is applied later.',
+    terms_t8:'The specifications, features, pricing, provision conditions, and terms of use of this tool may be changed, added to, or removed as necessary without individual notice to or individual consent from users. Important updates will be announced via X (@roroai290k) where reasonably possible. The tool may also be suspended or discontinued without advance notice. Continued use after any changes constitutes acceptance of the revised terms. As this tool runs entirely in the browser, any downloaded files will remain usable even after the service ends. These terms are governed by Japanese law. Unless otherwise required by law, any dispute related to this tool shall be subject to the exclusive jurisdiction of the court having jurisdiction over the author’s location as the court of first instance.',
+    terms_t7:'PRO license keys are for the purchaser\'s personal use only. Transferring, sharing, or reselling license keys to third parties is strictly prohibited. If a license key becomes known to a third party through streaming, screen sharing, screenshots, or similar actions, the user is responsible for managing that key. Because this tool runs entirely in the browser and does not send images to external servers, license verification is also performed in the browser. It does not guarantee the same level of anti-abuse or anti-tampering protection as server-side DRM or online authentication systems. If misuse is confirmed, future versions may restrict use, and support or reissue may be refused. Due to the nature of digital content, refunds are generally not accepted. However, if the issue is caused by our error (e.g., key not delivered or invalid), we will handle it on a case-by-case basis. Please contact us via X (@roroai290k).',
   }
 };
 
@@ -2110,24 +2301,296 @@ $el('langEn').addEventListener('click', function() { applyLang('en'); });
 
 // ── Drag over ────────────────────────────────────────────
 [$el('imgDropZone'), $el('wmDropZone')].forEach(function(z) {
+  if (!z) return;
   z.addEventListener('dragover', function(e) { e.preventDefault(); z.classList.add('drag-over'); });
   z.addEventListener('dragleave', function() { z.classList.remove('drag-over'); });
   z.addEventListener('drop', function(e) { e.preventDefault(); z.classList.remove('drag-over'); });
 });
 
-// ── WM tabs ──────────────────────────────────────────────
-document.querySelectorAll('.wm-tab').forEach(function(tab) {
-  tab.addEventListener('click', function() {
-    document.querySelectorAll('.wm-tab').forEach(function(t2) { t2.classList.remove('active'); });
-    tab.classList.add('active');
-    state.wmMode = tab.dataset.tab;
-    $el('imageWmPanel').style.display = state.wmMode === 'image' ? 'block' : 'none';
-    $el('textWmPanel').classList.toggle('active', state.wmMode === 'text');
-    wmCache = null;
-    updateProcess();
-    schedulePreview();
+// ── WM Layers v4 ─────────────────────────────────────────
+function getMaxLayers() { return proActive ? WM_LAYER_LIMITS.pro : WM_LAYER_LIMITS.free; }
+function getUsedPositions(exceptLayerId) {
+  return state.wmLayers
+    .filter(function(l) { return !exceptLayerId || l.id !== exceptLayerId; })
+    .map(function(l) { return l.position; });
+}
+function isPositionAvailable(pos, exceptLayerId) {
+  return getUsedPositions(exceptLayerId).indexOf(pos) === -1;
+}
+function getActiveLayer() {
+  return state.wmLayers.find(function(l) { return l.id === state.activeLayerId; }) || null;
+}
+function layerPositionName(pos) {
+  var names = currentLang === 'ja' ? WM_POS_NAMES_JA : WM_POS_NAMES_EN;
+  return (WM_POS_LABELS[pos] || pos) + ' ' + (names[pos] || pos);
+}
+function layerIsReady(layer) {
+  if (!layer) return false;
+  if (layer.type === 'text') return !!(layer.text && layer.text.trim());
+  return !!layer.wmImg;
+}
+function getIncompleteLayerMessages() {
+  var messages = [];
+  state.wmLayers.forEach(function(layer, index) {
+    if (layerIsReady(layer)) return;
+    var tpl = layer.type === 'image' ? tx('layer_incomplete_image') : tx('layer_incomplete_text');
+    messages.push(tpl
+      .replace('{n}', String(index + 1))
+      .replace('{pos}', layerPositionName(layer.position)));
   });
-});
+  return messages;
+}
+function confirmIncompleteLayersIfNeeded() {
+  var messages = getIncompleteLayerMessages();
+  if (!messages.length) return true;
+  return confirm(tx('layer_incomplete_confirm').replace('{items}', messages.join('\n')));
+}
+function createLayer(type, position) {
+  var id = 'layer_' + Date.now().toString(36) + '_' + (++_layerSeq).toString(36);
+  return {
+    id: id,
+    position: position,
+    type: type,
+    text: type === 'text' ? '@roroai290K' : '',
+    fontSize: 48,
+    textColor: '#ffffff',
+    wmUrl: null,
+    wmImg: null,
+    wmName: '',
+    needsImage: type === 'image',
+    size: 30,
+    opacity: 70,
+    rotate: 0,
+    margin: 20,
+    tile: false,
+    tileGap: 20
+  };
+}
+function showLayerToast(msg) {
+  var toast = $el('proToast');
+  if (!toast) { alert(msg); return; }
+  toast.textContent = msg;
+  toast.style.display = 'block';
+  toast.style.opacity = '1';
+  setTimeout(function() {
+    toast.style.transition = 'opacity 0.5s';
+    toast.style.opacity = '0';
+    setTimeout(function() { toast.style.display = 'none'; toast.style.transition = ''; }, 500);
+  }, 2200);
+}
+function clearLayerCache(layerId) {
+  _layerTextCache.forEach(function(v, k) {
+    if (k.indexOf(layerId + '_') === 0) _layerTextCache.delete(k);
+  });
+}
+function cleanupLayer(layer) {
+  if (layer && layer.wmUrl) URL.revokeObjectURL(layer.wmUrl);
+  if (layer) clearLayerCache(layer.id);
+}
+function renderPositionPicker(type) {
+  pendingLayerType = type;
+  var picker = $el('layerPositionPicker');
+  var grid = $el('layerPositionGrid');
+  if (!picker || !grid) return;
+  grid.innerHTML = '';
+  var used = getUsedPositions();
+  WM_POSITIONS.forEach(function(pos) {
+    var btn = document.createElement('button');
+    btn.className = 'position-pick-btn';
+    btn.textContent = WM_POS_LABELS[pos];
+    btn.title = layerPositionName(pos);
+    if (used.indexOf(pos) >= 0) {
+      btn.classList.add('used');
+      btn.disabled = true;
+    } else {
+      btn.addEventListener('click', function() {
+        addLayerAtPosition(pendingLayerType, pos);
+        picker.style.display = 'none';
+        pendingLayerType = null;
+      });
+    }
+    grid.appendChild(btn);
+  });
+  picker.style.display = 'block';
+}
+function addLayerAtPosition(type, position) {
+  if (state.wmLayers.length >= getMaxLayers()) {
+    showLayerToast(tx('layer_limit_reached'));
+    return;
+  }
+  if (!isPositionAvailable(position)) return;
+  var layer = createLayer(type, position);
+  state.wmLayers.push(layer);
+  state.activeLayerId = layer.id;
+  renderLayerUI();
+  updateProcess();
+  schedulePreview();
+}
+function removeLayer(layerId) {
+  var idx = state.wmLayers.findIndex(function(l) { return l.id === layerId; });
+  if (idx < 0) return;
+  cleanupLayer(state.wmLayers[idx]);
+  state.wmLayers.splice(idx, 1);
+  if (state.activeLayerId === layerId) {
+    state.activeLayerId = state.wmLayers[0] ? state.wmLayers[0].id : null;
+  }
+  renderLayerUI();
+  updateProcess();
+  schedulePreview();
+}
+function serializeLayer(layer) {
+  return {
+    id: layer.id,
+    position: layer.position,
+    type: layer.type,
+    text: layer.text,
+    fontSize: layer.fontSize,
+    textColor: layer.textColor,
+    wmName: layer.wmName || '',
+    needsImage: layer.type === 'image',
+    size: layer.size,
+    opacity: layer.opacity,
+    rotate: layer.rotate,
+    margin: layer.margin,
+    tile: layer.tile,
+    tileGap: layer.tileGap
+  };
+}
+function renderLayerList() {
+  var list = $el('wmLayerList');
+  if (!list) return;
+  list.innerHTML = '';
+  if (!state.wmLayers.length) {
+    var empty = document.createElement('div');
+    empty.className = 'layer-empty';
+    empty.textContent = tx('layer_empty');
+    list.appendChild(empty);
+    return;
+  }
+  var frag = document.createDocumentFragment();
+  state.wmLayers.forEach(function(layer, index) {
+    var card = document.createElement('div');
+    card.className = 'layer-card';
+    if (layer.id === state.activeLayerId) card.classList.add('active');
+    if (layer.type === 'image' && !layer.wmImg) card.classList.add('missing');
+    card.addEventListener('click', function() {
+      state.activeLayerId = layer.id;
+      renderLayerUI();
+    });
+
+    var top = document.createElement('div');
+    top.className = 'layer-card-top';
+    var title = document.createElement('div');
+    title.className = 'layer-card-title';
+    var kind = document.createElement('span');
+    kind.className = 'layer-kind';
+    kind.textContent = layer.type === 'text' ? 'TEXT' : 'IMG';
+    var pos = document.createElement('span');
+    pos.className = 'layer-pos';
+    pos.textContent = WM_POS_LABELS[layer.position] || '?';
+    var name = document.createElement('span');
+    name.className = 'layer-name';
+    name.textContent = layer.type === 'text'
+      ? (layer.text || tx('layer_text_default'))
+      : (layer.wmName || tx('layer_missing_image'));
+    title.appendChild(kind);
+    title.appendChild(pos);
+    title.appendChild(name);
+
+    var actions = document.createElement('div');
+    actions.className = 'layer-actions';
+    var del = document.createElement('button');
+    del.className = 'layer-mini-btn';
+    del.textContent = '✕';
+    del.title = currentLang === 'ja' ? '削除' : 'Delete';
+    del.addEventListener('click', function(e) {
+      e.stopPropagation();
+      removeLayer(layer.id);
+    });
+    actions.appendChild(del);
+    top.appendChild(title);
+    top.appendChild(actions);
+
+    var meta = document.createElement('div');
+    meta.className = 'layer-meta';
+    var tileTxt = layer.tile ? ' · TILE' : '';
+    meta.textContent = (index + 1) + ' / ' + layerPositionName(layer.position) +
+      ' · SIZE ' + layer.size + '% · OPACITY ' + layer.opacity + '%' + tileTxt;
+
+    card.appendChild(top);
+    card.appendChild(meta);
+    frag.appendChild(card);
+  });
+  list.appendChild(frag);
+}
+function setControlValue(sliderId, numId, value) {
+  var sl = $el(sliderId), num = $el(numId);
+  if (!sl || !num) return;
+  sl.value = value;
+  num.value = value;
+  var pct = ((value - parseFloat(sl.min)) / (parseFloat(sl.max) - parseFloat(sl.min))) * 100;
+  sl.style.setProperty('--val', pct + '%');
+}
+function syncControlsFromActiveLayer() {
+  var layer = getActiveLayer();
+  var editor = $el('layerEditor');
+  var empty = $el('layerEditorEmpty');
+  if (!layer) {
+    if (editor) editor.classList.remove('active');
+    if (empty) empty.style.display = 'block';
+    return;
+  }
+  if (editor) editor.classList.add('active');
+  if (empty) empty.style.display = 'none';
+
+  $el('textWmPanel').classList.toggle('active', layer.type === 'text');
+  $el('imageWmPanel').classList.toggle('active', layer.type === 'image');
+  $el('wmText').value = layer.text || '';
+  $el('textColor').value = layer.textColor || '#ffffff';
+  setControlValue('fontSizeSlider', 'fontSizeNum', layer.fontSize);
+  setControlValue('sizeSlider', 'sizeNum', layer.size);
+  setControlValue('opacitySlider', 'opacityNum', layer.opacity);
+  setControlValue('rotateSlider', 'rotateNum', layer.rotate);
+  setControlValue('marginSlider', 'marginNum', layer.margin);
+  setControlValue('tileGapSlider', 'tileGapNum', layer.tileGap);
+  $el('tileToggle').classList.toggle('on', !!layer.tile);
+  $el('tileSection').style.display = layer.tile ? 'block' : 'none';
+
+  document.querySelectorAll('.pos-btn').forEach(function(btn) {
+    var used = !isPositionAvailable(btn.dataset.pos, layer.id);
+    btn.classList.toggle('used', used);
+    btn.disabled = used;
+    btn.classList.toggle('active', btn.dataset.pos === layer.position);
+  });
+
+  if (layer.type === 'image' && layer.wmUrl) {
+    $el('wmThumb').src = layer.wmUrl;
+    $el('wmThumbWrap').style.display = 'block';
+  } else {
+    $el('wmThumb').src = '';
+    $el('wmThumbWrap').style.display = 'none';
+  }
+  $el('wmInput').value = '';
+}
+function renderLayerUI() {
+  var max = getMaxLayers();
+  var limit = $el('layerLimitNote');
+  if (limit) {
+    var overLimit = state.wmLayers.length > max;
+    limit.textContent = (proActive ? tx('layer_limit_pro') : tx('layer_limit_free')) +
+      ' ' + state.wmLayers.length + ' / ' + max +
+      (overLimit ? ' ' + tx('layer_limit_over') : '');
+    limit.style.color = overLimit ? '#ff6b6b' : '';
+  }
+  var disabled = state.wmLayers.length >= max;
+  if ($el('addTextLayerBtn')) $el('addTextLayerBtn').disabled = disabled;
+  if ($el('addImageLayerBtn')) $el('addImageLayerBtn').disabled = disabled;
+  renderLayerList();
+  syncControlsFromActiveLayer();
+}
+
+if ($el('addTextLayerBtn')) $el('addTextLayerBtn').addEventListener('click', function() { renderPositionPicker('text'); });
+if ($el('addImageLayerBtn')) $el('addImageLayerBtn').addEventListener('click', function() { renderPositionPicker('image'); });
 
 // ── Image loading ────────────────────────────────────────
 $el('imgInput').addEventListener('change', function() { loadImages($el('imgInput').files); });
@@ -2172,25 +2635,40 @@ $el('wmDropZone').addEventListener('drop', function(e) { if (e.dataTransfer.file
 
 function loadWatermark(file) {
   if (!file || !file.type.startsWith('image/')) return;
+  var layer = getActiveLayer();
+  if (!layer || layer.type !== 'image') return;
   var url = URL.createObjectURL(file);
   var img = new Image();
   img.onload = function() {
-    state.watermark = { img: img, url: url };
+    if (layer.wmUrl) URL.revokeObjectURL(layer.wmUrl);
+    layer.wmUrl = url;
+    layer.wmImg = img;
+    layer.wmName = file.name;
+    layer.needsImage = false;
     $el('wmThumb').src = url;
     $el('wmThumbWrap').style.display = 'block';
+    renderLayerList();
     updateProcess();
     schedulePreview();
   };
+  img.onerror = function() { URL.revokeObjectURL(url); };
   img.src = url;
 }
 
 function clearWatermark() {
-  if (state.watermark && state.watermark.url) URL.revokeObjectURL(state.watermark.url);
-  state.watermark = null;
+  var layer = getActiveLayer();
+  if (layer && layer.wmUrl) URL.revokeObjectURL(layer.wmUrl);
+  if (layer) {
+    layer.wmUrl = null;
+    layer.wmImg = null;
+    layer.wmName = '';
+    layer.needsImage = true;
+  }
   $el('wmThumb').src = '';
   $el('wmThumbWrap').style.display = 'none';
   $el('wmInput').value = '';
-  wmCache = null;
+  if (layer) clearLayerCache(layer.id);
+  renderLayerList();
   updateProcess();
   schedulePreview();
 }
@@ -2198,8 +2676,22 @@ function clearWatermark() {
 $el('wmClearBtn').addEventListener('click', clearWatermark);
 
 // ── Text WM ───────────────────────────────────────────────
-$el('wmText').addEventListener('input', function() { state.wmText = $el('wmText').value; wmCache = null; schedulePreview(); });
-$el('textColor').addEventListener('input', function() { state.textColor = $el('textColor').value; wmCache = null; schedulePreview(); });
+$el('wmText').addEventListener('input', function() {
+  var layer = getActiveLayer();
+  if (!layer || layer.type !== 'text') return;
+  layer.text = $el('wmText').value;
+  clearLayerCache(layer.id);
+  renderLayerList();
+  updateProcess();
+  schedulePreview();
+});
+$el('textColor').addEventListener('input', function() {
+  var layer = getActiveLayer();
+  if (!layer || layer.type !== 'text') return;
+  layer.textColor = $el('textColor').value;
+  clearLayerCache(layer.id);
+  schedulePreview();
+});
 
 // ── Slider + Number input ────────────────────────────────
 function setupControl(sliderId, numId, stateKey) {
@@ -2208,12 +2700,18 @@ function setupControl(sliderId, numId, stateKey) {
   function sync(val) {
     val = Math.min(parseFloat(sl.max), Math.max(parseFloat(sl.min), parseFloat(val)));
     if (isNaN(val)) return;
-    state[stateKey] = val;
+    var layer = getActiveLayer();
+    if (layer && ['fontSize','size','opacity','rotate','margin','tileGap'].indexOf(stateKey) >= 0) {
+      layer[stateKey] = val;
+      if (stateKey === 'fontSize') clearLayerCache(layer.id);
+    } else {
+      state[stateKey] = val;
+    }
     sl.value = val;
     num.value = val;
     var pct = ((val - sl.min) / (sl.max - sl.min)) * 100;
     sl.style.setProperty('--val', pct + '%');
-    if (stateKey === 'fontSize') wmCache = null;
+    renderLayerList();
     schedulePreview();
   }
   sl.addEventListener('input', function() { sync(sl.value); });
@@ -2232,19 +2730,25 @@ setupControl('fontSizeSlider', 'fontSizeNum', 'fontSize');
 // ── Position grid ────────────────────────────────────────
 $el('posGrid').addEventListener('click', function(e) {
   var btn = e.target.closest('.pos-btn');
-  if (!btn) return;
+  if (!btn || btn.disabled) return;
+  var layer = getActiveLayer();
+  if (!layer) return;
+  if (!isPositionAvailable(btn.dataset.pos, layer.id)) return;
   document.querySelectorAll('.pos-btn').forEach(function(b) { b.classList.remove('active'); });
   btn.classList.add('active');
-  state.position = btn.dataset.pos;
+  layer.position = btn.dataset.pos;
+  renderLayerUI();
   schedulePreview();
 });
 
 // ── Tile toggle ───────────────────────────────────────────
 $el('tileToggle').addEventListener('click', function() {
-  state.tile = !state.tile;
-  $el('tileToggle').classList.toggle('on', state.tile);
-  $el('positionSection').style.display = state.tile ? 'none' : 'block';
-  $el('tileSection').style.display = state.tile ? 'block' : 'none';
+  var layer = getActiveLayer();
+  if (!layer) return;
+  layer.tile = !layer.tile;
+  $el('tileToggle').classList.toggle('on', layer.tile);
+  $el('tileSection').style.display = layer.tile ? 'block' : 'none';
+  renderLayerList();
   schedulePreview();
 });
 
@@ -2294,15 +2798,24 @@ document.querySelectorAll('.fmt-btn').forEach(function(btn) {
 })();
 
 
-// ── プリセット (LocalStorage, 最大3件) ─────────────────
-var PRESET_KEY = 'swm_presets_v1';
+// ── プリセット (LocalStorage, v4レイヤー対応) ────────────
+var PRESET_KEY_LEGACY = 'swm_presets_v1';
+var PRESET_KEY = 'swm_presets_v4';
 var MAX_PRESETS_FREE = 3;
 var MAX_PRESETS_PRO = 10;
 var MAX_PRESETS = 3; // proActiveで動的に切り替え
 
 function getPresets() {
-  try { return JSON.parse(localStorage.getItem(PRESET_KEY) || '[]'); }
-  catch(e) { return []; }
+  try {
+    var v4Raw = localStorage.getItem(PRESET_KEY);
+    if (v4Raw !== null) {
+      var v4 = JSON.parse(v4Raw || '[]');
+      return Array.isArray(v4) ? v4 : [];
+    }
+    var legacy = JSON.parse(localStorage.getItem(PRESET_KEY_LEGACY) || '[]');
+    if (Array.isArray(legacy) && legacy.length) return legacy;
+    return [];
+  } catch(e) { return []; }
 }
 
 function savePresets(arr) {
@@ -2310,75 +2823,81 @@ function savePresets(arr) {
 }
 
 function currentSettings(customName) {
-  var posLabel = {
-    'top-left':'↖','top-center':'↑','top-right':'↗',
-    'middle-left':'←','center':'＋','middle-right':'→',
-    'bottom-left':'↙','bottom-center':'↓','bottom-right':'↘'
-  }[state.position] || state.position;
+  var layers = state.wmLayers.map(serializeLayer);
   return {
-    name: customName || (state.wmMode === 'text' ? '"' + state.wmText + '"' : 'IMG-WM'),
-    wmMode: state.wmMode,
-    wmText: state.wmText,
-    textColor: state.textColor,
-    fontSize: state.fontSize,
-    size: state.size,
-    opacity: state.opacity,
-    rotate: state.rotate,
-    margin: state.margin,
-    tile: state.tile,
-    tileGap: state.tileGap,
-    position: state.position,
-    posLabel: posLabel,
+    name: customName || (layers.length ? 'WM Layers ' + layers.length : 'Preset'),
+    version: 4,
+    wmLayers: layers,
     format: state.format,
     scale: state.scale,
     savedAt: new Date().toLocaleDateString()
   };
 }
 
-function applyPreset(p) {
-  // テキスト設定
-  if (p.wmMode) state.wmMode = p.wmMode;
-  if (p.wmText !== undefined) { state.wmText = p.wmText; $el('wmText').value = p.wmText; }
-  if (p.textColor) { state.textColor = p.textColor; $el('textColor').value = p.textColor; }
-
-  // 数値スライダー
-  var sliders = {
-    fontSize: ['fontSizeSlider','fontSizeNum'],
-    size:     ['sizeSlider','sizeNum'],
-    opacity:  ['opacitySlider','opacityNum'],
-    rotate:   ['rotateSlider','rotateNum'],
-    margin:   ['marginSlider','marginNum'],
-    tileGap:  ['tileGapSlider','tileGapNum'],
+function presetV3ToV4(p) {
+  var type = p.wmMode || 'image';
+  return {
+    id: 'layer_legacy_' + Date.now().toString(36) + '_' + (++_layerSeq).toString(36),
+    position: p.position || 'bottom-right',
+    type: type,
+    text: p.wmText !== undefined ? p.wmText : '@roroai290K',
+    fontSize: p.fontSize !== undefined ? p.fontSize : 48,
+    textColor: p.textColor || '#ffffff',
+    wmUrl: null,
+    wmImg: null,
+    wmName: '',
+    needsImage: type === 'image',
+    size: p.size !== undefined ? p.size : 30,
+    opacity: p.opacity !== undefined ? p.opacity : 70,
+    rotate: p.rotate !== undefined ? p.rotate : 0,
+    margin: p.margin !== undefined ? p.margin : 20,
+    tile: !!p.tile,
+    tileGap: p.tileGap !== undefined ? p.tileGap : 20
   };
-  Object.keys(sliders).forEach(function(k) {
-    if (p[k] === undefined) return;
-    state[k] = p[k];
-    var ids = sliders[k];
-    var sl = $el(ids[0]), num = $el(ids[1]);
-    if (sl) { sl.value = p[k]; var pct=((p[k]-sl.min)/(sl.max-sl.min))*100; sl.style.setProperty('--val',pct+'%'); }
-    if (num) num.value = p[k];
+}
+
+function applyPreset(p) {
+  if (!p) return;
+
+  state.wmLayers.forEach(cleanupLayer);
+  state.wmLayers = [];
+  _layerTextCache.clear();
+
+  var layers = [];
+  if (p.version && p.version >= 4 && Array.isArray(p.wmLayers)) {
+    layers = p.wmLayers;
+  } else {
+    layers = [presetV3ToV4(p)];
+  }
+
+  var used = {};
+  layers.slice(0, getMaxLayers()).forEach(function(src) {
+    var pos = src.position || 'bottom-right';
+    if (used[pos]) return;
+    used[pos] = true;
+    var layer = {
+      id: 'layer_' + Date.now().toString(36) + '_' + (++_layerSeq).toString(36),
+      position: pos,
+      type: src.type === 'image' ? 'image' : 'text',
+      text: src.text !== undefined ? src.text : (src.wmText || '@roroai290K'),
+      fontSize: src.fontSize !== undefined ? src.fontSize : 48,
+      textColor: src.textColor || '#ffffff',
+      wmUrl: null,
+      wmImg: null,
+      wmName: src.wmName || '',
+      needsImage: src.type === 'image',
+      size: src.size !== undefined ? src.size : 30,
+      opacity: src.opacity !== undefined ? src.opacity : 70,
+      rotate: src.rotate !== undefined ? src.rotate : 0,
+      margin: src.margin !== undefined ? src.margin : 20,
+      tile: !!src.tile,
+      tileGap: src.tileGap !== undefined ? src.tileGap : 20
+    };
+    state.wmLayers.push(layer);
   });
 
-  // タイル
-  if (p.tile !== undefined) {
-    state.tile = p.tile;
-    var tog = $el('tileToggle');
-    if (tog) { tog.classList.toggle('on', p.tile); }
-    var ts = $el('tileSection');
-    if (ts) ts.style.display = p.tile ? 'block' : 'none';
-    var ps = $el('positionSection');
-    if (ps) ps.style.display = p.tile ? 'none' : 'block';
-  }
+  state.activeLayerId = state.wmLayers[0] ? state.wmLayers[0].id : null;
 
-  // 位置
-  if (p.position) {
-    state.position = p.position;
-    document.querySelectorAll('.pos-btn').forEach(function(c) {
-      c.classList.toggle('active', c.dataset.pos === p.position);
-    });
-  }
-
-  // フォーマット
   if (p.format) {
     state.format = p.format;
     document.querySelectorAll('.fmt-btn').forEach(function(b) {
@@ -2386,7 +2905,6 @@ function applyPreset(p) {
     });
   }
 
-  // 解像度
   if (p.scale !== undefined) {
     state.scale = p.scale;
     var v = Math.round(p.scale * 100);
@@ -2399,9 +2917,13 @@ function applyPreset(p) {
     });
   }
 
-  // wmCacheをクリア
-  wmCache = null;
+  renderLayerUI();
+  updateProcess();
   schedulePreview();
+
+  if (state.wmLayers.some(function(l) { return l.type === 'image' && !l.wmImg; })) {
+    showLayerToast(tx('layer_missing_image'));
+  }
 }
 
 function renderPresets() {
@@ -2505,7 +3027,18 @@ function renderPresets() {
       // 設定サマリーチップ
       var summary = document.createElement('div');
       summary.className = 'preset-card-summary';
-      var chips = [
+      var layerCount = p.version >= 4 && Array.isArray(p.wmLayers) ? p.wmLayers.length : 1;
+      var imageNeeds = p.version >= 4 && Array.isArray(p.wmLayers)
+        ? p.wmLayers.filter(function(l) { return l.type === 'image'; }).length
+        : (p.wmMode === 'image' ? 1 : 0);
+      var chips = p.version >= 4 ? [
+        'V4',
+        layerCount + ' LAYER',
+        imageNeeds ? imageNeeds + ' IMG' : null,
+        p.format ? p.format.toUpperCase() : null,
+        p.scale && p.scale !== 1 ? 'SCALE ' + Math.round(p.scale * 100) + '%' : null,
+      ] : [
+        'V3',
         p.wmMode === 'text' ? 'TEXT' : 'IMG',
         'SIZE ' + p.size + '%',
         'OPACITY ' + p.opacity + '%',
@@ -2534,11 +3067,15 @@ function renderPresets() {
       overwriteBtn.className = 'preset-overwrite-btn';
       overwriteBtn.textContent = tx('preset_overwrite');
 
+      var renameBtn = document.createElement('button');
+      renameBtn.className = 'preset-overwrite-btn';
+      renameBtn.textContent = tx('preset_rename');
+
       var delBtn = document.createElement('button');
       delBtn.className = 'preset-del-btn';
       delBtn.textContent = tx('preset_del');
 
-      (function(preset, aBtn, oBtn, dBtn, idx) {
+      (function(preset, aBtn, oBtn, rBtn, dBtn, idx) {
         // 適用
         aBtn.addEventListener('click', function() {
           applyPreset(preset);
@@ -2558,6 +3095,21 @@ function renderPresets() {
           oBtn.textContent = '✓';
           setTimeout(renderPresets, 800);
         });
+        // 名前変更
+        rBtn.addEventListener('click', function() {
+          var current = preset.name || ('Preset ' + (idx + 1));
+          var next = prompt(tx('preset_rename_prompt'), current);
+          if (next === null) return;
+          next = next.trim();
+          if (!next) return;
+          var arr = getPresets();
+          while (arr.length <= idx) arr.push(null);
+          if (arr[idx]) {
+            arr[idx].name = next.slice(0, 20);
+            savePresets(arr);
+            renderPresets();
+          }
+        });
         // 削除
         dBtn.addEventListener('click', function() {
           var arr = getPresets();
@@ -2566,10 +3118,11 @@ function renderPresets() {
           savePresets(arr);
           renderPresets();
         });
-      })(p, applyBtn, overwriteBtn, delBtn, i);
+      })(p, applyBtn, overwriteBtn, renameBtn, delBtn, i);
 
       actions.appendChild(applyBtn);
       actions.appendChild(overwriteBtn);
+      actions.appendChild(renameBtn);
       actions.appendChild(delBtn);
 
       card.appendChild(header);
@@ -2585,11 +3138,13 @@ function renderPresets() {
 var _origApplyLang = applyLang;
 applyLang = function(lang) {
   _origApplyLang(lang);
+  renderLayerUI();
   renderPresets();
 };
 
 // 初期描画
 renderPresets();
+renderLayerUI();
 
 
 // ── モバイル サイドバートグル ──────────────────────
@@ -2615,8 +3170,9 @@ renderPresets();
 
 // ── Process button state ─────────────────────────────────
 function updateProcess() {
-  var hasWm = state.wmMode === 'text' ? state.wmText.trim().length > 0 : !!state.watermark;
-  $el('processBtn').disabled = !(state.images.length > 0 && hasWm);
+  var hasWm = state.wmLayers.some(layerIsReady);
+  var withinLayerLimit = state.wmLayers.length <= getMaxLayers();
+  $el('processBtn').disabled = !(state.images.length > 0 && hasWm && withinLayerLimit);
 }
 
 // バックアップ警告モーダル制御
@@ -2624,9 +3180,9 @@ var _backupSkipped = false;
 var FILE_SIZE_WARN_MB = 50; // 1枚50MB超えで警告
 
 // buildZipをPromise化（ユーザージェスチャーチェーンを維持するため）
-function buildZipPromise(files) {
+function buildZipPromise(files, onProgress) {
   return new Promise(function(resolve) {
-    buildZip(files, resolve);
+    buildZip(files, resolve, onProgress);
   });
 }
 
@@ -2649,7 +3205,11 @@ async function backupOriginalImages() {
     });
 
     // ZIPをPromiseで構築
-    var zip = await buildZipPromise(files);
+    var zip = await buildZipPromise(files, function(done, total) {
+      statusEl.textContent = tx('backup_zip_progress')
+        .replace('{done}', String(done))
+        .replace('{total}', String(total));
+    });
     var blob = new Blob([zip], { type: 'application/zip' });
 
     // showSaveFilePickerはブラウザ対応していれば保存場所を選べる
@@ -2748,6 +3308,7 @@ function showBackupModal() {
 }
 
 $el('processBtn').addEventListener('click', function() {
+  if (!confirmIncompleteLayersIfNeeded()) return;
   if (_backupSkipped) { processAll(); return; }
   showBackupModal();
 });
@@ -2831,11 +3392,13 @@ function renderPreview() {
 }
 
 // ── Text WM canvas (cached) ───────────────────────────────
-function buildTextWmCanvas() {
-  if (wmCache) return wmCache;
+function buildTextWmCanvasForLayer(layer) {
+  if (!layer) return null;
+  var cacheKey = layer.id + '_' + layer.text + '_' + layer.fontSize + '_' + layer.textColor;
+  if (_layerTextCache.has(cacheKey)) return _layerTextCache.get(cacheKey);
   try {
-    var fs = Math.max(1, Math.round(state.fontSize || 48));
-    var text = state.wmText || '';
+    var fs = Math.max(1, Math.round(layer.fontSize || 48));
+    var text = layer.text || '';
     if (!text.trim()) return null;
     var fontStr = 'bold ' + fs + "px 'DM Mono', monospace";
 
@@ -2855,16 +3418,19 @@ function buildTextWmCanvas() {
     var ctx = c.getContext('2d');
     if (!ctx) return null;
     ctx.font = fontStr;
-    ctx.fillStyle = state.textColor || '#ffffff';
+    ctx.fillStyle = layer.textColor || '#ffffff';
     // ベースライン位置をフォントサイズに合わせて正確に配置
     ctx.fillText(text, 4, fs * 1.05);
-    wmCache = c;
+    _layerTextCache.set(cacheKey, c);
     return c;
   } catch(e) {
-    console.warn('[buildTextWmCanvas] エラー:', e);
-    wmCache = null;
+    console.warn('[buildTextWmCanvasForLayer] エラー:', e);
     return null;
   }
+}
+
+function buildTextWmCanvas() {
+  return buildTextWmCanvasForLayer(getActiveLayer());
 }
 
 // ── Composite core ────────────────────────────────────────
@@ -2883,29 +3449,38 @@ function compositeOnCanvas(baseImg, canvas, previewScale) {
   ctx.clearRect(0, 0, W, H);
   ctx.drawImage(baseImg, 0, 0, W, H);
 
-  var wmSrc;
-  if (state.wmMode === 'text') {
-    if (!state.wmText.trim()) { ctx.globalAlpha = 1; return; }
-    wmSrc = buildTextWmCanvas();
-    if (!wmSrc) { ctx.globalAlpha = 1; return; }
-  } else {
-    if (!state.watermark) { ctx.globalAlpha = 1; return; }
-    wmSrc = state.watermark.img;
-  }
+  state.wmLayers.forEach(function(layer) {
+    drawLayerOnCanvas(ctx, layer, W, H, outScale);
+  });
+  ctx.globalAlpha = 1;
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+}
 
-  var wmW = Math.round(W * state.size / 100);
+function drawLayerOnCanvas(ctx, layer, W, H, outScale) {
+  var wmSrc;
+  if (layer.type === 'text') {
+    if (!layer.text || !layer.text.trim()) return;
+    wmSrc = buildTextWmCanvasForLayer(layer);
+  } else {
+    if (!layer.wmImg) return;
+    wmSrc = layer.wmImg;
+  }
+  if (!wmSrc || !wmSrc.width || !wmSrc.height) return;
+
+  var wmW = Math.round(W * layer.size / 100);
   var wmH = Math.round((wmSrc.height / wmSrc.width) * wmW);
-  var rad = (state.rotate * Math.PI) / 180;
-  var m = Math.round(state.margin * outScale);
-  var alpha = state.opacity / 100;
+  if (wmW <= 0 || wmH <= 0) return;
+  var rad = (layer.rotate * Math.PI) / 180;
+  var m = Math.round(layer.margin * outScale);
+  var alpha = layer.opacity / 100;
   var cosR = Math.cos(rad), sinR = Math.sin(rad);
   var hw = wmW / 2, hh = wmH / 2;
 
   ctx.globalAlpha = alpha;
 
-  if (state.tile) {
-    var stepX = wmW + Math.round(state.tileGap * outScale);
-    var stepY = wmH + Math.round(state.tileGap * outScale);
+  if (layer.tile) {
+    var stepX = Math.max(1, wmW + Math.round(layer.tileGap * outScale));
+    var stepY = Math.max(1, wmH + Math.round(layer.tileGap * outScale));
     // save/restore の代わりに setTransform で行列を直接セット（高速）
     for (var ty = -wmH; ty < H + wmH; ty += stepY) {
       for (var tx = -wmW; tx < W + wmW; tx += stepX) {
@@ -2916,7 +3491,7 @@ function compositeOnCanvas(baseImg, canvas, previewScale) {
     }
     ctx.setTransform(1, 0, 0, 1, 0, 0); // reset
   } else {
-    var pos = state.position;
+    var pos = layer.position;
     var x = pos.indexOf('left') >= 0 ? m : pos.indexOf('right') >= 0 ? W - wmW - m : (W - wmW) / 2;
     var y = pos.indexOf('top') >= 0 ? m : pos.indexOf('bottom') >= 0 ? H - wmH - m : (H - wmH) / 2;
     ctx.setTransform(cosR, sinR, -sinR, cosR, x + hw, y + hh);
@@ -2955,7 +3530,7 @@ function finishProcess(cancelled, criticalErrCode) {
   off.height = 1;         // ← 削除禁止
 
   // ブラウザ通知（完了）
-  if (!cancelled && Notification && Notification.permission === 'granted') {
+  if (!cancelled && typeof Notification !== 'undefined' && Notification.permission === 'granted') {
     new Notification('SonicWatermarker', {
       body: currentLang === 'ja'
         ? state.results.length + '枚の処理が完了しました'
@@ -2967,6 +3542,11 @@ function finishProcess(cancelled, criticalErrCode) {
   // 重大エラーで中断した場合
   if (criticalErrCode) {
     showErrorReport(criticalErrCode, state.results.length, _failCount, _failNames);
+    if (state.results.length > 0) renderResults();
+    return;
+  }
+
+  if (cancelled) {
     if (state.results.length > 0) renderResults();
     return;
   }
@@ -3076,6 +3656,7 @@ function showErrorReport(code, okCount, failCount, failNames) {
 
 // ── 処理キャンセルフラグ・エラー追跡（スコープ変数）──────
 var _processCancelled = false;
+var _processRunId = 0;
 var _failCount = 0;
 var _failNames = [];
 
@@ -3087,6 +3668,8 @@ function processAll() {
   }
 
   _processCancelled = false;
+  _processRunId++;
+  var runId = _processRunId;
   _failCount = 0;
   _failNames = [];
   state.results = [];
@@ -3106,6 +3689,8 @@ function processAll() {
     cancelBtn.onclick = function() {
       if (confirm(currentLang === 'ja' ? '処理をキャンセルしますか？\n処理済みの分はダウンロードできます。' : 'Cancel processing?\nAlready processed images can still be downloaded.')) {
         _processCancelled = true;
+        _processRunId++;
+        finishProcess(true);
       }
     };
   }
@@ -3150,6 +3735,9 @@ function processAll() {
 
   function processChunk() {
     // キャンセルチェック
+    if (runId !== _processRunId) {
+      return;
+    }
     if (_processCancelled) {
       finishProcess(true);
       return;
@@ -3162,6 +3750,26 @@ function processAll() {
     var outName = uniqueName(baseName);
 
     function onBlob(blob) {
+      if (runId !== _processRunId || _processCancelled) return;
+      if (sonicActive) {
+        verifySonicMarkBlob(blob, actualFormat, proLicenseKey).then(function(ok) {
+          if (runId !== _processRunId || _processCancelled) return;
+          if (ok) {
+            onVerifiedBlob(blob);
+          } else {
+            console.warn('[SonicMark] 自己検出チェックに失敗:', outName);
+            onFail('VERIFY', 'SONIC');
+          }
+        }).catch(function() {
+          onFail('VERIFY', 'SONIC');
+        });
+        return;
+      }
+      onVerifiedBlob(blob);
+    }
+
+    function onVerifiedBlob(blob) {
+      if (runId !== _processRunId || _processCancelled) return;
       state.results.push({ blob: blob, name: outName });
       var pct = Math.round(idx / total * 100);
       $el('loadingPctBig').innerHTML = pct + '<sup>%</sup>';
@@ -3174,6 +3782,7 @@ function processAll() {
     }
 
     function onFail(zone, detail) {
+      if (runId !== _processRunId || _processCancelled) return;
       _failCount++;
       _failNames.push(imgObj.name);
       var code = generateErrorCode(zone, detail, String(cur + 1));
@@ -3209,6 +3818,7 @@ function processAll() {
     // ║    （先にonBlobを呼ぶと次の処理が始まりoffが汚染される）      ║
     // ╚══════════════════════════════════════════════════════════════╝
     function doProcess(loadedImg) {
+      if (runId !== _processRunId || _processCancelled) return;
       // ─────────────────────────────────────────────────────────
       // v2.7 設計: compositeOnCanvas完了後のoff canvasに直接埋め込む
       // sonicCalcWmRectで算出した「出力画像上の実際のWM位置・サイズ」を使う
@@ -3221,10 +3831,9 @@ function processAll() {
         ? embedSonicMarkToCanvas(off, proLicenseKey, actualFormat)
         : Promise.resolve();
       pngEmbedPromise.then(function() {
+        if (runId !== _processRunId || _processCancelled) return;
         off.toBlob(function(blob) {
-          // 🚨 重要: toBlob完了直後に必ずoffをクリアする（順序変更禁止）
-          var offCtx = ctxCache.get(off);
-          if (offCtx) offCtx.clearRect(0, 0, off.width, off.height);
+          if (runId !== _processRunId || _processCancelled) return;
           if (!blob) {
             // toBlob失敗 → フォールバック
             try {
@@ -3238,14 +3847,19 @@ function processAll() {
               return;
             }
           }
+          // 🚨 重要: blob生成完了直後に必ずoffをクリアする（順序変更禁止）
+          var offCtx = ctxCache.get(off);
+          if (offCtx) offCtx.clearRect(0, 0, off.width, off.height);
           // JPEG/WebP: メタデータ埋め込み
           if (sonicActive && (actualFormat === 'jpeg' || actualFormat === 'webp')) {
             var metaPromise = actualFormat === 'jpeg'
               ? embedSonicMarkToJpegBlob(blob, proLicenseKey)
               : embedSonicMarkToWebPBlob(blob, proLicenseKey);
             metaPromise.then(function(finalBlob) {
+              if (runId !== _processRunId || _processCancelled) return;
               onBlob(finalBlob);
             }).catch(function(e) {
+              if (runId !== _processRunId || _processCancelled) return;
               console.warn('[SonicMark] メタデータ埋め込み失敗（元blobで続行）:', e);
               onBlob(blob);
             });
@@ -3254,6 +3868,7 @@ function processAll() {
           }
         }, mime, quality);
       }).catch(function(embedErr) {
+        if (runId !== _processRunId || _processCancelled) return;
         // embedSonicMark失敗 → offリセット後にonFail
         var offCtx = ctxCache.get(off);
         if (offCtx) offCtx.clearRect(0, 0, off.width, off.height);
@@ -3272,16 +3887,19 @@ function processAll() {
   }
 
   // ブラウザ通知の許可を要求（バックグラウンド作業時に完了通知するため）
-  if (Notification && Notification.permission === 'default') {
-    Notification.requestPermission();
+  if (typeof Notification !== 'undefined' && Notification.permission === 'default') {
+    try { Notification.requestPermission(); } catch(e) {}
   }
 
   var loaded = 0;
   function onLoad() {
+    if (runId !== _processRunId || _processCancelled) return;
     loaded++;
     if (loaded === total) {
       var startProcessing = function() {
+        if (runId !== _processRunId || _processCancelled) return;
         requestAnimationFrame(function() {
+          if (runId !== _processRunId || _processCancelled) return;
           if (idx < total) processChunk();
         });
       };
@@ -3354,6 +3972,8 @@ function renderResults() {
   grid.appendChild(frag);
   $el('resultsSection').style.display = 'block';
   $el('dlAllBtn').textContent = tx('btn_dl_all');
+  $el('dlAllBtn').disabled = false;
+  if ($el('zipAllStatus')) $el('zipAllStatus').textContent = '';
 }
 
 // ── CRC32 & ZIP builder (no external library) ─────────────
@@ -3368,9 +3988,10 @@ function crc32(data) {
   return (crc ^ 0xFFFFFFFF) >>> 0;
 }
 
-function buildZip(files, callback) {
+function buildZip(files, callback, onProgress) {
   // 全BlobをArrayBufferに並列変換してからZIPを構築
   var fileList = files.slice(); // スナップショットを取りクロージャ混線を防ぐ
+  if (!fileList.length) { callback(new Uint8Array(0)); return; }
   var buffers = new Array(fileList.length);
   var done = 0;
   fileList.forEach(function(file, i) {
@@ -3378,6 +3999,7 @@ function buildZip(files, callback) {
     reader.onload = function(e) {
       buffers[i] = new Uint8Array(e.target.result);
       done++;
+      if (onProgress) onProgress(done, fileList.length);
       if (done === fileList.length) callback(assemble(buffers, fileList));
     };
     reader.readAsArrayBuffer(file.blob);
@@ -3469,7 +4091,6 @@ function doClearAll() {
   state.images = [];
   state.selectedIdx = 0;
   imgCache.clear();
-  wmCache = null;
   // 出力結果もリセット（state.resultsに残ったblobのURLを解放）
   try {
     state.results = [];
@@ -3484,6 +4105,7 @@ function doClearAll() {
   $el('clearAllBtn').style.display = 'none';
   $el('resultsSection').style.display = 'none';
   $el('downloadGrid').innerHTML = '';
+  if ($el('zipAllStatus')) $el('zipAllStatus').textContent = '';
   $el('clearAllBtnStrip').style.display = 'none';
   disableCompareMode();
   updateProcess();
@@ -3497,9 +4119,27 @@ async function dlAll(filename) {
   var files = state.results.filter(Boolean);
   if (!files.length) return;
   var fname = filename || 'watermarked.zip';
+  var btn = $el('dlAllBtn');
+  var statusEl = $el('zipAllStatus');
 
   try {
-    var zip = await buildZipPromise(files);
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = tx('zip_progress');
+    }
+    if (statusEl) {
+      statusEl.style.color = '#888';
+      statusEl.textContent = tx('zip_all_progress')
+        .replace('{done}', '0')
+        .replace('{total}', String(files.length));
+    }
+    var zip = await buildZipPromise(files, function(done, total) {
+      if (statusEl) {
+        statusEl.textContent = tx('zip_all_progress')
+          .replace('{done}', String(done))
+          .replace('{total}', String(total));
+      }
+    });
     var blob = new Blob([zip], { type: 'application/zip' });
 
     if (window.showSaveFilePicker) {
@@ -3511,14 +4151,39 @@ async function dlAll(filename) {
         var w = await fh.createWritable();
         await w.write(blob);
         await w.close();
+        if (statusEl) {
+          statusEl.style.color = '#4caf50';
+          statusEl.textContent = tx('zip_all_done');
+        }
       } catch(pickerErr) {
-        if (pickerErr.name !== 'AbortError') fallbackDl(blob, fname);
+        if (pickerErr.name !== 'AbortError') {
+          fallbackDl(blob, fname);
+          if (statusEl) {
+            statusEl.style.color = '#4caf50';
+            statusEl.textContent = tx('zip_all_done');
+          }
+        } else if (statusEl) {
+          statusEl.textContent = '';
+        }
       }
     } else {
       fallbackDl(blob, fname);
+      if (statusEl) {
+        statusEl.style.color = '#4caf50';
+        statusEl.textContent = tx('zip_all_done');
+      }
     }
   } catch(e) {
     console.warn('[dlAll] ZIP作成失敗:', e);
+    if (statusEl) {
+      statusEl.style.color = '#ff6b6b';
+      statusEl.textContent = tx('zip_all_fail');
+    }
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = tx('btn_dl_all');
+    }
   }
 }
 function fallbackDl(blob, fname) {
@@ -3539,22 +4204,22 @@ function fallbackDl(blob, fname) {
 
 var SONICMARK_MAGIC = [0x53, 0x4D, 0x4B, 0x31]; // "SMK1" — SonicMark識別子
 
-// ── WM描画領域を計算（画像サイズ・WM設定から） ────────────
+// ── WM描画領域を計算（画像サイズ・選択中レイヤー設定から） ────────────
 function sonicCalcWmRect(W, H) {
   var outScale = state.scale || 1;
-  var wmMode = state.wmMode;
   var wmSrc = null;
-  if (wmMode === 'image' && state.watermark) {
-    wmSrc = state.watermark.img;
-  } else if (wmMode === 'text') {
-    wmSrc = buildTextWmCanvas ? buildTextWmCanvas() : null;
+  var layer = (typeof getActiveLayer === 'function') ? getActiveLayer() : null;
+  if (layer && layer.type === 'image' && layer.wmImg) {
+    wmSrc = layer.wmImg;
+  } else if (layer && layer.type === 'text') {
+    wmSrc = (typeof buildTextWmCanvasForLayer === 'function') ? buildTextWmCanvasForLayer(layer) : null;
   }
   if (!wmSrc) return { x: 0, y: 0, w: W, h: H }; // fallback: 全体
 
-  var wmW = Math.round(W * state.size / 100);
+  var wmW = Math.round(W * layer.size / 100);
   var wmH = Math.round((wmSrc.height / wmSrc.width) * wmW);
-  var m   = Math.round((state.margin || 20) * outScale);
-  var pos = state.position || 'bottom-right';
+  var m   = Math.round((layer.margin || 20) * outScale);
+  var pos = layer.position || 'bottom-right';
 
   var x = pos.indexOf('left')   >= 0 ? m :
           pos.indexOf('right')  >= 0 ? W - wmW - m : (W - wmW) / 2;
@@ -3562,7 +4227,7 @@ function sonicCalcWmRect(W, H) {
           pos.indexOf('bottom') >= 0 ? H - wmH - m : (H - wmH) / 2;
 
   // タイルモードの場合は画像全体を対象にする
-  if (state.tile) return { x: 0, y: 0, w: W, h: H };
+  if (layer.tile) return { x: 0, y: 0, w: W, h: H };
 
   return {
     x: Math.round(x), y: Math.round(y),
@@ -3718,6 +4383,104 @@ function sonicGenBlockPositions(seed, count, totalBlocks) {
   return positions;
 }
 
+function sonicReadPayloadFromPositions(data, positions, bitCount, redundancy) {
+  var actual = Math.min(redundancy || 3, Math.floor(positions.length / bitCount));
+  if (actual < 1) return '';
+  var resultBits = [];
+  for (var i = 0; i < bitCount; i++) {
+    var votes = 0;
+    for (var r = 0; r < actual; r++) {
+      var idx = r * bitCount + i;
+      if (idx < positions.length) votes += data[positions[idx]] & 1;
+    }
+    resultBits.push(votes > actual / 2 ? 1 : 0);
+  }
+  return sonicBitsToStr(resultBits);
+}
+
+function sonicPayloadMatches(readStr, expectedHash) {
+  return readStr &&
+    readStr.charCodeAt(0) === 0x53 &&
+    readStr.charCodeAt(1) === 0x4D &&
+    readStr.charCodeAt(2) === 0x4B &&
+    readStr.charCodeAt(3) === 0x31 &&
+    readStr.slice(4, 12) === expectedHash;
+}
+
+function sonicLegacyRectFromSpec(W, H, position, size, margin, ratio) {
+  var wmW = Math.max(1, Math.round(W * size / 100));
+  var wmH = Math.max(1, Math.round(wmW / Math.max(0.1, ratio || 1)));
+  var m = Math.max(0, Math.round(margin || 0));
+  var x = position.indexOf('left') >= 0 ? m :
+          position.indexOf('right') >= 0 ? W - wmW - m : Math.round((W - wmW) / 2);
+  var y = position.indexOf('top') >= 0 ? m :
+          position.indexOf('bottom') >= 0 ? H - wmH - m : Math.round((H - wmH) / 2);
+  x = Math.max(0, Math.min(W - wmW, x));
+  y = Math.max(0, Math.min(H - wmH, y));
+  return { x: x, y: y, w: wmW, h: wmH };
+}
+
+function sonicLegacyCandidateRects(W, H) {
+  var rects = [];
+  var seen = {};
+  function add(rect) {
+    if (!rect || rect.w < 1 || rect.h < 1) return;
+    var key = rect.x + ',' + rect.y + ',' + rect.w + ',' + rect.h;
+    if (!seen[key]) { seen[key] = true; rects.push(rect); }
+  }
+
+  // v4で選択中のレイヤーがある場合は、その設定も旧方式候補として優先する。
+  var active = (typeof getActiveLayer === 'function') ? getActiveLayer() : null;
+  if (active) {
+    var ratio = 1;
+    if (active.type === 'image' && active.wmImg && active.wmImg.height) {
+      ratio = active.wmImg.width / active.wmImg.height;
+    } else if (active.type === 'text') {
+      var tc = (typeof buildTextWmCanvasForLayer === 'function') ? buildTextWmCanvasForLayer(active) : null;
+      if (tc && tc.height) ratio = tc.width / tc.height;
+    }
+    add(sonicLegacyRectFromSpec(W, H, active.position || 'bottom-right', active.size || 30, active.margin || 0, ratio));
+  }
+
+  var positions = [
+    'top-left','top-center','top-right',
+    'middle-left','center','middle-right',
+    'bottom-left','bottom-center','bottom-right'
+  ];
+  var sizes = [10, 12, 15, 20, 25, 30, 35, 40, 50];
+  var margins = [0, 5, 10, 20];
+  var ratios = [0.5, 0.75, 1, 1.25, 1.5, 2, 3];
+
+  positions.forEach(function(pos) {
+    sizes.forEach(function(size) {
+      margins.forEach(function(margin) {
+        ratios.forEach(function(ratio) {
+          add(sonicLegacyRectFromSpec(W, H, pos, size, margin, ratio));
+        });
+      });
+    });
+  });
+  return rects;
+}
+
+function sonicPositionsFromLegacyRect(seed, bitCount, W, H, rect) {
+  var maxIndex = rect.w * rect.h * 4 - 4;
+  if (maxIndex < 4) return [];
+  var localPos = sonicGenPositions(seed, bitCount * 3, maxIndex);
+  var globalPos = [];
+  localPos.forEach(function(p) {
+    var localPx = Math.floor(p / 4);
+    var lx = localPx % rect.w;
+    var ly = Math.floor(localPx / rect.w);
+    var gx = rect.x + lx;
+    var gy = rect.y + ly;
+    if (gx >= 0 && gx < W && gy >= 0 && gy < H) {
+      globalPos.push((gy * W + gx) * 4);
+    }
+  });
+  return globalPos;
+}
+
 // ╔══════════════════════════════════════════════════════════════╗
 // ║  🚨 超重要・変更禁止ゾーン — embedSonicMarkToCanvas         ║
 // ╠══════════════════════════════════════════════════════════════╣
@@ -3732,7 +4495,7 @@ function sonicGenBlockPositions(seed, count, totalBlocks) {
 // ║  → WMのLSBが生き残る                                        ║
 // ║                                                              ║
 // ║  【このコードが守っていること】                               ║
-// ║  ① 元のWMソース（state.watermark.img）は絶対に変更しない    ║
+// ║  ① 元のWMソース（各レイヤーのwmImg）は絶対に変更しない      ║
 // ║     → 必ずコピーcanvasに書き込む                             ║
 // ║  ② LSB済みWMはこの関数内の一時canvasにのみ存在              ║
 // ║     → 処理後は参照が切れてGCされる                          ║
@@ -3943,8 +4706,8 @@ async function embedSonicMark(canvas, licenseKey) {
   console.warn('[SonicMark] embedSonicMarkは非推奨です。embedSonicMarkToWmを使用してください。');
 }
 
-// 画像からSonicMarkを検出する（PNG:全体分散LSB方式 / JPEG/WebP:バイナリ方式）
-async function detectSonicMark(canvas) {
+// 画像からSonicMarkを検出する（PNG:全体分散LSB方式 + 旧WM領域LSB方式）
+async function detectSonicMark(canvas, keyList) {
   try {
     var ctx = canvas.getContext('2d');
     var W = canvas.width;
@@ -3954,9 +4717,10 @@ async function detectSonicMark(canvas) {
     var imageData = ctx.getImageData(0, 0, W, H);
     var data = imageData.data;
 
-    var testKeys = [];
+    var testKeys = keyList && keyList.length ? keyList.slice() : [];
     var savedKey = localStorage.getItem('sonicProKey');
-    if (savedKey) testKeys.push(savedKey);
+    if (savedKey && testKeys.indexOf(savedKey) < 0) testKeys.push(savedKey);
+    var checkedMethods = [];
 
     for (var k = 0; k < testKeys.length; k++) {
       var licenseKey = testKeys[k];
@@ -3970,32 +4734,41 @@ async function detectSonicMark(canvas) {
       // ── 方式①（v3.1）: 画像全体分散LSB検出（主方式）──────────────
       // embedSonicMarkToCanvas v3.1 と同じ「全体分散」で読む。
       // stateに一切依存しないため再起動後・別環境でも確実に検出できる。
+      if (checkedMethods.indexOf('LSB(v3.1)') < 0) checkedMethods.push('LSB(v3.1)');
       var lsbRedundancy = 3;
       var maxIndex = data.length - 4;
       if (maxIndex >= 4) {
         var positions = sonicGenPositions(seed, bitCount * lsbRedundancy, maxIndex);
         if (positions.length >= bitCount) {
-          var redundancyActual = Math.min(lsbRedundancy, Math.floor(positions.length / bitCount));
-          if (redundancyActual < 1) redundancyActual = 1;
-          var resultBits = [];
-          for (var i = 0; i < bitCount; i++) {
-            var votes = 0;
-            for (var r = 0; r < redundancyActual; r++) {
-              var idx = r * bitCount + i;
-              if (idx < positions.length) votes += data[positions[idx]] & 1;
-            }
-            resultBits.push(votes > redundancyActual / 2 ? 1 : 0);
+          var readStr = sonicReadPayloadFromPositions(data, positions, bitCount, lsbRedundancy);
+          if (sonicPayloadMatches(readStr, expectedHash_lsb)) {
+            return { detected: true, key: licenseKey, method: 'LSB(v3.1)' };
           }
-          var readStr = sonicBitsToStr(resultBits);
-          if (readStr.charCodeAt(0) === 0x53 && readStr.charCodeAt(1) === 0x4D &&
-              readStr.charCodeAt(2) === 0x4B && readStr.charCodeAt(3) === 0x31) {
-            var readHash = readStr.slice(4, 12);
-            if (readHash === expectedHash_lsb) return { detected: true, key: licenseKey, method: 'LSB(v3.1)' };
+        }
+      }
+
+      // ── 方式②（v2.7系）: 旧WM領域内LSB検出 ────────────────────
+      // 旧版は「見えるWMが置かれた領域の中」にLSBを書いていた。
+      // v4では当時のstateが残らないため、旧配置・サイズ候補を順番に試す。
+      if (checkedMethods.indexOf('WM-LSB Legacy') < 0) checkedMethods.push('WM-LSB Legacy');
+      var legacyRects = sonicLegacyCandidateRects(W, H);
+      for (var lr = 0; lr < legacyRects.length; lr++) {
+        var legacyPositions = sonicPositionsFromLegacyRect(seed, bitCount, W, H, legacyRects[lr]);
+        if (legacyPositions.length >= bitCount) {
+          var legacyStr = sonicReadPayloadFromPositions(data, legacyPositions, bitCount, 3);
+          if (sonicPayloadMatches(legacyStr, expectedHash_lsb)) {
+            return {
+              detected: true,
+              key: licenseKey,
+              method: 'WM-LSB Legacy',
+              rect: legacyRects[lr]
+            };
           }
         }
       }
 
       // ── 後方互換：旧ブロック方式（v2.4以前）で試みる ──
+      if (checkedMethods.indexOf('Block(v2.4)') < 0) checkedMethods.push('Block(v2.4)');
       var blockRedundancy_v24 = 5;
       var totalBlocks2 = Math.floor(W / 8) * Math.floor(H / 8);
       if (totalBlocks2 >= bitCount * blockRedundancy_v24) {
@@ -4015,6 +4788,7 @@ async function detectSonicMark(canvas) {
         }
       }
       // 旧v2.5beta: redundancy=3、ランダム分散埋め込み
+      if (checkedMethods.indexOf('Block(v2.5b)') < 0) checkedMethods.push('Block(v2.5b)');
       var blockRedundancy_v25b = 3;
       if (totalBlocks2 >= bitCount * blockRedundancy_v25b) {
         var blockPositions_v25b = sonicGenBlockPositions(seed, bitCount * blockRedundancy_v25b, totalBlocks2);
@@ -4036,7 +4810,7 @@ async function detectSonicMark(canvas) {
         }
       }
     }
-    return { detected: false };
+    return { detected: false, checkedMethods: checkedMethods };
   } catch(e) {
     console.warn('[SonicMark] 検出エラー:', e);
     return null;
@@ -4114,14 +4888,19 @@ async function runDetect() {
           result.textContent = currentLang === 'ja' ? '検出エラーが発生しました' : 'Detection error occurred';
         } else if (res.detected) {
           result.style.color = '#e8ff47';
+          var methodName = res.method || 'PNG LSB';
           result.textContent = currentLang === 'ja'
-            ? '✓ SonicMark検出！（PNG LSB方式）このライセンスキーで処理された画像です'
-            : '✓ SonicMark detected! (PNG LSB method) Processed with this license key.';
+            ? '✓ SonicMark検出！（' + methodName + '方式）このライセンスキーで処理された画像です'
+            : '✓ SonicMark detected! (' + methodName + ' method) Processed with this license key.';
         } else {
           result.style.color = '#888';
+          var checked = res.checkedMethods && res.checkedMethods.length
+            ? '\n' + (currentLang === 'ja' ? '確認方式: ' : 'Checked: ') + res.checkedMethods.join(' / ')
+            : '';
           result.textContent = currentLang === 'ja'
-            ? 'SonicMarkは検出されませんでした（無料版・未処理、またはSNS投稿後のファイルの可能性）'
-            : 'No SonicMark detected. (Free version, unprocessed, or file was re-saved after SNS upload)';
+            ? 'SonicMarkは検出されませんでした（無料版・未処理、別キー、またはSNS投稿後のファイルの可能性）' + checked
+            : 'No SonicMark detected. (Free version, unprocessed, different key, or file was re-saved after SNS upload)' + checked;
+          result.style.whiteSpace = 'pre-line';
         }
       };
       img.onerror = function() {
@@ -4491,6 +5270,42 @@ async function detectSonicMarkFromBinary(arrayBuffer, licenseKey) {
   }
 }
 
+function verifySonicMarkBlob(blob, format, licenseKey) {
+  if (!blob || !licenseKey) return Promise.resolve(false);
+  if (format === 'jpeg' || format === 'webp') {
+    return blob.arrayBuffer().then(function(buffer) {
+      return detectSonicMarkFromBinary(buffer, licenseKey);
+    });
+  }
+  if (format !== 'png') return Promise.resolve(true);
+  return new Promise(function(resolve) {
+    var url = URL.createObjectURL(blob);
+    var img = new Image();
+    img.onload = function() {
+      try {
+        var c = document.createElement('canvas');
+        c.width = img.naturalWidth || img.width;
+        c.height = img.naturalHeight || img.height;
+        c.getContext('2d').drawImage(img, 0, 0);
+        URL.revokeObjectURL(url);
+        detectSonicMark(c, [licenseKey]).then(function(res) {
+          resolve(!!(res && res.detected));
+        }).catch(function() {
+          resolve(false);
+        });
+      } catch(e) {
+        URL.revokeObjectURL(url);
+        resolve(false);
+      }
+    };
+    img.onerror = function() {
+      URL.revokeObjectURL(url);
+      resolve(false);
+    };
+    img.src = url;
+  });
+}
+
 // ══════════════════════════════════════════════════════════════
 // SonicMark エンジン END
 // ══════════════════════════════════════════════════════════════
@@ -4548,7 +5363,7 @@ const LICENSE_CONFIG = Object.freeze({
     : (document.querySelector('script') || {}).textContent || '';
   var guardChecks = [
     { key: 'backupModal',                              label: 'バックアップ警告モーダル' },
-    { key: 'new Uint8ClampedArray(srcImageData.data)',  label: 'embedSonicMark: ImageDataコピー' },
+    { key: 'new Uint8ClampedArray(srcData.data)',        label: 'embedSonicMark: ImageDataコピー' },
     { key: 'offCtx.clearRect(0, 0, off.width',          label: 'doProcess: toBlob後clearRect' },
     { key: 'ctxCache.delete(off)',                       label: 'finishProcess: ctxCacheクリア' },
     { key: 'off.width = 1',                              label: 'finishProcess: offリセット' },
@@ -4578,9 +5393,94 @@ var proActive = false;
 var proLicenseKey = '';
 
 async function sha256hex(str) {
-  var buf = new TextEncoder().encode(str);
-  var hash = await crypto.subtle.digest('SHA-256', buf);
-  return Array.from(new Uint8Array(hash)).map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
+  var cryptoObj = (typeof crypto !== 'undefined') ? crypto : (typeof window !== 'undefined' ? window.crypto : null);
+  if (cryptoObj && cryptoObj.subtle && typeof cryptoObj.subtle.digest === 'function' && typeof TextEncoder !== 'undefined') {
+    try {
+      var buf = new TextEncoder().encode(str);
+      var hash = await cryptoObj.subtle.digest('SHA-256', buf);
+      return Array.from(new Uint8Array(hash)).map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
+    } catch(e) {
+      console.warn('[LICENSE] WebCrypto unavailable. Falling back to JS SHA-256.', e);
+    }
+  }
+  return sha256hexFallback(str);
+}
+
+function utf8Bytes(str) {
+  if (typeof TextEncoder !== 'undefined') return new TextEncoder().encode(str);
+  var out = [];
+  for (var i = 0; i < str.length; i++) {
+    var c = str.charCodeAt(i);
+    if (c < 0x80) out.push(c);
+    else if (c < 0x800) out.push(0xc0 | (c >> 6), 0x80 | (c & 0x3f));
+    else if (c >= 0xd800 && c <= 0xdbff && i + 1 < str.length) {
+      var n = str.charCodeAt(++i);
+      var cp = 0x10000 + (((c & 0x3ff) << 10) | (n & 0x3ff));
+      out.push(0xf0 | (cp >> 18), 0x80 | ((cp >> 12) & 0x3f), 0x80 | ((cp >> 6) & 0x3f), 0x80 | (cp & 0x3f));
+    } else {
+      out.push(0xe0 | (c >> 12), 0x80 | ((c >> 6) & 0x3f), 0x80 | (c & 0x3f));
+    }
+  }
+  return new Uint8Array(out);
+}
+
+function sha256hexFallback(str) {
+  var K = [
+    0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
+    0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
+    0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,
+    0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,
+    0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,
+    0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
+    0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
+    0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2
+  ];
+  var H = [0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+  var bytes = utf8Bytes(str);
+  var bitLen = bytes.length * 8;
+  var padLen = (bytes.length + 1) % 64 <= 56 ? 56 - ((bytes.length + 1) % 64) : 120 - ((bytes.length + 1) % 64);
+  var msg = new Uint8Array(bytes.length + 1 + padLen + 8);
+  msg.set(bytes);
+  msg[bytes.length] = 0x80;
+  var hi = Math.floor(bitLen / 0x100000000);
+  var lo = bitLen >>> 0;
+  msg[msg.length - 8] = (hi >>> 24) & 255;
+  msg[msg.length - 7] = (hi >>> 16) & 255;
+  msg[msg.length - 6] = (hi >>> 8) & 255;
+  msg[msg.length - 5] = hi & 255;
+  msg[msg.length - 4] = (lo >>> 24) & 255;
+  msg[msg.length - 3] = (lo >>> 16) & 255;
+  msg[msg.length - 2] = (lo >>> 8) & 255;
+  msg[msg.length - 1] = lo & 255;
+
+  var W = new Array(64);
+  function rotr(x, n) { return (x >>> n) | (x << (32 - n)); }
+  function hex32(n) { return ('00000000' + (n >>> 0).toString(16)).slice(-8); }
+  for (var offset = 0; offset < msg.length; offset += 64) {
+    for (var i = 0; i < 16; i++) {
+      var j = offset + i * 4;
+      W[i] = ((msg[j] << 24) | (msg[j + 1] << 16) | (msg[j + 2] << 8) | msg[j + 3]) >>> 0;
+    }
+    for (i = 16; i < 64; i++) {
+      var s0 = (rotr(W[i - 15], 7) ^ rotr(W[i - 15], 18) ^ (W[i - 15] >>> 3)) >>> 0;
+      var s1 = (rotr(W[i - 2], 17) ^ rotr(W[i - 2], 19) ^ (W[i - 2] >>> 10)) >>> 0;
+      W[i] = (W[i - 16] + s0 + W[i - 7] + s1) >>> 0;
+    }
+    var a = H[0], b = H[1], c = H[2], d = H[3], e = H[4], f = H[5], g = H[6], h = H[7];
+    for (i = 0; i < 64; i++) {
+      var S1 = (rotr(e, 6) ^ rotr(e, 11) ^ rotr(e, 25)) >>> 0;
+      var ch = ((e & f) ^ ((~e) & g)) >>> 0;
+      var temp1 = (h + S1 + ch + K[i] + W[i]) >>> 0;
+      var S0 = (rotr(a, 2) ^ rotr(a, 13) ^ rotr(a, 22)) >>> 0;
+      var maj = ((a & b) ^ (a & c) ^ (b & c)) >>> 0;
+      var temp2 = (S0 + maj) >>> 0;
+      h = g; g = f; f = e; e = (d + temp1) >>> 0;
+      d = c; c = b; b = a; a = (temp1 + temp2) >>> 0;
+    }
+    H[0] = (H[0] + a) >>> 0; H[1] = (H[1] + b) >>> 0; H[2] = (H[2] + c) >>> 0; H[3] = (H[3] + d) >>> 0;
+    H[4] = (H[4] + e) >>> 0; H[5] = (H[5] + f) >>> 0; H[6] = (H[6] + g) >>> 0; H[7] = (H[7] + h) >>> 0;
+  }
+  return H.map(hex32).join('');
 }
 
 function parseKey(key) {
@@ -4638,7 +5538,17 @@ async function activateLicense() {
   }
   msg.style.color = '#888';
   msg.textContent = currentLang === 'ja' ? '確認中...' : 'Verifying...';
-  var result = await verifyKey(key);
+  var result;
+  try {
+    result = await verifyKey(key);
+  } catch(e) {
+    console.warn('[LICENSE] Verification failed:', e);
+    msg.style.color = '#ff6b6b';
+    msg.textContent = currentLang === 'ja'
+      ? '認証に失敗しました。ページを再読み込みしてもう一度お試しください。'
+      : 'License verification failed. Please reload and try again.';
+    return;
+  }
   if (result === 'expired') {
     msg.style.color = '#ff9800';
     msg.textContent = currentLang === 'ja'
@@ -4719,8 +5629,9 @@ function showProActive(licenseType) {
     btn.style.cursor = 'pointer';
   }
 
-  // ① プリセットスロットをPRO版（10件）に更新
+  // ① プリセットスロットとレイヤー上限をPRO版に更新
   renderPresets();
+  renderLayerUI();
 
   // ② PRO機能の検出ロックも解除
   var detectLock = $el('detectLock');
@@ -4779,6 +5690,8 @@ function showProInactive() {
     detectBtn2.style.color = '#555';
     detectBtn2.style.cursor = 'not-allowed';
   }
+  renderPresets();
+  renderLayerUI();
 }
 
 // 起動時に保存済みキーを確認
@@ -4787,7 +5700,13 @@ function showProInactive() {
   async function initLicense() {
     var saved = localStorage.getItem('sonicProKey');
     if (saved) {
-      var result = await verifyKey(saved);
+      var result;
+      try {
+        result = await verifyKey(saved);
+      } catch(e) {
+        console.warn('[LICENSE] Saved key verification failed:', e);
+        return;
+      }
       if (result === 'PRO' || result === 'TRIAL') {
         proActive = true;
         proLicenseKey = saved;
