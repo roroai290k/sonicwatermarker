@@ -1,6 +1,6 @@
-// ── SonicWatermarker Service Worker ──────────────────────────
+﻿// ── SonicWatermarker Service Worker ──────────────────────────
 // バージョンを上げると古いキャッシュが自動削除されます
-const CACHE_NAME = 'sonicwm-v2';
+const CACHE_NAME = 'sonicwm-v4-2';
 
 // ── install: キャッシュに登録 ──────────────────────────────
 self.addEventListener('install', function(event) {
@@ -56,3 +56,4 @@ self.addEventListener('fetch', function(event) {
     })
   );
 });
+
