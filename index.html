@@ -11,16 +11,12 @@
 <meta property="og:description" content="ブラウザだけで完結。GPS情報も自動削除。枚数制限なし・完全無料。">
 <meta property="og:image" content="https://sonicwatermarker.com/ogp.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:site" content="@roroai290K">
+<meta name="twitter:site" content="@sonicwatermark">
 <meta name="twitter:title" content="SonicWatermarker — 無料ウォーターマークツール">
 <meta name="twitter:description" content="ブラウザだけで完結。GPS情報も自動削除。枚数制限なし・完全無料。">
 <meta name="twitter:image" content="https://sonicwatermarker.com/ogp.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap"></noscript>
 <style>
-  /* フォントはpreloadで非同期読み込み済み */
+  /* 外部通信を避けるため、端末内のフォントと汎用フォントを使用する */
 
   :root {
     --bg: #0a0a0a;
@@ -1324,7 +1320,7 @@
       <div class="layer-editor-empty" id="layerEditorEmpty" data-i18n="layer_empty_editor">レイヤーを追加すると設定できます。</div>
       <div class="layer-editor" id="layerEditor">
         <div class="text-layer-panel" id="textWmPanel">
-          <input class="txt-input" type="text" id="wmText" placeholder="透かし文字を入力…" value="@roroai290K">
+          <input class="txt-input" type="text" id="wmText" placeholder="透かし文字を入力…" value="@sonicwatermark">
           <div class="control-row">
             <div class="control-header"><span class="control-name" data-i18n="ctrl_font">フォントサイズ</span></div>
             <div class="control-input-row">
@@ -1472,7 +1468,7 @@
           <span style="font-size:10px;color:#555;letter-spacing:0.1em;" data-i18n="pro_lock">🔒 PRO限定</span>
         </div>
         <div style="font-size:10px;color:#888;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;" data-i18n="sonic_title">不可視透かし（電子指紋）</div>
-        <div style="font-size:9px;color:#555;line-height:1.6;" data-i18n="sonic_desc">ライセンスキーに紐づいた不可視の透かしを自動埋め込み。肉眼では見えず、あなたのライセンスキーとSonicWatermarkerでのみ検出可能。</div>
+        <div style="font-size:9px;color:#555;line-height:1.6;" data-i18n="sonic_desc">署名済みライセンスの公開識別子から不可視の透かしを生成。ライセンス本体や個人情報は画像へ埋め込みません。</div>
         <div style="font-size:9px;color:#aaa;margin-top:6px;line-height:1.7;">
           <span style="color:#e8ff47;" data-i18n="sonic_note1">PNG（LSB方式）・JPEG（Exif）・WebP（XMP）の3形式に対応。いずれもピクセルを変更しません（PNGはLSB=最下位1ビットのみ変更）。処理直後のファイルを原本として保管することで「自分が最初に作成した」ことの補助証明に使用できます。</span><br>
           <span style="color:#888;" data-i18n="sonic_note2">※ SNS投稿後・再保存・リサイズ後は消失する場合があります。</span>
@@ -1535,7 +1531,7 @@
       <div id="licenseSection">
         <div style="font-size:9px;color:#888;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;" data-i18n="license_label">ライセンスキー認証</div>
         <div style="display:flex;gap:6px;">
-          <input type="text" id="licenseInput" placeholder="SONIC-XXXX-XXXX-XXXX-XXXX"
+          <input type="text" id="licenseInput" placeholder="SWM1で始まるライセンスを貼り付け"
             autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
             style="flex:1;background:#0a0a0a;border:1px solid #2a2a2a;color:#e0e0e0;font-family:'DM Mono',monospace;font-size:10px;padding:7px 8px;outline:none;letter-spacing:0.05em;">
           <button id="licenseBtn" onclick="activateLicense()"
@@ -1654,7 +1650,7 @@
     <div style="display:flex;gap:8px;flex-wrap:wrap;">
       <button id="errorReportTweetBtn"
         style="flex:2;padding:10px;background:#1a91da;border:none;color:#fff;font-family:'DM Mono',monospace;font-size:11px;font-weight:700;letter-spacing:0.08em;cursor:pointer;min-width:160px;">
-        𝕏 @roroai290kに報告する
+        𝕏 @sonicwatermarkに報告する
       </button>
       <button id="errorReportCopyBtn"
         style="flex:1;padding:10px;background:#1a1a1a;border:1px solid #444;color:#aaa;font-family:'DM Mono',monospace;font-size:11px;cursor:pointer;min-width:100px;">
@@ -1717,9 +1713,9 @@
 
 <footer>
   <div class="footer-left">
-    <div class="footer-credit">Created by <span>@roroai290K</span> &middot; SonicWatermarker v4.2</div>
+    <div class="footer-credit">Created by <span>@sonicwatermark</span> &middot; SonicWatermarker v4.3</div>
     <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-      <div class="footer-license" id="footerLicense">&copy; 2025&ndash;2026 @roroai290K &middot; All Rights Reserved</div>
+      <div class="footer-license" id="footerLicense">&copy; 2025&ndash;2026 @sonicwatermark &middot; All Rights Reserved</div>
       <button class="terms-btn" id="termsBtn" data-i18n="btn_terms">利用規約</button>
     </div>
   </div>
@@ -1755,7 +1751,7 @@
 
       <div class="terms-item">
         <div class="terms-item-label" data-i18n="terms_l3">著作権</div>
-        <div class="terms-item-text" data-i18n="terms_t3">本ツールで生成された画像の著作権は、元の画像の権利者に帰属します。本ツール自体に関するすべての権利は @roroai290K に帰属します。ツールの改変・再配布・販売・商用利用はお断りしております。</div>
+        <div class="terms-item-text" data-i18n="terms_t3">本ツールで生成された画像の著作権は、元の画像の権利者に帰属します。本ツール自体に関するすべての権利は @sonicwatermark に帰属します。ツールの改変・再配布・販売・商用利用はお断りしております。</div>
       </div>
 
       <div class="terms-item">
@@ -1780,22 +1776,22 @@
 
       <div class="terms-item">
         <div class="terms-item-label" data-i18n="terms_l7">PRO版ライセンスについて</div>
-        <div class="terms-item-text" data-i18n="terms_t7">PRO版ライセンスキーは購入者本人のみが使用できます。ライセンスキーの第三者への譲渡・共有・再販売は禁止します。配信・画面共有・スクリーンショット等によりライセンスキーが第三者に知られた場合、その管理責任は利用者本人にあります。本ツールはブラウザ完結型で動作し、画像を外部サーバーへ送信しない設計のため、ライセンス認証もブラウザ内で行われます。そのため、サーバー認証型DRMやオンライン認証システムと同等の不正利用防止・改ざん防止を保証するものではありません。不正利用が確認された場合、今後のバージョンでの利用制限、サポート対象外、再発行停止等の対応を行う場合があります。デジタルコンテンツの性質上、原則として返金はお受けできません。ただし、キーの未着・無効など当方の不備が原因の場合は個別に対応いたします。お問い合わせはX（@roroai290k）までご連絡ください。</div>
+        <div class="terms-item-text" data-i18n="terms_t7">PRO版ライセンスキーは購入者本人のみが使用できます。ライセンスキーの第三者への譲渡・共有・再販売は禁止します。配信・画面共有・スクリーンショット等によりライセンスキーが第三者に知られた場合、その管理責任は利用者本人にあります。本ツールはブラウザ完結型で動作し、画像を外部サーバーへ送信しない設計のため、ライセンス認証もブラウザ内で行われます。そのため、サーバー認証型DRMやオンライン認証システムと同等の不正利用防止・改ざん防止を保証するものではありません。不正利用が確認された場合、今後のバージョンでの利用制限、サポート対象外、再発行停止等の対応を行う場合があります。デジタルコンテンツの性質上、原則として返金はお受けできません。ただし、キーの未着・無効など当方の不備が原因の場合は個別に対応いたします。お問い合わせはX（@sonicwatermark）までご連絡ください。</div>
       </div>
 
       <div class="terms-item">
         <div class="terms-item-label" data-i18n="terms_l8">サービスの変更・終了について</div>
-        <div class="terms-item-text" data-i18n="terms_t8">本ツールの仕様・機能・価格・提供条件および本利用規約は、利用者への個別通知または個別同意なく、必要に応じて変更・追加・削除される場合があります。重要な変更は可能な範囲でX（@roroai290k）にてお知らせします。また、本ツールの提供を予告なく一時停止または終了する場合があります。変更後も本ツールを継続して利用した場合、改訂後の利用規約に同意したものとみなします。なお、本ツールはブラウザ完結型のため、サービス終了後もダウンロード済みのファイルは引き続き使用できます。本規約は日本法に準拠します。法令に別段の定めがある場合を除き、本ツールに関して紛争が生じた場合は、作者の所在地を管轄する裁判所を第一審の専属的合意管轄裁判所とします。</div>
+        <div class="terms-item-text" data-i18n="terms_t8">本ツールの仕様・機能・価格・提供条件および本利用規約は、利用者への個別通知または個別同意なく、必要に応じて変更・追加・削除される場合があります。重要な変更は可能な範囲でX（@sonicwatermark）にてお知らせします。また、本ツールの提供を予告なく一時停止または終了する場合があります。変更後も本ツールを継続して利用した場合、改訂後の利用規約に同意したものとみなします。なお、本ツールはブラウザ完結型のため、サービス終了後もダウンロード済みのファイルは引き続き使用できます。本規約は日本法に準拠します。法令に別段の定めがある場合を除き、本ツールに関して紛争が生じた場合は、作者の所在地を管轄する裁判所を第一審の専属的合意管轄裁判所とします。</div>
       </div>
 
     </div>
-    <div class="terms-footer">&copy; 2025&ndash;2026 @roroai290K &middot; Last updated: 2026-06</div>
+    <div class="terms-footer">&copy; 2025&ndash;2026 @sonicwatermark &middot; Last updated: 2026-06</div>
   </div>
 </div>
 
 <script>
 // =========================================================
-// SonicWatermarker v4.2 — Zero external dependencies
+// SonicWatermarker v4.3 — Zero external dependencies
 // =========================================================
 
 // ── State ─────────────────────────────────────────────────
@@ -1808,7 +1804,7 @@ const state = {
   size: 30, opacity: 70, rotate: 0, margin: 20,
   tile: false, tileGap: 20,
   format: 'png', scale: 1,
-  wmText: '@roroai290K', fontSize: 48, textColor: '#ffffff',
+  wmText: '@sonicwatermark', fontSize: 48, textColor: '#ffffff',
   sonicStrength: 16,
   sonicEnabled: true,  // 不可視透かし埋め込みON/OFF（PRO版のみ有効）
   results: []
@@ -1884,7 +1880,7 @@ const T = {
     label_pro_section:'06 — PRO機能',
     pro_lock:'🔒 PRO限定',
     sonic_title:'不可視透かし（電子指紋）',
-    sonic_desc:'ライセンスキーに紐づいた不可視の透かしを自動埋め込み。肉眼では見えず、あなたのライセンスキーとSonicWatermarkerでのみ検出可能。',
+    sonic_desc:'署名済みライセンスの公開識別子から不可視の透かしを生成。ライセンス本体や個人情報は画像へ埋め込みません。',
     sonic_note1:'PNG（LSB方式）・JPEG（Exif）・WebP（XMP）の3形式に対応。いずれもピクセルを変更しません（PNGはLSB=最下位1ビットのみ変更）。処理直後のファイルを原本として保管することで「自分が最初に作成した」ことの補助証明に使用できます。',
     sonic_note2:'※ SNS投稿後・再保存・リサイズ後は消失する場合があります。',
     sonic_toggle_label:'不可視透かしを埋め込む',
@@ -1921,7 +1917,7 @@ const T = {
     cancel_process:'✕ キャンセル',
     err_report_title:'🚨 処理エラーが発生しました',
     err_report_body:'以下のエラーコードを開発者に報告してください。\n報告していただくことで修正につながります。',
-    err_report_tweet:'𝕏 @roroai290kに報告する',
+    err_report_tweet:'𝕏 @sonicwatermarkに報告する',
     err_report_copy:'コードをコピー',
     err_report_close:'閉じる',
     err_copied:'コピーしました',
@@ -1956,7 +1952,7 @@ const T = {
     sys3:'JavaScript 有効必須 · Canvas API 対応ブラウザ必須 · インターネット接続不要',
     free_badge:'完全無料',
     cmp_before:'前', cmp_after:'後', btn_compare:'⇔ 比較',
-    footer_license:'© 2025–2026 @roroai290K · All Rights Reserved',
+    footer_license:'© 2025–2026 @sonicwatermark · All Rights Reserved',
     btn_clear_all:'✕ 全削除', res_scale_label:'カスタム',
     zip_popup_title:'処理完了', zip_popup_desc:'ZIPファイルに名前を付けて保存します',
     zip_btn_save:'▼ 保存する', zip_btn_cancel:'後で',
@@ -1974,7 +1970,7 @@ const T = {
     terms_l2:'AI学習への不使用',
     terms_t2:'本ツールに入力された画像・テキストを含むいかなるデータも、AI・機械学習モデルの学習・改善目的に使用することは一切ありません。',
     terms_l3:'著作権',
-    terms_t3:'本ツールで生成された画像の著作権は、元の画像の権利者に帰属します。本ツール自体に関するすべての権利は @roroai290K に帰属します。ツールの改変・再配布・販売・商用利用はお断りしております。',
+    terms_t3:'本ツールで生成された画像の著作権は、元の画像の権利者に帰属します。本ツール自体に関するすべての権利は @sonicwatermark に帰属します。ツールの改変・再配布・販売・商用利用はお断りしております。',
     terms_l4:'禁止事項',
     terms_t4:'公序良俗に反する画像・第三者の権利を侵害する画像への使用を禁止します。肖像権・著作権等の権利処理はご利用者自身の責任において行ってください。',
     terms_l5:'免責事項',
@@ -1985,8 +1981,8 @@ const T = {
     terms_l8:'サービスの変更・終了について',
     terms_l9:'レイヤー機能について',
     terms_t9:'ウォーターマークのレイヤー機能では、無料版は最大2レイヤー、PRO版・お試し版は最大9レイヤーまで使用できます。同じ配置位置に複数レイヤーを置くことはできません。画像ウォーターマークを含むプリセットは、ブラウザの安全仕様により画像ファイル本体を保存しないため、あとから適用する際に画像を再選択していただく必要があります。',
-    terms_t8:'本ツールの仕様・機能・価格・提供条件および本利用規約は、利用者への個別通知または個別同意なく、必要に応じて変更・追加・削除される場合があります。重要な変更は可能な範囲でX（@roroai290k）にてお知らせします。また、本ツールの提供を予告なく一時停止または終了する場合があります。変更後も本ツールを継続して利用した場合、改訂後の利用規約に同意したものとみなします。なお、本ツールはブラウザ完結型のため、サービス終了後もダウンロード済みのファイルは引き続き使用できます。本規約は日本法に準拠します。法令に別段の定めがある場合を除き、本ツールに関して紛争が生じた場合は、作者の所在地を管轄する裁判所を第一審の専属的合意管轄裁判所とします。',
-    terms_t7:'PRO版ライセンスキーは購入者本人のみが使用できます。ライセンスキーの第三者への譲渡・共有・再販売は禁止します。配信・画面共有・スクリーンショット等によりライセンスキーが第三者に知られた場合、その管理責任は利用者本人にあります。本ツールはブラウザ完結型で動作し、画像を外部サーバーへ送信しない設計のため、ライセンス認証もブラウザ内で行われます。そのため、サーバー認証型DRMやオンライン認証システムと同等の不正利用防止・改ざん防止を保証するものではありません。不正利用が確認された場合、今後のバージョンでの利用制限、サポート対象外、再発行停止等の対応を行う場合があります。デジタルコンテンツの性質上、原則として返金はお受けできません。ただし、キーの未着・無効など当方の不備が原因の場合は個別に対応いたします。お問い合わせはX（@roroai290k）までご連絡ください。',
+    terms_t8:'本ツールの仕様・機能・価格・提供条件および本利用規約は、利用者への個別通知または個別同意なく、必要に応じて変更・追加・削除される場合があります。重要な変更は可能な範囲でX（@sonicwatermark）にてお知らせします。また、本ツールの提供を予告なく一時停止または終了する場合があります。変更後も本ツールを継続して利用した場合、改訂後の利用規約に同意したものとみなします。なお、本ツールはブラウザ完結型のため、サービス終了後もダウンロード済みのファイルは引き続き使用できます。本規約は日本法に準拠します。法令に別段の定めがある場合を除き、本ツールに関して紛争が生じた場合は、作者の所在地を管轄する裁判所を第一審の専属的合意管轄裁判所とします。',
+    terms_t7:'PRO版ライセンスキーは購入者本人のみが使用できます。ライセンスキーの第三者への譲渡・共有・再販売は禁止します。配信・画面共有・スクリーンショット等によりライセンスキーが第三者に知られた場合、その管理責任は利用者本人にあります。本ツールはブラウザ完結型で動作し、画像を外部サーバーへ送信しない設計のため、ライセンス認証もブラウザ内で行われます。そのため、サーバー認証型DRMやオンライン認証システムと同等の不正利用防止・改ざん防止を保証するものではありません。不正利用が確認された場合、今後のバージョンでの利用制限、サポート対象外、再発行停止等の対応を行う場合があります。デジタルコンテンツの性質上、原則として返金はお受けできません。ただし、キーの未着・無効など当方の不備が原因の場合は個別に対応いたします。お問い合わせはX（@sonicwatermark）までご連絡ください。',
   },
   en: {
     badge_free:'Free', badge_browser:'Browser Only', badge_unlimited:'Unlimited Images',
@@ -2012,7 +2008,7 @@ const T = {
     label_pro_section:'06 — PRO Features',
     pro_lock:'🔒 PRO Only',
     sonic_title:'Invisible Watermark (Fingerprint)',
-    sonic_desc:'Automatically embeds an invisible watermark linked to your license key. Undetectable by eye — verifiable only with your license key and SonicWatermarker.',
+    sonic_desc:'Creates an invisible mark from the signed license public identifier. The license token and personal information are never embedded in the image.',
     sonic_note1:'Supports PNG (LSB method), JPEG (Exif metadata), and WebP (XMP metadata). No pixel changes for JPEG or WebP (PNG modifies only the LSB — lowest 1 bit). Save the processed file as your original to use as supplementary proof of creation.',
     sonic_note2:'※ Watermark may be lost after SNS upload, re-saving, or resizing.',
     sonic_toggle_label:'Embed Invisible Watermark',
@@ -2049,7 +2045,7 @@ const T = {
     cancel_process:'✕ Cancel',
     err_report_title:'🚨 Processing Error',
     err_report_body:'Please report the error code below to the developer.\nYour report helps fix the issue.',
-    err_report_tweet:'𝕏 Report to @roroai290k',
+    err_report_tweet:'𝕏 Report to @sonicwatermark',
     err_report_copy:'Copy code',
     err_report_close:'Close',
     err_copied:'Copied!',
@@ -2084,7 +2080,7 @@ const T = {
     sys3:'JavaScript enabled · Canvas API required · No internet connection required',
     free_badge:'Completely Free',
     cmp_before:'Before', cmp_after:'After', btn_compare:'⇔ Compare',
-    footer_license:'© 2025–2026 @roroai290K · All Rights Reserved',
+    footer_license:'© 2025–2026 @sonicwatermark · All Rights Reserved',
     btn_clear_all:'✕ Clear All', res_scale_label:'Custom',
     zip_popup_title:'Processing Complete', zip_popup_desc:'Save your images as a ZIP file',
     zip_btn_save:'▼ Save ZIP', zip_btn_cancel:'Later',
@@ -2102,7 +2098,7 @@ const T = {
     terms_l2:'No AI Training',
     terms_t2:'No images, text, or any other data submitted to this tool will ever be used for AI or machine learning model training or improvement purposes.',
     terms_l3:'Copyright',
-    terms_t3:'Copyright of processed images remains with the original rights holder. All rights to this tool itself belong to @roroai290K. Modification, redistribution, resale, or commercial use of this tool is prohibited.',
+    terms_t3:'Copyright of processed images remains with the original rights holder. All rights to this tool itself belong to @sonicwatermark. Modification, redistribution, resale, or commercial use of this tool is prohibited.',
     terms_l4:'Prohibited Use',
     terms_t4:'Use of this tool for images that violate public order, morality, or third-party rights is strictly prohibited. Users are solely responsible for ensuring proper rights clearance for any images processed.',
     terms_l5:'Disclaimer',
@@ -2113,8 +2109,8 @@ const T = {
     terms_l8:'Service Changes & Termination',
     terms_l9:'Watermark Layer Feature',
     terms_t9:'The watermark layer feature supports up to 2 layers in the free version and up to 9 layers in PRO or TRIAL. Multiple layers cannot use the same placement position. Presets that include image watermark layers do not store the image files themselves for browser security reasons, so those images must be selected again when the preset is applied later.',
-    terms_t8:'The specifications, features, pricing, provision conditions, and terms of use of this tool may be changed, added to, or removed as necessary without individual notice to or individual consent from users. Important updates will be announced via X (@roroai290k) where reasonably possible. The tool may also be suspended or discontinued without advance notice. Continued use after any changes constitutes acceptance of the revised terms. As this tool runs entirely in the browser, any downloaded files will remain usable even after the service ends. These terms are governed by Japanese law. Unless otherwise required by law, any dispute related to this tool shall be subject to the exclusive jurisdiction of the court having jurisdiction over the author’s location as the court of first instance.',
-    terms_t7:'PRO license keys are for the purchaser\'s personal use only. Transferring, sharing, or reselling license keys to third parties is strictly prohibited. If a license key becomes known to a third party through streaming, screen sharing, screenshots, or similar actions, the user is responsible for managing that key. Because this tool runs entirely in the browser and does not send images to external servers, license verification is also performed in the browser. It does not guarantee the same level of anti-abuse or anti-tampering protection as server-side DRM or online authentication systems. If misuse is confirmed, future versions may restrict use, and support or reissue may be refused. Due to the nature of digital content, refunds are generally not accepted. However, if the issue is caused by our error (e.g., key not delivered or invalid), we will handle it on a case-by-case basis. Please contact us via X (@roroai290k).',
+    terms_t8:'The specifications, features, pricing, provision conditions, and terms of use of this tool may be changed, added to, or removed as necessary without individual notice to or individual consent from users. Important updates will be announced via X (@sonicwatermark) where reasonably possible. The tool may also be suspended or discontinued without advance notice. Continued use after any changes constitutes acceptance of the revised terms. As this tool runs entirely in the browser, any downloaded files will remain usable even after the service ends. These terms are governed by Japanese law. Unless otherwise required by law, any dispute related to this tool shall be subject to the exclusive jurisdiction of the court having jurisdiction over the author’s location as the court of first instance.',
+    terms_t7:'PRO license keys are for the purchaser\'s personal use only. Transferring, sharing, or reselling license keys to third parties is strictly prohibited. If a license key becomes known to a third party through streaming, screen sharing, screenshots, or similar actions, the user is responsible for managing that key. Because this tool runs entirely in the browser and does not send images to external servers, license verification is also performed in the browser. It does not guarantee the same level of anti-abuse or anti-tampering protection as server-side DRM or online authentication systems. If misuse is confirmed, future versions may restrict use, and support or reissue may be refused. Due to the nature of digital content, refunds are generally not accepted. However, if the issue is caused by our error (e.g., key not delivered or invalid), we will handle it on a case-by-case basis. Please contact us via X (@sonicwatermark).',
   }
 };
 
@@ -2159,15 +2155,12 @@ function applyLang(lang) {
     var trialEl2 = $el('proTrialRemaining');
     var isTrial2 = trialEl2 && trialEl2.style.display !== 'none';
     if (isTrial2) {
-      var parsed2 = parseKey(proLicenseKey);
-      if (parsed2) {
-        var issueDays2 = parseInt(parsed2.timestamp, 36);
-        var todayDays2 = Math.floor(Date.now() / 86400000);
-        var rem2 = Math.max(0, TRIAL_DAYS - (todayDays2 - issueDays2));
+      if (proLicenseInfo && proLicenseInfo.exp) {
+        var rem2 = Math.max(0, Math.ceil((proLicenseInfo.exp - Math.floor(Date.now() / 1000)) / 86400));
         if (labelEl2) labelEl2.textContent = lang === 'ja' ? '✓ お試し版 有効中' : '✓ TRIAL Active';
         trialEl2.textContent = lang === 'ja'
-          ? '残り ' + rem2 + ' 日（発行日から31日間）'
-          : rem2 + ' day(s) remaining (31 days from issue)';
+          ? '有効期限まで残り ' + rem2 + ' 日'
+          : rem2 + ' day(s) remaining';
       }
     } else {
       if (labelEl2) labelEl2.textContent = lang === 'ja' ? '✓ PRO版 有効中' : '✓ PRO Active';
@@ -2351,7 +2344,7 @@ function createLayer(type, position) {
     id: id,
     position: position,
     type: type,
-    text: type === 'text' ? '@roroai290K' : '',
+    text: type === 'text' ? '@sonicwatermark' : '',
     fontSize: 48,
     textColor: '#ffffff',
     wmUrl: null,
@@ -2840,7 +2833,7 @@ function presetV3ToV4(p) {
     id: 'layer_legacy_' + Date.now().toString(36) + '_' + (++_layerSeq).toString(36),
     position: p.position || 'bottom-right',
     type: type,
-    text: p.wmText !== undefined ? p.wmText : '@roroai290K',
+    text: p.wmText !== undefined ? p.wmText : '@sonicwatermark',
     fontSize: p.fontSize !== undefined ? p.fontSize : 48,
     textColor: p.textColor || '#ffffff',
     wmUrl: null,
@@ -2879,7 +2872,7 @@ function applyPreset(p) {
       id: 'layer_' + Date.now().toString(36) + '_' + (++_layerSeq).toString(36),
       position: pos,
       type: src.type === 'image' ? 'image' : 'text',
-      text: src.text !== undefined ? src.text : (src.wmText || '@roroai290K'),
+      text: src.text !== undefined ? src.text : (src.wmText || '@sonicwatermark'),
       fontSize: src.fontSize !== undefined ? src.fontSize : 48,
       textColor: src.textColor || '#ffffff',
       wmUrl: null,
@@ -3637,11 +3630,12 @@ function showErrorReport(code, okCount, failCount, failNames) {
 
   var ua = navigator.userAgent.slice(0, 60);
   var tweetText = encodeURIComponent(
-    '@roroai290k\nSonicWatermarkerでエラーが発生しました\nエラーコード: ' + code +
+    '@sonicwatermark\nSonicWatermarkerでエラーが発生しました\nエラーコード: ' + code +
     '\nUA: ' + ua + '\n#SonicWatermarker'
   );
   tweetBtn.onclick = function() {
-    window.open('https://twitter.com/intent/tweet?text=' + tweetText, '_blank');
+    var tweetWindow = window.open('https://twitter.com/intent/tweet?text=' + tweetText, '_blank', 'noopener');
+    if (tweetWindow) tweetWindow.opener = null;
   };
   copyBtn.onclick = function() {
     navigator.clipboard.writeText(code).then(function() {
@@ -3920,6 +3914,53 @@ function processAll() {
 }
 
 // ── Results ───────────────────────────────────────────────
+function openResultPreview(result) {
+  var previewUrl = URL.createObjectURL(result.blob);
+  var overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.94);display:flex;flex-direction:column;padding:16px;box-sizing:border-box;';
+  overlay.setAttribute('role', 'dialog');
+  overlay.setAttribute('aria-modal', 'true');
+  overlay.setAttribute('aria-label', result.name);
+
+  var header = document.createElement('div');
+  header.style.cssText = 'display:flex;align-items:center;gap:12px;min-height:44px;margin-bottom:12px;';
+  var title = document.createElement('div');
+  title.textContent = result.name;
+  title.style.cssText = 'flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#fff;font-family:monospace;font-size:13px;';
+  var closeButton = document.createElement('button');
+  closeButton.type = 'button';
+  closeButton.textContent = '×';
+  closeButton.title = '閉じる';
+  closeButton.setAttribute('aria-label', '閉じる');
+  closeButton.style.cssText = 'width:44px;height:44px;border:1px solid #555;background:#111;color:#fff;font-size:28px;line-height:1;cursor:pointer;';
+
+  var image = document.createElement('img');
+  image.src = previewUrl;
+  image.alt = result.name;
+  image.style.cssText = 'flex:1;min-height:0;width:100%;object-fit:contain;';
+
+  function closePreview() {
+    document.removeEventListener('keydown', onPreviewKeydown);
+    URL.revokeObjectURL(previewUrl);
+    overlay.remove();
+  }
+  function onPreviewKeydown(event) {
+    if (event.key === 'Escape') closePreview();
+  }
+  closeButton.addEventListener('click', closePreview);
+  overlay.addEventListener('click', function(event) {
+    if (event.target === overlay) closePreview();
+  });
+  document.addEventListener('keydown', onPreviewKeydown);
+
+  header.appendChild(title);
+  header.appendChild(closeButton);
+  overlay.appendChild(header);
+  overlay.appendChild(image);
+  document.body.appendChild(overlay);
+  closeButton.focus();
+}
+
 function renderResults() {
   var grid = $el('downloadGrid');
   grid.innerHTML = '';
@@ -3934,15 +3975,10 @@ function renderResults() {
     thumb.alt = result.name;
     var thumbUrl = URL.createObjectURL(result.blob);
     thumb.src = thumbUrl;
-    thumb.addEventListener('load', function() {});
+    thumb.addEventListener('load', function() { URL.revokeObjectURL(thumbUrl); }, { once: true });
     // サムネクリックで拡大プレビュー
     thumb.addEventListener('click', function() {
-      var previewUrl = URL.createObjectURL(result.blob);
-      var win = window.open('', '_blank', 'width=900,height=700,resizable=yes');
-      if (win) {
-        win.document.write('<html><head><title>' + result.name + '</title><style>body{margin:0;background:#0a0a0a;display:flex;align-items:center;justify-content:center;min-height:100vh;}img{max-width:100%;max-height:100vh;}</style></head><body><img src="' + previewUrl + '" alt="' + result.name + '"></body></html>');
-        win.document.close();
-      }
+      openResultPreview(result);
     });
     card.appendChild(thumb);
 
@@ -4198,11 +4234,11 @@ function fallbackDl(blob, fname) {
 
 
 // ══════════════════════════════════════════════════════════════
-// SonicMark — 不可視透かしエンジン v1.0
-// 方式: LSB + シード分散埋め込み × SHA-256 × 秘密鍵
+// SonicMark — 不可視透かしエンジン v2.0
+// 方式: LSB + シード分散埋め込み × 公開ライセンスIDのSHA-256指紋
 // ══════════════════════════════════════════════════════════════
 
-var SONICMARK_MAGIC = [0x53, 0x4D, 0x4B, 0x31]; // "SMK1" — SonicMark識別子
+var SONICMARK_MAGIC = [0x53, 0x4D, 0x4B, 0x32]; // "SMK2" — SonicMark v2識別子
 
 // ── WM描画領域を計算（画像サイズ・選択中レイヤー設定から） ────────────
 function sonicCalcWmRect(W, H) {
@@ -4236,29 +4272,40 @@ function sonicCalcWmRect(W, H) {
 }
 
 
-var SONICMARK_SECRET = 'SonicWM_2026_roroai290k_SecretSalt_v1';
-
-// ── SonicMark キャッシュ（同一キーの再計算を防ぐ）──────────
+// ── SonicMark キャッシュ（同一公開IDの再計算を防ぐ）────────
 var _sonicCache = {
-  key: null,
+  identity: null,
   bits: null,
   bitCount: 0,
   seed: null
 };
 
+function sonicGetLicenseIdentity(licenseToken) {
+  var payload = parseSignedLicensePayload(licenseToken);
+  if (!payload || typeof payload.id !== 'string' || !/^[A-Za-z0-9_-]{22}$/.test(payload.id)) {
+    throw new Error('Signed license public ID is unavailable');
+  }
+  return payload.id;
+}
+
+async function sonicBuildMarkerHash(licenseToken) {
+  var identity = sonicGetLicenseIdentity(licenseToken);
+  return (await sha256hex('SonicMark:v2:' + identity)).slice(0, 32);
+}
+
 async function sonicPrepareCache(licenseKey) {
-  if (_sonicCache.key === licenseKey && _sonicCache.bits) return; // キャッシュ済み
+  var identity = sonicGetLicenseIdentity(licenseKey);
+  if (_sonicCache.identity === identity && _sonicCache.bits) return;
   var payload = await sonicBuildPayload(licenseKey);
   var bits = sonicStrToBits(payload);
-  var seedRaw = licenseKey + SONICMARK_SECRET + 'embed';
-  var seed = await sha256hex(seedRaw);
-  _sonicCache.key = licenseKey;
+  var seed = await sha256hex('SonicMark:positions:v2:' + identity);
+  _sonicCache.identity = identity;
   _sonicCache.bits = bits;
   _sonicCache.bitCount = bits.length;
   _sonicCache.seed = seed;
 }
 
-function sonicClearCache() { _sonicCache.key = null; _sonicCache.bits = null; }
+function sonicClearCache() { _sonicCache.identity = null; _sonicCache.bits = null; }
 
 // シード値から埋め込み位置リストを生成（疑似乱数で分散）
 function sonicGenPositions(seed, count, maxIndex) {
@@ -4328,20 +4375,13 @@ function sonicBitsToStr(bits) {
 }
 
 // 埋め込むペイロードを構築
-// 形式: MAGIC(4bytes) + KEY_HASH(8bytes) + KEY_LEN(1byte) + KEY(n bytes)
+// 形式: MAGIC(4bytes) + PUBLIC_ID_HASH(32 ASCII bytes)
+// ライセンス本体・購入者情報・秘密情報は埋め込まない。
 async function sonicBuildPayload(licenseKey) {
-  var raw = licenseKey + SONICMARK_SECRET;
-  var hash = await sha256hex(raw);
-  var keyHash = hash.slice(0, 8); // 8文字のハッシュ（照合用）
+  var markerHash = await sonicBuildMarkerHash(licenseKey);
   var payload = '';
-  // MAGIC文字列
-  payload += String.fromCharCode(0x53, 0x4D, 0x4B, 0x31);
-  // キーハッシュ（8文字）
-  payload += keyHash;
-  // キー長（1バイト）
-  payload += String.fromCharCode(licenseKey.length);
-  // キー本体
-  payload += licenseKey;
+  payload += String.fromCharCode(0x53, 0x4D, 0x4B, 0x32);
+  payload += markerHash;
   return payload;
 }
 
@@ -4403,8 +4443,8 @@ function sonicPayloadMatches(readStr, expectedHash) {
     readStr.charCodeAt(0) === 0x53 &&
     readStr.charCodeAt(1) === 0x4D &&
     readStr.charCodeAt(2) === 0x4B &&
-    readStr.charCodeAt(3) === 0x31 &&
-    readStr.slice(4, 12) === expectedHash;
+    readStr.charCodeAt(3) === 0x32 &&
+    readStr.slice(4, 36) === expectedHash;
 }
 
 function sonicLegacyRectFromSpec(W, H, position, size, margin, ratio) {
@@ -4706,7 +4746,7 @@ async function embedSonicMark(canvas, licenseKey) {
   console.warn('[SonicMark] embedSonicMarkは非推奨です。embedSonicMarkToWmを使用してください。');
 }
 
-// 画像からSonicMarkを検出する（PNG:全体分散LSB方式 + 旧WM領域LSB方式）
+// 画像からSonicMark v2を検出する（PNG: 全体分散LSB方式）
 async function detectSonicMark(canvas, keyList) {
   try {
     var ctx = canvas.getContext('2d');
@@ -4720,92 +4760,23 @@ async function detectSonicMark(canvas, keyList) {
     var testKeys = keyList && keyList.length ? keyList.slice() : [];
     var savedKey = localStorage.getItem('sonicProKey');
     if (savedKey && testKeys.indexOf(savedKey) < 0) testKeys.push(savedKey);
-    var checkedMethods = [];
+    var checkedMethods = ['LSB(v4.3)'];
 
     for (var k = 0; k < testKeys.length; k++) {
       var licenseKey = testKeys[k];
       var payload = await sonicBuildPayload(licenseKey);
       var bitCount = sonicStrToBits(payload).length;
-
-      var seedRaw = licenseKey + SONICMARK_SECRET + 'embed';
-      var seed = await sha256hex(seedRaw);
-      var expectedHash_lsb = (await sha256hex(licenseKey + SONICMARK_SECRET)).slice(0, 8);
-
-      // ── 方式①（v3.1）: 画像全体分散LSB検出（主方式）──────────────
-      // embedSonicMarkToCanvas v3.1 と同じ「全体分散」で読む。
-      // stateに一切依存しないため再起動後・別環境でも確実に検出できる。
-      if (checkedMethods.indexOf('LSB(v3.1)') < 0) checkedMethods.push('LSB(v3.1)');
+      var identity = sonicGetLicenseIdentity(licenseKey);
+      var seed = await sha256hex('SonicMark:positions:v2:' + identity);
+      var expectedHash = await sonicBuildMarkerHash(licenseKey);
       var lsbRedundancy = 3;
       var maxIndex = data.length - 4;
       if (maxIndex >= 4) {
         var positions = sonicGenPositions(seed, bitCount * lsbRedundancy, maxIndex);
         if (positions.length >= bitCount) {
           var readStr = sonicReadPayloadFromPositions(data, positions, bitCount, lsbRedundancy);
-          if (sonicPayloadMatches(readStr, expectedHash_lsb)) {
-            return { detected: true, key: licenseKey, method: 'LSB(v3.1)' };
-          }
-        }
-      }
-
-      // ── 方式②（v2.7系）: 旧WM領域内LSB検出 ────────────────────
-      // 旧版は「見えるWMが置かれた領域の中」にLSBを書いていた。
-      // v4では当時のstateが残らないため、旧配置・サイズ候補を順番に試す。
-      if (checkedMethods.indexOf('WM-LSB Legacy') < 0) checkedMethods.push('WM-LSB Legacy');
-      var legacyRects = sonicLegacyCandidateRects(W, H);
-      for (var lr = 0; lr < legacyRects.length; lr++) {
-        var legacyPositions = sonicPositionsFromLegacyRect(seed, bitCount, W, H, legacyRects[lr]);
-        if (legacyPositions.length >= bitCount) {
-          var legacyStr = sonicReadPayloadFromPositions(data, legacyPositions, bitCount, 3);
-          if (sonicPayloadMatches(legacyStr, expectedHash_lsb)) {
-            return {
-              detected: true,
-              key: licenseKey,
-              method: 'WM-LSB Legacy',
-              rect: legacyRects[lr]
-            };
-          }
-        }
-      }
-
-      // ── 後方互換：旧ブロック方式（v2.4以前）で試みる ──
-      if (checkedMethods.indexOf('Block(v2.4)') < 0) checkedMethods.push('Block(v2.4)');
-      var blockRedundancy_v24 = 5;
-      var totalBlocks2 = Math.floor(W / 8) * Math.floor(H / 8);
-      if (totalBlocks2 >= bitCount * blockRedundancy_v24) {
-        var resultBits2 = [];
-        for (var i = 0; i < bitCount; i++) {
-          var votes = 0;
-          for (var r = 0; r < blockRedundancy_v24; r++)
-            votes += Math.max(0, sonicBlockRead(data, W, H, r * bitCount + i));
-          resultBits2.push(votes >= 3 ? 1 : 0);
-        }
-        var readStr2 = sonicBitsToStr(resultBits2);
-        if (readStr2.charCodeAt(0) === 0x53 && readStr2.charCodeAt(1) === 0x4D &&
-            readStr2.charCodeAt(2) === 0x4B && readStr2.charCodeAt(3) === 0x31) {
-          var readHash2 = readStr2.slice(4, 12);
-          var expectedHash2 = (await sha256hex(licenseKey + SONICMARK_SECRET)).slice(0, 8);
-          if (readHash2 === expectedHash2) return { detected: true, key: licenseKey, method: 'Block(v2.4)' };
-        }
-      }
-      // 旧v2.5beta: redundancy=3、ランダム分散埋め込み
-      if (checkedMethods.indexOf('Block(v2.5b)') < 0) checkedMethods.push('Block(v2.5b)');
-      var blockRedundancy_v25b = 3;
-      if (totalBlocks2 >= bitCount * blockRedundancy_v25b) {
-        var blockPositions_v25b = sonicGenBlockPositions(seed, bitCount * blockRedundancy_v25b, totalBlocks2);
-        if (blockPositions_v25b.length >= bitCount * blockRedundancy_v25b) {
-          var resultBits3 = [];
-          for (var i = 0; i < bitCount; i++) {
-            var votes = 0;
-            for (var r = 0; r < blockRedundancy_v25b; r++)
-              votes += Math.max(0, sonicBlockRead(data, W, H, blockPositions_v25b[r * bitCount + i]));
-            resultBits3.push(votes >= 2 ? 1 : 0);
-          }
-          var readStr3 = sonicBitsToStr(resultBits3);
-          if (readStr3.charCodeAt(0) === 0x53 && readStr3.charCodeAt(1) === 0x4D &&
-              readStr3.charCodeAt(2) === 0x4B && readStr3.charCodeAt(3) === 0x31) {
-            var readHash3 = readStr3.slice(4, 12);
-            var expectedHash3 = (await sha256hex(licenseKey + SONICMARK_SECRET)).slice(0, 8);
-            if (readHash3 === expectedHash3) return { detected: true, key: licenseKey, method: 'Block(v2.5b)' };
+          if (sonicPayloadMatches(readStr, expectedHash)) {
+            return { detected: true, key: licenseKey, licenseId: identity, method: 'LSB(v4.3)' };
           }
         }
       }
@@ -4932,10 +4903,9 @@ async function runDetect() {
 // SonicMark メタデータ方式（JPEG Exif / WebP XMP）
 // ══════════════════════════════════════════════════════════════
 
-// SonicMarkタグ文字列を生成（ライセンスキーに紐づく固有値）
+// SonicMarkタグ文字列を生成（署名済みライセンスの公開IDに紐づく指紋）
 async function sonicBuildMetaTag(licenseKey) {
-  var hash = (await sha256hex(licenseKey + SONICMARK_SECRET)).slice(0, 16);
-  return 'SONICMARK:' + hash;
+  return 'SONICMARK2:' + await sonicBuildMarkerHash(licenseKey);
 }
 
 // ── JPEG ExifにSonicMarkを埋め込む ───────────────────────────
@@ -5033,16 +5003,19 @@ function buildMinimalExifWithUserComment(commentBytes) {
   var tiffHeader = [0x49,0x49,0x2A,0x00,0x08,0x00,0x00,0x00];
   // IFD エントリ数（1エントリ）
   var ifdCount = [0x01,0x00];
-  // UserComment タグ: 0x9286, SHORT=2, count=commentBytes.length, offset
+  // UserComment タグ: 0x9286, UNDEFINED=7。先頭8バイトは文字コード識別子。
+  var commentData = [0x41,0x53,0x43,0x49,0x49,0x00,0x00,0x00]; // "ASCII\0\0\0"
+  for (var ci = 0; ci < commentBytes.length; ci++) commentData.push(commentBytes[ci]);
   var tagId = [0x86,0x92];
-  var tagType = [0x02,0x00]; // ASCII
+  var tagType = [0x07,0x00]; // UNDEFINED
   var tagCount = [
-    commentBytes.length & 0xFF,
-    (commentBytes.length >> 8) & 0xFF,
-    0x00, 0x00
+    commentData.length & 0xFF,
+    (commentData.length >> 8) & 0xFF,
+    (commentData.length >> 16) & 0xFF,
+    (commentData.length >> 24) & 0xFF
   ];
-  // データは IFD の後に置く（オフセット = 6 + 8 + 2 + 12 + 4 = 32）
-  var dataOffset = 6 + 8 + 2 + 12 + 4;
+  // Exif内のオフセットはTIFFヘッダー先頭から数える。
+  var dataOffset = 8 + 2 + 12 + 4;
   var tagOffset = [
     dataOffset & 0xFF,
     (dataOffset >> 8) & 0xFF,
@@ -5053,8 +5026,18 @@ function buildMinimalExifWithUserComment(commentBytes) {
 
   var arr = exifHeader.concat(tiffHeader, ifdCount, ifdEntry, nextIfd);
   // コメントデータを末尾に追加
-  for (var i = 0; i < commentBytes.length; i++) arr.push(commentBytes[i]);
+  for (var i = 0; i < commentData.length; i++) arr.push(commentData[i]);
   return new Uint8Array(arr);
+}
+
+function buildSonicMarkXmp(tag) {
+  return '<?xpacket begin="\uFEFF" id="W5M0MpCehiHzreSzNTczkc9d"?>' +
+    '<x:xmpmeta xmlns:x="adobe:ns:meta/">' +
+    '<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">' +
+    '<rdf:Description rdf:about="" xmlns:swm="https://sonicwatermarker.com/ns/1.0/">' +
+    '<swm:SonicMark>' + tag + '</swm:SonicMark>' +
+    '</rdf:Description></rdf:RDF></x:xmpmeta>' +
+    '<?xpacket end="w"?>';
 }
 
 // ── WebP XMPにSonicMarkを埋め込む ────────────────────────────
@@ -5070,7 +5053,7 @@ function buildMinimalExifWithUserComment(commentBytes) {
 async function embedSonicMarkToWebPBlob(blob, licenseKey) {
   try {
     var tag = await sonicBuildMetaTag(licenseKey);
-    var tagBytes = new TextEncoder().encode(tag);
+    var tagBytes = new TextEncoder().encode(buildSonicMarkXmp(tag));
 
     var srcBuf = await blob.arrayBuffer();
     var src = new Uint8Array(srcBuf);
@@ -5311,86 +5294,50 @@ function verifySonicMarkBlob(blob, format, licenseKey) {
 // ══════════════════════════════════════════════════════════════
 
 // ── ライセンス認証 ───────────────────────────────────────
-//
-// ⚠️⚠️⚠️  絶対に変更禁止ゾーン  ⚠️⚠️⚠️
-// ════════════════════════════════════════════════════════
-// 以下の LICENSE_CONFIG を変更すると
-// 販売済みの全ライセンスキーが無効になります。
-// バージョンアップ・リファクタ時も絶対に触らないこと。
-// 変更が必要な場合は必ず既存キーで動作確認すること。
-// ════════════════════════════════════════════════════════
+// 公開コードには検証用の公開鍵だけを置く。署名用秘密鍵は管理者端末だけに保管する。
 const LICENSE_CONFIG = Object.freeze({
-  SECRET_SALT : 'SonicWM_2026_roroai290k_SecretSalt_v1', // ← 絶対変更禁止
-  KEY_PREFIX  : 'SONIC',                                  // ← 絶対変更禁止
-  KEY_PARTS   : 5,                                        // ← 絶対変更禁止
-  PART_LEN    : 4,                                        // ← 絶対変更禁止
-  TYPES       : Object.freeze(['PRO', 'TRIAL'])           // ← 絶対変更禁止
+  TOKEN_PREFIX: 'SWM1',
+  AUDIENCE: 'sonicwatermarker',
+  MAX_TOKEN_LENGTH: 2048,
+  PUBLIC_KEYS: Object.freeze({
+    'swm-prod-1': Object.freeze({
+      kty: 'EC',
+      crv: 'P-256',
+      x: 'qiOqCPw4HFnZJoZ2ZdLCdfjz9Hph1XlBI0mxPdo2VEA',
+      y: 'T8YHYS4Xz6e9PXU4lmBAd6jZoe85APwXZfqmqt3YkQo',
+      ext: true,
+      key_ops: Object.freeze(['verify'])
+    })
+  })
 });
-// ⚠️⚠️⚠️  変更禁止ゾーンここまで  ⚠️⚠️⚠️
-//
-// 起動時に整合性チェック（改ざん検知）
-(function() {
-  var cfg = LICENSE_CONFIG;
-  var ok = (
-    cfg.SECRET_SALT === 'SonicWM_2026_roroai290k_SecretSalt_v1' &&
-    cfg.KEY_PREFIX  === 'SONIC' &&
-    cfg.KEY_PARTS   === 5 &&
-    cfg.PART_LEN    === 4 &&
-    cfg.TYPES[0]    === 'PRO' &&
-    cfg.TYPES[1]    === 'TRIAL'
-  );
-  if (!ok) {
-    console.error(
-      '🚨 [LICENSE] LICENSE_CONFIGが改ざんされています！' +
-      '既存ライセンスキーが無効になっています。' +
-      'コードを元に戻してください。'
-    );
-    document.addEventListener('DOMContentLoaded', function() {
-      var warn = document.createElement('div');
-      warn.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;background:#ff0000;color:#fff;font-family:monospace;font-size:13px;font-weight:bold;padding:12px 16px;text-align:center;';
-      warn.textContent = '🚨 LICENSE_CONFIG ERROR: ライセンス認証設定が破損しています。既存キーが無効になっています。';
-      document.body.appendChild(warn);
-    });
-  } else {
-    console.log('[LICENSE] ✅ LICENSE_CONFIG 整合性チェック: OK');
-  }
-
-  // ── 元画像保護コードの存在チェック ────────────────────────────
-  // embedSonicMark・doProcess・finishProcessの保護コードが
-  // 正しく存在するかをソースコード文字列で確認する
-  var src = document.currentScript
-    ? document.currentScript.textContent
-    : (document.querySelector('script') || {}).textContent || '';
-  var guardChecks = [
-    { key: 'backupModal',                              label: 'バックアップ警告モーダル' },
-    { key: 'new Uint8ClampedArray(srcData.data)',        label: 'embedSonicMark: ImageDataコピー' },
-    { key: 'offCtx.clearRect(0, 0, off.width',          label: 'doProcess: toBlob後clearRect' },
-    { key: 'ctxCache.delete(off)',                       label: 'finishProcess: ctxCacheクリア' },
-    { key: 'off.width = 1',                              label: 'finishProcess: offリセット' },
-  ];
-  var guardOk = true;
-  guardChecks.forEach(function(g) {
-    if (src.indexOf(g.key) === -1) {
-      guardOk = false;
-      console.error('🚨 [GUARD] 元画像保護コードが見つかりません: ' + g.label);
-    }
-  });
-  if (guardOk) {
-    console.log('[GUARD] ✅ 元画像保護コード 整合性チェック: OK（全' + guardChecks.length + '項目）');
-  } else {
-    document.addEventListener('DOMContentLoaded', function() {
-      var warn = document.createElement('div');
-      warn.style.cssText = 'position:fixed;top:48px;left:0;right:0;z-index:99998;background:#e65100;color:#fff;font-family:monospace;font-size:12px;font-weight:bold;padding:10px 16px;text-align:center;';
-      warn.textContent = '🚨 GUARD ERROR: 元画像保護コードが改ざんされています！処理すると元画像が破壊される可能性があります。';
-      document.body.appendChild(warn);
-    });
-  }
-})();
-
-// SECRET_SALTは LICENSE_CONFIG から参照（直接変数は使わない）
-var SECRET_SALT = LICENSE_CONFIG.SECRET_SALT;
 var proActive = false;
 var proLicenseKey = '';
+var proLicenseInfo = null;
+
+function base64UrlToBytes(value) {
+  if (typeof value !== 'string' || !/^[A-Za-z0-9_-]+$/.test(value)) throw new Error('Invalid base64url');
+  var base64 = value.replace(/-/g, '+').replace(/_/g, '/');
+  while (base64.length % 4) base64 += '=';
+  var binary = atob(base64);
+  var bytes = new Uint8Array(binary.length);
+  for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return bytes;
+}
+
+function parseSignedLicensePayload(token) {
+  try {
+    if (typeof token !== 'string' || token.length > LICENSE_CONFIG.MAX_TOKEN_LENGTH) return null;
+    var parts = token.trim().split('.');
+    if (parts.length !== 3 || parts[0] !== LICENSE_CONFIG.TOKEN_PREFIX) return null;
+    return JSON.parse(new TextDecoder().decode(base64UrlToBytes(parts[1])));
+  } catch (error) {
+    return null;
+  }
+}
+
+function isLegacyLicenseKey(key) {
+  return /^SONIC-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/i.test(String(key || '').trim());
+}
 
 async function sha256hex(str) {
   var cryptoObj = (typeof crypto !== 'undefined') ? crypto : (typeof window !== 'undefined' ? window.crypto : null);
@@ -5483,43 +5430,42 @@ function sha256hexFallback(str) {
   return H.map(hex32).join('');
 }
 
-function parseKey(key) {
-  // SONIC-XXXX-XXXX-XXXX-XXXX 形式チェック
-  var parts = key.trim().toUpperCase().split('-');
-  if (parts.length !== LICENSE_CONFIG.KEY_PARTS) return null;
-  if (parts[0] !== LICENSE_CONFIG.KEY_PREFIX) return null;
-  if (parts[1].length !== LICENSE_CONFIG.PART_LEN ||
-      parts[2].length !== LICENSE_CONFIG.PART_LEN ||
-      parts[3].length !== LICENSE_CONFIG.PART_LEN ||
-      parts[4].length !== LICENSE_CONFIG.PART_LEN) return null;
-  return { uid: parts[1] + parts[2], timestamp: parts[3], checksum: parts[4] };
-}
-
-// TRIAL_DAYS: TRIALキーの有効期限（発行から31日）
-var TRIAL_DAYS = 31;
-
 async function verifyKey(key) {
-  var parsed = parseKey(key);
-  if (!parsed) return false;
-  for (var i = 0; i < LICENSE_CONFIG.TYPES.length; i++) {
-    var type = LICENSE_CONFIG.TYPES[i];
-    var raw = type + '-' + parsed.uid + '-' + parsed.timestamp + '-' + LICENSE_CONFIG.SECRET_SALT;
-    var hash = await sha256hex(raw);
-    var checksum = hash.slice(0, 4).toUpperCase();
-    if (checksum === parsed.checksum) {
-      // TRIALキーは発行から31日で失効
-      // timestampにエポック日数(base36)が埋め込まれているため
-      // localStorage不要・別ブラウザ/別端末でも同じ結果になる
-      if (type === 'TRIAL') {
-        var issueDays = parseInt(parsed.timestamp, 36);
-        var todayDays = Math.floor(Date.now() / 86400000);
-        if (todayDays - issueDays > TRIAL_DAYS) return 'expired';
-        return 'TRIAL';
-      }
-      return 'PRO';
-    }
+  proLicenseInfo = null;
+  key = String(key || '').trim();
+  if (isLegacyLicenseKey(key)) return 'legacy';
+  if (!window.crypto || !window.crypto.subtle || typeof TextDecoder === 'undefined') {
+    throw new Error('This browser does not support secure license verification');
   }
-  return false;
+  if (!key || key.length > LICENSE_CONFIG.MAX_TOKEN_LENGTH) return false;
+  var parts = key.split('.');
+  if (parts.length !== 3 || parts[0] !== LICENSE_CONFIG.TOKEN_PREFIX) return false;
+  var payload = parseSignedLicensePayload(key);
+  if (!payload || payload.v !== 1 || payload.aud !== LICENSE_CONFIG.AUDIENCE) return false;
+  if (!Object.prototype.hasOwnProperty.call(LICENSE_CONFIG.PUBLIC_KEYS, payload.kid)) return false;
+  if (!/^[A-Za-z0-9_-]{22}$/.test(payload.id || '')) return false;
+  if (payload.tier !== 'PRO' && payload.tier !== 'TRIAL') return false;
+  if (!Number.isInteger(payload.iat) || payload.iat <= 0) return false;
+  if (payload.exp !== null && (!Number.isInteger(payload.exp) || payload.exp <= payload.iat)) return false;
+  if (payload.tier === 'PRO' && payload.exp !== null) return false;
+  if (payload.tier === 'TRIAL' && payload.exp === null) return false;
+
+  var publicJwk = LICENSE_CONFIG.PUBLIC_KEYS[payload.kid];
+  var publicKey = await crypto.subtle.importKey(
+    'jwk', publicJwk, { name: 'ECDSA', namedCurve: 'P-256' }, false, ['verify']
+  );
+  var signature = base64UrlToBytes(parts[2]);
+  var signedData = new TextEncoder().encode(parts[0] + '.' + parts[1]);
+  var valid = await crypto.subtle.verify(
+    { name: 'ECDSA', hash: 'SHA-256' }, publicKey, signature, signedData
+  );
+  if (!valid) return false;
+
+  var now = Math.floor(Date.now() / 1000);
+  if (payload.iat > now + 300) return false;
+  if (payload.exp !== null && now >= payload.exp) return 'expired';
+  proLicenseInfo = payload;
+  return payload.tier;
 }
 
 // verifyKeyの戻り値: 'PRO'=有効(PRO), 'TRIAL'=有効(TRIAL), 'expired'=期限切れ, false=無効
@@ -5529,7 +5475,7 @@ async function verifyKeyWithMsg(key) {
 }
 
 async function activateLicense() {
-  var key = $el('licenseInput').value.trim().toUpperCase();
+  var key = $el('licenseInput').value.trim();
   var msg = $el('licenseMsg');
   if (!key) {
     msg.style.color = '#ff6b6b';
@@ -5549,11 +5495,16 @@ async function activateLicense() {
       : 'License verification failed. Please reload and try again.';
     return;
   }
-  if (result === 'expired') {
+  if (result === 'legacy') {
     msg.style.color = '#ff9800';
     msg.textContent = currentLang === 'ja'
-      ? 'TRIALキーの有効期限（31日）が切れています。PRO版の購入をご検討ください。'
-      : 'TRIAL key has expired (31 days). Please consider upgrading to PRO.';
+      ? '旧形式のライセンスです。v4.3用ライセンスを無償再発行しますので販売者へご連絡ください。'
+      : 'This is a legacy license. Contact the seller for a free v4.3 replacement.';
+  } else if (result === 'expired') {
+    msg.style.color = '#ff9800';
+    msg.textContent = currentLang === 'ja'
+      ? 'TRIALライセンスの有効期限が切れています。PRO版の購入をご検討ください。'
+      : 'The TRIAL license has expired. Please consider upgrading to PRO.';
   } else if (result === 'PRO' || result === 'TRIAL') {
     proActive = true;
     proLicenseKey = key;
@@ -5570,6 +5521,7 @@ function deactivateLicense() {
   if (!confirm('ライセンスを解除しますか？')) return;
   proActive = false;
   proLicenseKey = '';
+  proLicenseInfo = null;
   localStorage.removeItem('sonicProKey');
   showProInactive();
 }
@@ -5579,13 +5531,8 @@ function showProActive(licenseType) {
   // 推測ロジック不要・PRO/TRIALを確実に判定できる
   var isTrial = (licenseType === 'TRIAL');
   var remainingDays = 0;
-  if (isTrial) {
-    var parsed = parseKey(proLicenseKey);
-    if (parsed) {
-      var issueDays = parseInt(parsed.timestamp, 36);
-      var todayDays = Math.floor(Date.now() / 86400000);
-      remainingDays = Math.max(0, TRIAL_DAYS - (todayDays - issueDays));
-    }
+  if (isTrial && proLicenseInfo && proLicenseInfo.exp) {
+    remainingDays = Math.max(0, Math.ceil((proLicenseInfo.exp - Math.floor(Date.now() / 1000)) / 86400));
   }
 
   // サイドバーPROバナー更新
@@ -5599,8 +5546,8 @@ function showProActive(licenseType) {
     labelEl.textContent = currentLang === 'ja' ? '✓ お試し版 有効中' : '✓ TRIAL Active';
     trialEl.style.display = 'block';
     trialEl.textContent = currentLang === 'ja'
-      ? '残り ' + remainingDays + ' 日（発行日から31日間）'
-      : remainingDays + ' day(s) remaining (31 days from issue)';
+      ? '有効期限まで残り ' + remainingDays + ' 日'
+      : remainingDays + ' day(s) remaining';
     $el('proBadge').textContent = 'TRIAL';
     $el('proBadge').style.background = '#555';
     $el('proBadge').style.color = '#e8ff47';
@@ -5712,6 +5659,16 @@ function showProInactive() {
         proLicenseKey = saved;
         $el('licenseInput').value = saved;
         showProActive(result);
+      } else if (result === 'legacy') {
+        $el('licenseInput').value = saved;
+        var legacyMsg = $el('licenseMsg');
+        if (legacyMsg) {
+          legacyMsg.style.color = '#ff9800';
+          legacyMsg.textContent = currentLang === 'ja'
+            ? '旧形式のライセンスです。v4.3用ライセンスへの交換が必要です。'
+            : 'Legacy license detected. A free v4.3 replacement is required.';
+        }
+        localStorage.removeItem('sonicProKey');
       } else if (result === 'expired') {
         // TRIAL期限切れ：キーは残しておいてメッセージだけ表示
         $el('licenseInput').value = saved;
@@ -5719,8 +5676,8 @@ function showProInactive() {
         if (msg) {
           msg.style.color = '#ff9800';
           msg.textContent = currentLang === 'ja'
-            ? 'TRIALキーの有効期限（31日）が切れています。'
-            : 'TRIAL key expired (31 days).';
+            ? 'TRIALライセンスの有効期限が切れています。'
+            : 'TRIAL license expired.';
         }
         localStorage.removeItem('sonicProKey');
       } else {
@@ -5749,20 +5706,12 @@ $el('termsOverlay').addEventListener('click', function(e) {
 });
 
 /*
- * ============================================================
- * TODO: PRO機能 — 不可視透かし（電子指紋）
- * ============================================================
- * 方式: DCT変換 × SHA-256ハッシュ × アプリ固有秘密鍵
- * 概要:
- *   1. 画像をDCT変換（周波数ドメインに変換）
- *   2. 中周波数帯域に 日時+セッションID のSHA-256ハッシュを分散埋め込み
- *   3. 埋め込みパターンをアプリ固有の秘密鍵で暗号化
- *   4. 再アップロード時に逆DCT+秘密鍵照合で「SWM処理済み」を検証
- * 特徴:
- *   - 肉眼では完全に不可視（ピクセル値変化 ±1〜2）
- *   - 軽圧縮・リサイズ耐性あり
- *   - SonicWatermarker以外では検証不可のオリジナル方式
- * ============================================================
+ * SonicMark v2の現在の方式:
+ * - 署名済みライセンスの公開IDからSHA-256照合値を作る。
+ * - PNGはLSB、JPEGはExif UserComment、WebPはXMPへ記録する。
+ * - 秘密鍵やライセンス本体は画像へ入れない。
+ * - 無断利用の抑止と同一ライセンスでの照合を補助する機能であり、
+ *   コピー・削除・再圧縮による消失を完全には防げず、作者証明にはならない。
  */
 
 // ── ローディングスピナー ─────────────────────────────────
