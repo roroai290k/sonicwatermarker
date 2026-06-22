@@ -1811,6 +1811,7 @@ const state = {
 };
 
 const imgCache = new Map();
+const activeImageUrls = new Set();
 const ctxCache = new WeakMap();
 let currentLang = 'ja';
 const $el = (id) => document.getElementById(id);
@@ -2599,8 +2600,13 @@ function loadImages(files) {
   });
   if (!imgs.length) return;
 
-  state.images.forEach(function(obj) { URL.revokeObjectURL(obj.url); imgCache.delete(obj.url); });
+  releaseSourceImages();
   state.images = imgs.map(function(f) { return { file: f, url: URL.createObjectURL(f), name: f.name }; });
+  state.images.forEach(function(obj) { activeImageUrls.add(obj.url); });
+
+  // 同じ画像群を続けて選んでもchangeイベントが発生するようにする。
+  // Fileオブジェクトはstate.imagesに保持済みなので、inputを空にしても処理には影響しない。
+  $el('imgInput').value = '';
 
   // 新しい画像を読み込んだら前回の出力結果をリセット
   try {
@@ -3343,10 +3349,29 @@ function renderImageGrid() {
 }
 
 // ── Image cache ───────────────────────────────────────────
+function releaseSourceImages() {
+  var oldImages = state.images.slice();
+  state.images = [];
+  oldImages.forEach(function(obj) {
+    activeImageUrls.delete(obj.url);
+    var cached = imgCache.get(obj.url);
+    if (cached) {
+      cached.onload = null;
+      cached.onerror = null;
+      cached.src = '';
+    }
+    imgCache.delete(obj.url);
+    URL.revokeObjectURL(obj.url);
+  });
+}
+
 function preloadImage(url) {
   if (imgCache.has(url)) return imgCache.get(url);
   var img = new Image();
-  img.onload = function() { imgCache.set(url, img); };
+  img.onload = function() {
+    // 全削除後に読み込みが完了しても、古い画像をキャッシュへ戻さない。
+    if (activeImageUrls.has(url)) imgCache.set(url, img);
+  };
   img.src = url;
   return img;
 }
@@ -3355,7 +3380,10 @@ function getImage(url) {
   return new Promise(function(resolve, reject) {
     if (imgCache.has(url)) { resolve(imgCache.get(url)); return; }
     var img = new Image();
-    img.onload = function() { imgCache.set(url, img); resolve(img); };
+    img.onload = function() {
+      if (activeImageUrls.has(url)) imgCache.set(url, img);
+      resolve(img);
+    };
     img.onerror = function() { reject(new Error('Failed to load: ' + url)); };
     img.src = url;
   });
@@ -3369,6 +3397,10 @@ function renderPreview() {
   showSpinner();
   var imgObj = state.images[state.selectedIdx];
   getImage(imgObj.url).then(function(img) {
+    if (!activeImageUrls.has(imgObj.url)) {
+      hideSpinner();
+      return;
+    }
     $el('emptyState').style.display = 'none';
     $el('canvasWrap').style.display = 'block';
     $el('previewSub').textContent = imgObj.name + ' (' + img.naturalWidth + ' x ' + img.naturalHeight + ')';
@@ -3381,7 +3413,7 @@ function renderPreview() {
       compositeOnCanvas(img, $el('previewCanvas'), pScale);
       hideSpinner();
     }
-  });
+  }).catch(function() { hideSpinner(); });
 }
 
 // ── Text WM canvas (cached) ───────────────────────────────
@@ -4124,16 +4156,35 @@ document.addEventListener('keydown', function(e) { if (e.key === 'Escape') close
 // ── 一括削除ボタン ────────────────────────────────────────
 function doClearAll() {
   if (!state.images.length) return;
-  state.images = [];
+  clearTimeout(previewTimer);
+  previewTimer = null;
+  if (previewRafId) {
+    cancelAnimationFrame(previewRafId);
+    previewRafId = null;
+  }
+  hideSpinner();
+
+  // DOMから画像を外してから、元画像の一時URLとキャッシュを解放する。
+  $el('imageGrid').innerHTML = '';
+  releaseSourceImages();
   state.selectedIdx = 0;
   imgCache.clear();
-  // 出力結果もリセット（state.resultsに残ったblobのURLを解放）
+  $el('imgInput').value = '';
+
+  // 出力Blobへの参照を外し、プレビュー用キャンバスの画素メモリも解放する。
   try {
     state.results = [];
   } catch(e) {
     console.warn('[doClearAll] state.results リセットエラー:', e);
   }
-  $el('imageGrid').innerHTML = '';
+  ['previewCanvas', 'compareBefore', 'compareAfter', 'modalCanvas', 'offscreen'].forEach(function(id) {
+    var canvas = $el(id);
+    if (!canvas) return;
+    ctxCache.delete(canvas);
+    canvas.width = 1;
+    canvas.height = 1;
+  });
+  $el('previewSub').textContent = '';
   $el('imageStripSection').style.display = 'none';
   $el('canvasWrap').style.display = 'none';
   $el('emptyState').style.display = 'flex';
