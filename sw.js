@@ -1,6 +1,6 @@
 ﻿// ── SonicWatermarker Service Worker ──────────────────────────
 // バージョンを上げると古いキャッシュが自動削除されます
-const CACHE_NAME = 'sonicwm-v4-3';
+const CACHE_NAME = 'sonicwm-v4-3-hotfix-1';
 const CACHE_PREFIX = 'sonicwm-';
 const APP_URLS = [
   new URL('./', self.registration.scope).href,
